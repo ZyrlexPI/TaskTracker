@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "134945536586",
+    "firebase_url": "https://tasktracker-17e39-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "tasktracker-17e39",
+    "storage_bucket": "tasktracker-17e39.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:134945536586:android:431023b8add8993f4984b3",
+        "android_client_info": {
+          "package_name": "com.example.tasktracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAt9EUxolG5accfrTSGoXCRKcn55u25juQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
