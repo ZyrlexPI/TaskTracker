@@ -25,7 +25,11 @@ fun NavGraphBuilder.authNavigationGraph(navController: NavHostController) {
             RegistrationScreen(navigateToHomeScreen = { navigateToHome(navController) })
         }
 
-        composable(route = AuthGraph.RECOVERY) { RecoveryScreen() }
+        composable(route = AuthGraph.RECOVERY) {
+            RecoveryScreen(
+                navigateToAuthScreen = { navController.navigate(AuthGraph.AUTHORIZATION) }
+            )
+        }
     }
 }
 

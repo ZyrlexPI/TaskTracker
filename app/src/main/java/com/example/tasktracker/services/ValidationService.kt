@@ -8,6 +8,6 @@ class ValidationService {
     }
 
     fun isPasswordValid(value: String): Boolean {
-        return value.length > 5
+        return value.length > 7
     }
 }

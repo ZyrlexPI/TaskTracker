@@ -16,11 +16,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.services.ValidationService
+import com.example.tasktracker.services.firebase.logInUserWithEmail
+import com.example.tasktracker.services.firebase.reloadUser
+import com.example.tasktracker.services.showError
 import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessTextField
 import com.ravenzip.workshop.components.SnackBar
 import com.ravenzip.workshop.components.Spinner
 import com.ravenzip.workshop.data.TextParameters
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun AuthorizationScreen(
@@ -35,7 +40,7 @@ fun AuthorizationScreen(
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
     val isLoading = remember { mutableStateOf(false) }
-    val spinnerText = remember { mutableStateOf("Вход в аккаунт...") }
+    val spinnerText = remember { mutableStateOf("Авторизация") }
     val validationService = ValidationService()
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(40.dp))
@@ -57,16 +62,49 @@ fun AuthorizationScreen(
         BottomContainer {
             Spacer(modifier = Modifier.height(20.dp))
             SimpleButton(
-                text = TextParameters(value = "Войти", size = 16),
-            ) {}
+                text = TextParameters(value = "Вход", size = 16),
+            ) {
+                scope.launch(Dispatchers.Main) {
+                    isEmailValid.value = validationService.isEmailValid(email.value)
+                    isPasswordValid.value = validationService.isPasswordValid(password.value)
+
+                    if (!isEmailValid.value || !isPasswordValid.value) {
+                        snackBarHostState.showError("Проверьте правильность заполнения полей")
+                        return@launch
+                    }
+                    isLoading.value = true
+
+                    val isReloadSuccess = reloadUser()
+                    if (isReloadSuccess.value != true) {
+                        isLoading.value = false
+                        snackBarHostState.showError(isReloadSuccess.error!!)
+                        return@launch
+                    }
+
+                    val authResult = logInUserWithEmail(email.value, password.value)
+
+                    if (authResult.value == null) {
+                        isLoading.value = false
+                        snackBarHostState.showError(authResult.error!!)
+                        return@launch
+                    }
+
+                    isLoading.value = false
+                    navigateToHomeScreen()
+                }
+            }
             Spacer(modifier = Modifier.height(20.dp))
             SimpleButton(
                 text = TextParameters(value = "Восстановить аккаунт", size = 16),
-            ) {}
+            ) {
+                navigateToRecoveryScreen()
+            }
             Spacer(modifier = Modifier.height(20.dp))
             SimpleButton(
                 text = TextParameters(value = "Регистрация", size = 16),
-            ) {}
+            ) {
+                navigateToRegistrationScreen()
+            }
             Spacer(modifier = Modifier.height(40.dp))
         }
     }
