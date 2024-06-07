@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.services.ValidationService
@@ -43,16 +44,17 @@ fun RegistrationScreen(navigateToHomeScreen: () -> Unit) {
         Text(
             text = "Регистрация",
             modifier = Modifier.fillMaxWidth(0.9f),
-            fontSize = 25.sp,
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
         )
         Spacer(modifier = Modifier.height(20.dp))
         SinglenessTextField(text = email, label = "Электронная почта")
         Spacer(modifier = Modifier.height(20.dp))
         SinglenessTextField(text = password, label = "Пароль", isHiddenText = true)
         BottomContainer {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(30.dp))
             SimpleButton(
-                text = TextParameters(value = "Зарегистрироваться", size = 16),
+                text = TextParameters(value = "Зарегистрироваться", size = 19),
             ) {
                 scope.launch(Dispatchers.Main) {
                     isEmailValid.value = validationService.isEmailValid(email.value)
@@ -89,7 +91,7 @@ fun RegistrationScreen(navigateToHomeScreen: () -> Unit) {
                     navigateToHomeScreen()
                 }
             }
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(50.dp))
         }
     }
 

@@ -11,6 +11,7 @@ import com.example.tasktracker.screens.main.UserProfileScreen
 import com.example.tasktracker.screens.userProfile.ChangePasswordScreen
 import com.example.tasktracker.screens.userProfile.SecurityScreen
 import com.example.tasktracker.screens.userProfile.SettingsScreen
+import com.example.tasktracker.screens.userProfile.UserDataScreen
 
 fun NavGraphBuilder.userProfileNavigationGraph(
     padding: PaddingValues,
@@ -31,8 +32,9 @@ fun NavGraphBuilder.userProfileNavigationGraph(
                     )
             )
         }
-        composable(route = UserProfileGraph.SETTINGS) {
-            SettingsScreen(
+        composable(route = UserProfileGraph.USER_DATA) { UserDataScreen(padding = padding) }
+        composable(route = UserProfileGraph.SECURITY) {
+            SecurityScreen(
                 padding = padding,
                 onClick =
                     arrayOf(
@@ -40,7 +42,7 @@ fun NavGraphBuilder.userProfileNavigationGraph(
                     )
             )
         }
-        composable(route = UserProfileGraph.SECURITY) { SecurityScreen(padding = padding) }
+        composable(route = UserProfileGraph.SETTINGS) { SettingsScreen(padding = padding) }
         composable(route = UserProfileGraph.CHANGE_PASSWORD) {
             ChangePasswordScreen(padding = padding)
         }

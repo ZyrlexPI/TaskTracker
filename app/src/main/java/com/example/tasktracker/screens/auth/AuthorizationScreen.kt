@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.services.ValidationService
@@ -42,27 +43,43 @@ fun AuthorizationScreen(
     val isLoading = remember { mutableStateOf(false) }
     val spinnerText = remember { mutableStateOf("Авторизация") }
     val validationService = ValidationService()
+    var hiddenTextPass = true
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(40.dp))
         Text(
             text = "Добро пожаловать в",
             modifier = Modifier.fillMaxWidth(0.9f),
-            fontSize = 25.sp,
+            fontSize = 31.sp,
+            fontWeight = FontWeight.Bold,
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = "Task Tracker",
             modifier = Modifier.fillMaxWidth(0.9f),
-            fontSize = 25.sp,
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
         )
         Spacer(modifier = Modifier.height(20.dp))
         SinglenessTextField(text = email, label = "Электронная почта")
         Spacer(modifier = Modifier.height(20.dp))
-        SinglenessTextField(text = password, label = "Пароль", isHiddenText = true)
+        SinglenessTextField(text = password, label = "Пароль", isHiddenText = hiddenTextPass)
+        //        IconButton(
+        //            onClick = {
+        //                hiddenTextPass =
+        //                    if (hiddenTextPass) {
+        //                        false
+        //                    } else {
+        //                        true
+        //                    }
+        //            }
+        //        ) {
+        //            Icon(imageVector = Icons.Outlined.Visibility, contentDescription = "")
+        //        }
+
         BottomContainer {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(30.dp))
             SimpleButton(
-                text = TextParameters(value = "Вход", size = 16),
+                text = TextParameters(value = "Вход", size = 19),
             ) {
                 scope.launch(Dispatchers.Main) {
                     isEmailValid.value = validationService.isEmailValid(email.value)
@@ -95,17 +112,17 @@ fun AuthorizationScreen(
             }
             Spacer(modifier = Modifier.height(20.dp))
             SimpleButton(
-                text = TextParameters(value = "Восстановить аккаунт", size = 16),
+                text = TextParameters(value = "Восстановить аккаунт", size = 19),
             ) {
                 navigateToRecoveryScreen()
             }
             Spacer(modifier = Modifier.height(20.dp))
             SimpleButton(
-                text = TextParameters(value = "Регистрация", size = 16),
+                text = TextParameters(value = "Регистрация", size = 19),
             ) {
                 navigateToRegistrationScreen()
             }
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(50.dp))
         }
     }
 

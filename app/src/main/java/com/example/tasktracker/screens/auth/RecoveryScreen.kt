@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.services.ValidationService
@@ -46,25 +47,27 @@ fun RecoveryScreen(navigateToAuthScreen: () -> Unit) {
         Text(
             text = "Восстановление",
             modifier = Modifier.fillMaxWidth(0.9f),
-            fontSize = 25.sp,
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
         )
         Spacer(modifier = Modifier.height(20.dp))
         SinglenessTextField(text = email, label = "Электронная почта")
         Spacer(modifier = Modifier.height(10.dp))
         InfoCard(
             icon = IconParameters(value = Icons.Outlined.Info),
-            title = TextParameters(value = "Информация о восстановлении", size = 20),
+            title = TextParameters(value = "Информация о восстановлении", size = 18),
             text =
                 TextParameters(
                     value =
                         "Укажите электронную почту привязанную к аккаунту, на него придет письмо для сброса пароля.",
-                    size = 14
+                    size = 15
                 ),
+            isTitleUnderIcon = false,
         )
         BottomContainer {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(30.dp))
             SimpleButton(
-                text = TextParameters(value = "Восстановить", size = 16),
+                text = TextParameters(value = "Восстановить", size = 19),
             ) {
                 scope.launch(Dispatchers.Main) {
                     isEmailValid.value = validationService.isEmailValid(email.value)
@@ -93,7 +96,7 @@ fun RecoveryScreen(navigateToAuthScreen: () -> Unit) {
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(50.dp))
         }
     }
 

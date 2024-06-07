@@ -5,6 +5,7 @@ import com.example.tasktracker.data.Result
 import com.example.tasktracker.enums.AuthErrorsEnum
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
@@ -84,6 +85,18 @@ suspend fun sendPasswordResetEmail(email: String): Boolean {
             Log.d("Method", "SendPasswordResetEmail")
             Log.d("Exception", "${e.message}")
         }
+        false
+    }
+}
+
+suspend fun updatePasswordUser(old_password: String, new_password: String): Boolean {
+    return try {
+        val credential = EmailAuthProvider.getCredential(getUser()?.email.toString(), old_password)
+        getUser()?.reauthenticate(credential)?.await()
+        getUser()?.updatePassword(new_password)?.await()
+        true
+    } catch (e: Exception) {
+        Log.d("UpPass", e.message.toString())
         false
     }
 }

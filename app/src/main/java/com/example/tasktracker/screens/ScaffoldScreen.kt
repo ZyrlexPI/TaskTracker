@@ -1,10 +1,10 @@
 package com.example.tasktracker.screens
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.TaskAlt
+import androidx.compose.material.icons.outlined.Task
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -22,7 +22,7 @@ fun ScaffoldScreen(navController: NavHostController = rememberNavController()) {
             BottomNavigationBar(
                 navController = navController,
                 buttonsList = generateMenuItems(),
-                showLabelOnlyOnSelected = true
+                showLabelOnlyOnSelected = false
             )
         }
     ) {
@@ -47,7 +47,7 @@ private fun generateMenuItems(): List<BottomNavigationItem> {
         BottomNavigationItem(
             label = "Задачи",
             route = BottomBar_Graph.TASKS,
-            icon = IconParameters(value = Icons.Outlined.TaskAlt),
+            icon = IconParameters(value = Icons.Outlined.Task),
             hasNews = false
         )
 
@@ -63,7 +63,7 @@ private fun generateMenuItems(): List<BottomNavigationItem> {
         BottomNavigationItem(
             label = "Профиль",
             route = BottomBar_Graph.USER_PROFILE,
-            icon = IconParameters(value = Icons.Outlined.Person),
+            icon = IconParameters(value = Icons.Outlined.AccountCircle),
             hasNews = false
         )
 
