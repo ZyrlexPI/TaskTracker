@@ -18,6 +18,7 @@ import com.ravenzip.workshop.data.IconParameters
 @Composable
 fun ScaffoldScreen(navController: NavHostController = rememberNavController()) {
     Scaffold(
+        // topBar = { TopAppBar() },
         bottomBar = {
             BottomNavigationBar(
                 navController = navController,

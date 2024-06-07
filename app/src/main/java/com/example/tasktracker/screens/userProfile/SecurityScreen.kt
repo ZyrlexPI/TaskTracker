@@ -27,7 +27,7 @@ fun SecurityScreen(padding: PaddingValues, vararg onClick: () -> Unit) {
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = "Безопасность аккаунта",
             modifier = Modifier.fillMaxWidth(0.9f),

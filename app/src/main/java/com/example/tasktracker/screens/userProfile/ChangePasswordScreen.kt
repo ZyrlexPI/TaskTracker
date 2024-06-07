@@ -38,7 +38,7 @@ fun ChangePasswordScreen(padding: PaddingValues) {
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = "Смена пароля",
             modifier = Modifier.fillMaxWidth(0.9f),

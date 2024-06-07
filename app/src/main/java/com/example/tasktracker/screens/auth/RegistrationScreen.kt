@@ -17,7 +17,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.services.ValidationService
+import com.example.tasktracker.services.firebase.UserService
 import com.example.tasktracker.services.firebase.createUserWithEmail
+import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.firebase.reloadUser
 import com.example.tasktracker.services.showError
 import com.ravenzip.workshop.components.SimpleButton
@@ -39,8 +41,9 @@ fun RegistrationScreen(navigateToHomeScreen: () -> Unit) {
     val isLoading = remember { mutableStateOf(false) }
     val spinnerText = remember { mutableStateOf("Регистрация") }
     val validationService = ValidationService()
+    val userService = UserService()
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = "Регистрация",
             modifier = Modifier.fillMaxWidth(0.9f),
@@ -88,6 +91,7 @@ fun RegistrationScreen(navigateToHomeScreen: () -> Unit) {
                     }
 
                     isLoading.value = false
+                    userService.add(getUser())
                     navigateToHomeScreen()
                 }
             }

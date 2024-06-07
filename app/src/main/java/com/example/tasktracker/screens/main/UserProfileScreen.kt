@@ -48,7 +48,7 @@ fun UserProfileScreen(padding: PaddingValues, vararg onClick: () -> Unit) {
     val isLoading = remember { mutableStateOf(false) }
     val spinnerText = remember { mutableStateOf("Выполняется выход...") }
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = "Профиль",
             modifier = Modifier.fillMaxWidth(0.9f),

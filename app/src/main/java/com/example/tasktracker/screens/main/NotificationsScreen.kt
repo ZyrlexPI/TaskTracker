@@ -25,7 +25,7 @@ fun NotificationsScreen(padding: PaddingValues) {
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = "Экран уведомлений ",
             modifier = Modifier.fillMaxWidth(0.9f),

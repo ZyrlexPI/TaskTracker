@@ -22,7 +22,7 @@ import com.ravenzip.workshop.data.TextParameters
 @Composable
 fun SettingsScreen(padding: PaddingValues) {
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = "Настройки",
             modifier = Modifier.fillMaxWidth(0.9f),

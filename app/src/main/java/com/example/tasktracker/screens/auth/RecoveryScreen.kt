@@ -43,7 +43,7 @@ fun RecoveryScreen(navigateToAuthScreen: () -> Unit) {
     val isLoading = remember { mutableStateOf(false) }
     val spinnerText = remember { mutableStateOf("Обработка запроса") }
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = "Восстановление",
             modifier = Modifier.fillMaxWidth(0.9f),
