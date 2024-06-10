@@ -1,4 +1,4 @@
-package com.example.tasktracker.screens.userProfile
+package com.example.tasktracker.screens.userProfile.company
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -20,12 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.tasktracker.data.User
+import com.example.tasktracker.services.firebase.CompanyService
 import com.example.tasktracker.services.firebase.UserService
 import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
-import com.google.firebase.database.getValue
 import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessTextField
 import com.ravenzip.workshop.components.SnackBar
@@ -34,55 +32,48 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun UserDataScreen(padding: PaddingValues, userService: MutableState<UserService>) {
-    val userData = remember { mutableStateOf(User()) }
-    userData.value = userService.value.dataUser.collectAsState().value
-    val name = remember { mutableStateOf("") }
-    name.value = userData.value.name
-    val surname = remember { mutableStateOf("") }
-    surname.value = userData.value.surname
+fun CreateCompanyScreen(
+    padding: PaddingValues,
+    vararg onClick: () -> Unit,
+    userService: MutableState<UserService>
+) {
+    val companyService = CompanyService()
+    val nameCompany = remember { mutableStateOf("") }
+    val userData = userService.value.dataUser.collectAsState().value
     val snackBarHostState = remember { SnackbarHostState() }
-
     val scope = rememberCoroutineScope()
-    val isLoadingUser = remember { mutableStateOf(true) }
-    LaunchedEffect(isLoadingUser.value) {
-        if (isLoadingUser.value) {
-            userService.value.get(getUser())
-            isLoadingUser.value = false
-        }
-    }
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Spacer(modifier = Modifier.height(30.dp))
         Text(
-            text = "Личные данные",
+            text = "Создание организации",
             modifier = Modifier.fillMaxWidth(0.9f),
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
         )
-        Spacer(modifier = Modifier.height(20.dp))
-        SinglenessTextField(text = name, label = "Имя")
-        Spacer(modifier = Modifier.height(20.dp))
-        SinglenessTextField(text = surname, label = "Фамилия")
+        Spacer(modifier = Modifier.height(30.dp))
+        SinglenessTextField(text = nameCompany, label = "Название компании")
         Spacer(modifier = Modifier.height(40.dp))
         SimpleButton(
-            text = TextParameters(value = "Сохранить", size = 19),
+            text = TextParameters(value = "Создать", size = 19),
         ) {
             scope.launch(Dispatchers.Main) {
-                if (name.value == "" || surname.value == "") {
-                    snackBarHostState.showError("Проверьте правильность заполнения полей")
-                    return@launch
-                }
-                if (
-                    userService.value.update(
-                        userData = userData.value,
-                        name = name.value,
-                        surname = surname.value
+                if (userData.companyId != "") {
+                    snackBarHostState.showError(
+                        message =
+                            "Ошибка выполнения запроса. Возможно вы уже состоите в организации"
                     )
-                ) {
+                    onClick[0]()
+                }
+                if (nameCompany.value != "") {
+                    companyService.add(nameCompany = nameCompany.value, userData = userData)
                     userService.value.get(getUser())
-                    snackBarHostState.showSuccess(message = "Данные пользователя успешно обновлены")
+                    snackBarHostState.showSuccess(message = "Организация успешно создана")
+                    onClick[0]()
                 } else {
-                    snackBarHostState.showError(message = "Ошибка при обновлении данных")
+                    snackBarHostState.showError(message = "Проверьте правильность заполнения полей")
                 }
             }
         }
