@@ -83,7 +83,7 @@ fun NavGraphBuilder.userProfileNavigationGraph(
         composable(route = UserProfileGraph.COMPANY_JOIN) {
             JoinCompanyScreen(
                 padding = padding,
-                onClick = arrayOf({ navController.navigate(UserProfileGraph.USER_PROFILE_START) }),
+                onClick = arrayOf({ navController.popBackStack() }),
                 userService = userService,
                 companyService = companyService
             )
@@ -91,7 +91,7 @@ fun NavGraphBuilder.userProfileNavigationGraph(
         composable(route = UserProfileGraph.COMPANY_ADD) {
             CreateCompanyScreen(
                 padding = padding,
-                onClick = arrayOf({ navController.navigate(UserProfileGraph.USER_PROFILE_START) }),
+                onClick = arrayOf({ navController.popBackStack() }),
                 userService = userService
             )
         }

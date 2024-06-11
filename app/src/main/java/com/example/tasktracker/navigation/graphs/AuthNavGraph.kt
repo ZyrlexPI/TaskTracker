@@ -33,8 +33,8 @@ fun NavGraphBuilder.authNavigationGraph(navController: NavHostController) {
     }
 }
 
+/** Для того, чтобы перейти на главный экран и при этом невозможно было вернуться назад */
 private fun navigateToHome(navController: NavHostController) {
-    // Для того, чтобы перейти на главный экран и при этом невозможно было вернуться назад
     navController.navigate(RootGraph.MAIN) {
         popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
     }

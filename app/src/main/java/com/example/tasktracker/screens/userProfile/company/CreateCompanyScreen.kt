@@ -71,6 +71,7 @@ fun CreateCompanyScreen(
                     companyService.add(nameCompany = nameCompany.value, userData = userData)
                     userService.value.get(getUser())
                     snackBarHostState.showSuccess(message = "Организация успешно создана")
+
                     onClick[0]()
                 } else {
                     snackBarHostState.showError(message = "Проверьте правильность заполнения полей")

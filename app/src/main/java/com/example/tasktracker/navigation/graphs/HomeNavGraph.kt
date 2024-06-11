@@ -30,6 +30,7 @@ fun HomeScreenNavGraph(
     val isLoadingUser = remember { mutableStateOf(true) }
     userData.value = userService.value.dataUser.collectAsState().value
     val isLoadingCompany = remember { mutableStateOf(false) }
+    /** Загрузка данных о пользователе */
     LaunchedEffect(isLoadingUser.value) {
         if (isLoadingUser.value) {
             userService.value.get(getUser())
@@ -37,6 +38,7 @@ fun HomeScreenNavGraph(
             isLoadingUser.value = false
         }
     }
+    /** Загрузка данных о организации пользователя */
     LaunchedEffect(isLoadingCompany.value) {
         if (isLoadingCompany.value) {
             companyService.value.getCurrentCompany(userData.value)
