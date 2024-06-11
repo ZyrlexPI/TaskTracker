@@ -15,6 +15,7 @@ class UserService() {
     private val _dataUser = MutableStateFlow(User())
     val dataUser = _dataUser.asStateFlow()
 
+    /** Добавить нового пользователя в БД */
     suspend fun add(currentUser: FirebaseUser?) {
         if (currentUser !== null) {
             databaseRef.child(currentUser.uid).setValue(User(currentUser.uid, "", "", "")).await()
@@ -23,6 +24,7 @@ class UserService() {
         }
     }
 
+    /** Получить данные о текущем пользователе из БД */
     suspend fun get(currentUser: FirebaseUser?) {
         if (currentUser !== null) {
             val response = databaseRef.child(currentUser.uid).get().await()
@@ -36,6 +38,7 @@ class UserService() {
         }
     }
 
+    /** Обновление данных о пользователе. Личной информации. */
     suspend fun update(userData: User, name: String, surname: String): Boolean {
         if (userData !== null) {
             val data = mapOf("name" to name, "surname" to surname)

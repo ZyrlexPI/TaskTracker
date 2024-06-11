@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Key
-import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ravenzip.workshop.components.InfoCard
 import com.ravenzip.workshop.components.RowIconButton
 import com.ravenzip.workshop.data.IconParameters
 import com.ravenzip.workshop.data.TextParameters
@@ -42,11 +40,12 @@ fun SecurityScreen(padding: PaddingValues, vararg onClick: () -> Unit) {
             onClick[0]()
         }
         Spacer(modifier = Modifier.height(20.dp))
-        InfoCard(
-            icon = IconParameters(value = Icons.Outlined.Warning),
-            title = TextParameters(value = "ВАЖНО", size = 20),
-            text = TextParameters(value = "Данный экран находится в разработке.", size = 20),
-            isTitleUnderIcon = false
-        )
+        //        InfoCard(
+        //            icon = IconParameters(value = Icons.Outlined.Warning),
+        //            title = TextParameters(value = "ВАЖНО", size = 20),
+        //            text = TextParameters(value = "Данный экран находится в разработке.", size =
+        // 20),
+        //            isTitleUnderIcon = false
+        //        )
     }
 }

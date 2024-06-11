@@ -15,18 +15,19 @@ class CompanyService {
     private val _dataCompany = MutableStateFlow(Company())
     val dataCompany = _dataCompany.asStateFlow()
 
+    /** Создание новой организации */
     suspend fun add(nameCompany: String, userData: User) {
         val pushKey = databaseCompaniesRef.push().key.toString()
         val data = mapOf("companyId" to pushKey)
         databaseUsersRef.child(userData.id).updateChildren(data)
-        val dataUser = User(userData.id, userData.name, userData.surname, userData.companyId)
+        val dataUser = User(userData.id, userData.name, userData.surname, pushKey)
         databaseCompaniesRef
             .child(pushKey)
             .setValue(Company(pushKey, nameCompany, listOf(dataUser)))
             .await()
     }
 
-    // Получение информации о компании текущего пользователя, если он в ней состоит
+    /** Получение информации о компании текущего пользователя, если он в ней состоит */
     suspend fun getCurrentCompany(userData: User) {
         if (userData.companyId != "") {
             val response = databaseCompaniesRef.child(userData.companyId).get().await()
@@ -40,7 +41,7 @@ class CompanyService {
         }
     }
 
-    // Получить список компаний существующих в БД
+    /** Получить список компаний существующих в БД */
     suspend fun getListCompany(): MutableList<Company> {
         val response = databaseCompaniesRef.get().await().children
         val listCompanies = mutableListOf<Company>()
@@ -48,7 +49,7 @@ class CompanyService {
         return listCompanies
     }
 
-    // Присоединение к существующей компании
+    /** Присоединение пользователя к существующей компании */
     suspend fun joinСompany(targetCompany: String, userData: User) {
         val data = mapOf("companyId" to targetCompany)
         databaseUsersRef.child(userData.id).updateChildren(data)
@@ -64,6 +65,7 @@ class CompanyService {
         databaseCompaniesRef.child(targetCompany).child("members").setValue(dataMembers)
     }
 
+    /** Удаление текущего пользователя из организации в которой состоит */
     suspend fun deleteCurrentUser(userData: User) {
         databaseUsersRef.child(userData.id).child("companyId").setValue("")
         val response = databaseCompaniesRef.child(userData.companyId).child("members").get().await()

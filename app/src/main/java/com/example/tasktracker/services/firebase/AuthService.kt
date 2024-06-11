@@ -15,11 +15,7 @@ import kotlinx.coroutines.withContext
 
 private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
-/**
- * Зарегистрировать пользователя с указанной электронной почтой и паролем
- *
- * @return [AuthResult] или null
- */
+/** Регистрация пользователя с указанной электронной почтой и паролем */
 suspend fun createUserWithEmail(email: String, password: String): Result<AuthResult> {
     return try {
         val result = auth.createUserWithEmailAndPassword(email, password).await()
@@ -30,23 +26,17 @@ suspend fun createUserWithEmail(email: String, password: String): Result<AuthRes
             Log.d("Method", "CreateUserWithEmail")
             Log.d("FirebaseAuthException", error)
         }
-
         Result(value = null, error = error)
     } catch (e: Exception) {
         withContext(Dispatchers.Main) {
             Log.d("Method", "CreateUserWithEmail")
             Log.d("Exception", "${e.message}")
         }
-
         Result(value = null, error = AuthErrorsEnum.ERROR_DEFAULT.value)
     }
 }
 
-/**
- * Выполнить вход с указанной электронной почтой и паролем
- *
- * @return [AuthResult] или null
- */
+/** Выполнение входа с указанной электронной почтой и паролем */
 suspend fun logInUserWithEmail(email: String, password: String): Result<AuthResult> {
     return try {
         val result = auth.signInWithEmailAndPassword(email, password).await()
@@ -76,6 +66,7 @@ suspend fun logInUserWithEmail(email: String, password: String): Result<AuthResu
     }
 }
 
+/** Отправка ссылки на указанную почту для сброса пароля */
 suspend fun sendPasswordResetEmail(email: String): Boolean {
     return try {
         auth.sendPasswordResetEmail(email).await()
@@ -89,6 +80,7 @@ suspend fun sendPasswordResetEmail(email: String): Boolean {
     }
 }
 
+/** Обновление пароля у пользователе */
 suspend fun updatePasswordUser(old_password: String, new_password: String): Boolean {
     return try {
         val credential = EmailAuthProvider.getCredential(getUser()?.email.toString(), old_password)
@@ -101,7 +93,7 @@ suspend fun updatePasswordUser(old_password: String, new_password: String): Bool
     }
 }
 
-/** Обновить данные о пользователе */
+/** Обновление данных о пользователе */
 suspend fun reloadUser(): Result<Boolean> {
     return try {
         auth.currentUser?.reload()?.await()
@@ -112,16 +104,12 @@ suspend fun reloadUser(): Result<Boolean> {
     }
 }
 
-/**
- * Получить текущего пользователя
- *
- * @return [FirebaseUser] или null
- */
+/** Получение текущего пользователя */
 fun getUser(): FirebaseUser? {
     return auth.currentUser
 }
 
-/** Выполнить выход из аккаунта */
+/** Выполнение выхода из аккаунта */
 suspend fun logout() {
     auth.signOut()
     reloadUser()
