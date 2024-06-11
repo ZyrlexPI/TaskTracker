@@ -26,10 +26,10 @@ fun NavGraphBuilder.userProfileNavigationGraph(
     companyService: MutableState<CompanyService>
 ) {
     navigation(
-        route = BottomBar_Graph.USER_PROFILE,
-        startDestination = UserProfileGraph.USER_PROFILE_START
+        route = UserProfileGraph.USER_PROFILE_START,
+        startDestination = BottomBar_Graph.USER_PROFILE
     ) {
-        composable(route = UserProfileGraph.USER_PROFILE_START) {
+        composable(route = BottomBar_Graph.USER_PROFILE) {
             UserProfileScreen(
                 padding = padding,
                 onClick =
@@ -57,7 +57,13 @@ fun NavGraphBuilder.userProfileNavigationGraph(
         }
         composable(route = UserProfileGraph.SETTINGS) { SettingsScreen(padding = padding) }
         composable(route = UserProfileGraph.CHANGE_PASSWORD) {
-            ChangePasswordScreen(padding = padding)
+            ChangePasswordScreen(
+                padding = padding,
+                onClick =
+                    arrayOf(
+                        { navController.navigate(UserProfileGraph.USER_PROFILE_START) },
+                    )
+            )
         }
 
         composable(route = UserProfileGraph.COMPANY) {

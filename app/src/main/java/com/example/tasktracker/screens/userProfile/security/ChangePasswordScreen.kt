@@ -32,7 +32,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun ChangePasswordScreen(padding: PaddingValues) {
+fun ChangePasswordScreen(padding: PaddingValues, vararg onClick: () -> Unit) {
     val oldPassword = remember { mutableStateOf("") }
     val newPassword = remember { mutableStateOf("") }
     val snackBarHostState = remember { SnackbarHostState() }
@@ -66,8 +66,12 @@ fun ChangePasswordScreen(padding: PaddingValues) {
             scope.launch(Dispatchers.Main) {
                 if (updatePasswordUser(oldPassword.value, newPassword.value)) {
                     snackBarHostState.showSuccess(message = "Пароль успешно обновлен")
+                    onClick[0]()
                 } else {
-                    snackBarHostState.showError(message = "Ошибка при обновлении пароля")
+                    snackBarHostState.showError(
+                        message =
+                            "Ошибка при обновлении пароля. Проверьте правильность заполнения полей"
+                    )
                 }
             }
         }
