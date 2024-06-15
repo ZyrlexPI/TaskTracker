@@ -1,21 +1,21 @@
 [versions]
-agp = "8.4.1"
+agp = "8.5.0"
 coreSplashscreen = "1.0.1"
-firebaseBom = "33.0.0"
-kotlin = "1.9.10"
+firebaseBom = "33.1.0"
+kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.8.0"
+lifecycleRuntimeKtx = "2.8.2"
 activityCompose = "1.9.0"
-composeBom = "2024.05.00"
-materialIconsExtended = "1.6.7"
+composeBom = "2024.06.00"
+materialIconsExtended = "1.6.8"
 navigationCompose = "2.7.7"
-workshop = "1.5.2"
-googleServices = "4.4.1"
+workshop = "1.6.0"
+googleServices = "4.4.2"
 firebaseDatabase = "21.0.0"
-googleGmsGoogleServices = "4.4.1"
+googleGmsGoogleServices = "4.4.2"
 firebaseFirestoreKtx = "25.0.0"
 
 [libraries]
@@ -44,6 +44,7 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database",
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 
 [plugins]
+kotlin-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }

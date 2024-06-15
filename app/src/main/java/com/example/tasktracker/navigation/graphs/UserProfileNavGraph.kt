@@ -6,9 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.tasktracker.navigation.models.BottomBar_Graph
 import com.example.tasktracker.navigation.models.UserProfileGraph
-import com.example.tasktracker.screens.main.UserProfileScreen
 import com.example.tasktracker.screens.userProfile.SettingsScreen
 import com.example.tasktracker.screens.userProfile.UserDataScreen
 import com.example.tasktracker.screens.userProfile.company.CompanyScreen
@@ -27,22 +25,8 @@ fun NavGraphBuilder.userProfileNavigationGraph(
 ) {
     navigation(
         route = UserProfileGraph.USER_PROFILE_START,
-        startDestination = BottomBar_Graph.USER_PROFILE
+        startDestination = UserProfileGraph.USER_DATA
     ) {
-        composable(route = BottomBar_Graph.USER_PROFILE) {
-            UserProfileScreen(
-                padding = padding,
-                onClick =
-                    arrayOf(
-                        { navController.navigate(UserProfileGraph.USER_DATA) },
-                        { navController.navigate(UserProfileGraph.SECURITY) },
-                        { navController.navigate(UserProfileGraph.SETTINGS) },
-                        { navController.navigate(UserProfileGraph.COMPANY) }
-                    ),
-                companyService = companyService,
-                userService = userService,
-            )
-        }
         composable(route = UserProfileGraph.USER_DATA) {
             UserDataScreen(padding = padding, userService = userService)
         }

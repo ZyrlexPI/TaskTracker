@@ -12,9 +12,11 @@ import androidx.navigation.compose.composable
 import com.example.tasktracker.data.User
 import com.example.tasktracker.navigation.models.BottomBar_Graph
 import com.example.tasktracker.navigation.models.RootGraph
+import com.example.tasktracker.navigation.models.UserProfileGraph
 import com.example.tasktracker.screens.main.MainScreen
 import com.example.tasktracker.screens.main.NotificationsScreen
 import com.example.tasktracker.screens.main.TasksScreen
+import com.example.tasktracker.screens.main.UserProfileScreen
 import com.example.tasktracker.services.firebase.CompanyService
 import com.example.tasktracker.services.firebase.UserService
 import com.example.tasktracker.services.firebase.getUser
@@ -55,6 +57,21 @@ fun HomeScreenNavGraph(
         composable(route = BottomBar_Graph.TASKS) { TasksScreen(padding) }
 
         composable(route = BottomBar_Graph.NOTIFICATIONS) { NotificationsScreen(padding) }
+
+        composable(route = BottomBar_Graph.USER_PROFILE) {
+            UserProfileScreen(
+                padding = padding,
+                onClick =
+                    arrayOf(
+                        { navController.navigate(UserProfileGraph.USER_DATA) },
+                        { navController.navigate(UserProfileGraph.SECURITY) },
+                        { navController.navigate(UserProfileGraph.SETTINGS) },
+                        { navController.navigate(UserProfileGraph.COMPANY) }
+                    ),
+                companyService = companyService,
+                userService = userService,
+            )
+        }
 
         userProfileNavigationGraph(
             padding,

@@ -2,5 +2,7 @@
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.jetbrains.kotlin.android) apply false
+    alias(libs.plugins.kotlin.compose.compiler) apply false
+    kotlin("jvm") version "2.0.0"
     alias(libs.plugins.google.gms.google.services) apply false
 }
