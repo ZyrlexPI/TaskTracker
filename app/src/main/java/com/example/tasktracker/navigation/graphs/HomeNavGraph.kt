@@ -1,8 +1,10 @@
 package com.example.tasktracker.navigation.graphs
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,6 +27,8 @@ import com.example.tasktracker.services.firebase.getUser
 fun HomeScreenNavGraph(
     navController: NavHostController,
     padding: PaddingValues,
+    titleTopAppBar: MutableState<String>,
+    snackBarHostState: SnackbarHostState
 ) {
     val userService = remember { mutableStateOf(UserService()) }
     val companyService = remember { mutableStateOf(CompanyService()) }
@@ -52,13 +56,23 @@ fun HomeScreenNavGraph(
         route = RootGraph.MAIN,
         startDestination = BottomBar_Graph.HOME
     ) {
-        composable(route = BottomBar_Graph.HOME) { MainScreen(padding) }
+        composable(route = BottomBar_Graph.HOME) {
+            titleTopAppBar.value = "Главный экран"
+            MainScreen(padding)
+        }
 
-        composable(route = BottomBar_Graph.TASKS) { TasksScreen(padding) }
+        composable(route = BottomBar_Graph.TASKS) {
+            titleTopAppBar.value = "Задачи"
+            TasksScreen(padding)
+        }
 
-        composable(route = BottomBar_Graph.NOTIFICATIONS) { NotificationsScreen(padding) }
+        composable(route = BottomBar_Graph.NOTIFICATIONS) {
+            titleTopAppBar.value = "Уведомления"
+            NotificationsScreen(padding)
+        }
 
         composable(route = BottomBar_Graph.USER_PROFILE) {
+            titleTopAppBar.value = "Профиль"
             UserProfileScreen(
                 padding = padding,
                 onClick =
@@ -74,10 +88,12 @@ fun HomeScreenNavGraph(
         }
 
         userProfileNavigationGraph(
-            padding,
+            padding = padding,
             navController = navController,
             userService = userService,
             companyService = companyService,
+            titleTopAppBar = titleTopAppBar,
+            snackBarHostState = snackBarHostState
         )
     }
 }

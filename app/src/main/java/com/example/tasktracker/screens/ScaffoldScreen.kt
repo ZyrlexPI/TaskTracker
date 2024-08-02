@@ -6,30 +6,40 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Task
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tasktracker.navigation.graphs.HomeScreenNavGraph
 import com.example.tasktracker.navigation.models.BottomBar_Graph
 import com.ravenzip.workshop.components.BottomNavigationBar
+import com.ravenzip.workshop.components.SnackBar
+import com.ravenzip.workshop.components.TopAppBar
 import com.ravenzip.workshop.data.BottomNavigationItem
 import com.ravenzip.workshop.data.IconParameters
 
 @Composable
 fun ScaffoldScreen(navController: NavHostController = rememberNavController()) {
+    val titleTopAppBar = remember { mutableStateOf("Информация") }
+    val snackBarHostState = remember { SnackbarHostState() }
     Scaffold(
-        // topBar = { TopAppBar() },
+        topBar = { TopAppBar(titleTopAppBar.value) },
         bottomBar = {
             BottomNavigationBar(
                 navController = navController,
                 buttonsList = generateMenuItems(),
                 showLabelOnlyOnSelected = false
             )
-        }
+        },
+        snackbarHost = { SnackBar(snackBarHostState) },
     ) {
         HomeScreenNavGraph(
             navController = navController,
             padding = it,
+            titleTopAppBar = titleTopAppBar,
+            snackBarHostState = snackBarHostState,
         )
     }
 }

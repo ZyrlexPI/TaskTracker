@@ -33,7 +33,6 @@ import com.example.tasktracker.services.firebase.UserService
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.ravenzip.workshop.components.InfoCard
-import com.ravenzip.workshop.components.SnackBar
 import com.ravenzip.workshop.data.IconParameters
 import com.ravenzip.workshop.data.TextParameters
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +41,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun JoinCompanyScreen(
     padding: PaddingValues,
+    snackBarHostState: SnackbarHostState,
     vararg onClick: () -> Unit,
     userService: MutableState<UserService>,
     companyService: MutableState<CompanyService>,
@@ -49,7 +49,6 @@ fun JoinCompanyScreen(
     val userData = remember { mutableStateOf(User()) }
     userData.value = userService.value.dataUser.collectAsState().value
     val scope = rememberCoroutineScope()
-    val snackBarHostState = remember { SnackbarHostState() }
 
     val listCompanies = remember { mutableListOf<Company>() }
     val isLoadingList = remember { mutableStateOf(true) }
@@ -61,7 +60,7 @@ fun JoinCompanyScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().padding(padding),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(modifier = Modifier.height(30.dp))
@@ -133,6 +132,4 @@ fun JoinCompanyScreen(
             }
         }
     }
-
-    SnackBar(snackBarHostState = snackBarHostState)
 }

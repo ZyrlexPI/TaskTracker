@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Create
@@ -21,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.data.Company
@@ -31,7 +31,6 @@ import com.example.tasktracker.services.firebase.UserService
 import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.showSuccess
 import com.ravenzip.workshop.components.RowIconButton
-import com.ravenzip.workshop.components.SnackBar
 import com.ravenzip.workshop.data.IconParameters
 import com.ravenzip.workshop.data.TextParameters
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +39,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CompanyScreen(
     padding: PaddingValues,
+    snackBarHostState: SnackbarHostState,
     vararg onClick: () -> Unit,
     companyService: MutableState<CompanyService>,
     userService: MutableState<UserService>
@@ -48,7 +48,6 @@ fun CompanyScreen(
     companyData.value = companyService.value.dataCompany.collectAsState().value
     val userData = remember { mutableStateOf(User()) }
     userData.value = userService.value.dataUser.collectAsState().value
-    val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     val isLoadingUser = remember { mutableStateOf(true) }
@@ -68,16 +67,9 @@ fun CompanyScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().padding(padding),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(modifier = Modifier.height(30.dp))
-        Text(
-            text = "Организация",
-            modifier = Modifier.fillMaxWidth(0.9f),
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-        )
         Spacer(modifier = Modifier.height(30.dp))
         Text(
             text =
@@ -119,5 +111,4 @@ fun CompanyScreen(
             }
         }
     }
-    SnackBar(snackBarHostState = snackBarHostState)
 }

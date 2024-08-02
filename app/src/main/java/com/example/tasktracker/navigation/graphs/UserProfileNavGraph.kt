@@ -1,6 +1,7 @@
 package com.example.tasktracker.navigation.graphs
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.MutableState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -21,16 +22,24 @@ fun NavGraphBuilder.userProfileNavigationGraph(
     padding: PaddingValues,
     navController: NavHostController,
     userService: MutableState<UserService>,
-    companyService: MutableState<CompanyService>
+    companyService: MutableState<CompanyService>,
+    titleTopAppBar: MutableState<String>,
+    snackBarHostState: SnackbarHostState
 ) {
     navigation(
         route = UserProfileGraph.USER_PROFILE_START,
         startDestination = UserProfileGraph.USER_DATA
     ) {
         composable(route = UserProfileGraph.USER_DATA) {
-            UserDataScreen(padding = padding, userService = userService)
+            titleTopAppBar.value = "Личные данные"
+            UserDataScreen(
+                padding = padding,
+                snackBarHostState = snackBarHostState,
+                userService = userService,
+            )
         }
         composable(route = UserProfileGraph.SECURITY) {
+            titleTopAppBar.value = "Безопасность аккаунта"
             SecurityScreen(
                 padding = padding,
                 onClick =
@@ -39,10 +48,15 @@ fun NavGraphBuilder.userProfileNavigationGraph(
                     )
             )
         }
-        composable(route = UserProfileGraph.SETTINGS) { SettingsScreen(padding = padding) }
+        composable(route = UserProfileGraph.SETTINGS) {
+            titleTopAppBar.value = "Настройки"
+            SettingsScreen(padding = padding)
+        }
         composable(route = UserProfileGraph.CHANGE_PASSWORD) {
+            titleTopAppBar.value = "Смена пароля"
             ChangePasswordScreen(
                 padding = padding,
+                snackBarHostState = snackBarHostState,
                 onClick =
                     arrayOf(
                         { navController.navigate(UserProfileGraph.USER_PROFILE_START) },
@@ -51,8 +65,10 @@ fun NavGraphBuilder.userProfileNavigationGraph(
         }
 
         composable(route = UserProfileGraph.COMPANY) {
+            titleTopAppBar.value = "Организация"
             CompanyScreen(
                 padding = padding,
+                snackBarHostState = snackBarHostState,
                 onClick =
                     arrayOf(
                         { navController.navigate(UserProfileGraph.COMPANY_JOIN) },
@@ -60,23 +76,27 @@ fun NavGraphBuilder.userProfileNavigationGraph(
                         { navController.navigate(UserProfileGraph.USER_PROFILE_START) },
                     ),
                 companyService = companyService,
-                userService = userService
+                userService = userService,
             )
         }
 
         composable(route = UserProfileGraph.COMPANY_JOIN) {
+            titleTopAppBar.value = "Присоединиться к организации"
             JoinCompanyScreen(
                 padding = padding,
+                snackBarHostState = snackBarHostState,
                 onClick = arrayOf({ navController.popBackStack() }),
                 userService = userService,
-                companyService = companyService
+                companyService = companyService,
             )
         }
         composable(route = UserProfileGraph.COMPANY_ADD) {
+            titleTopAppBar.value = "Создание организации"
             CreateCompanyScreen(
                 padding = padding,
+                snackBarHostState = snackBarHostState,
                 onClick = arrayOf({ navController.popBackStack() }),
-                userService = userService
+                userService = userService,
             )
         }
     }
