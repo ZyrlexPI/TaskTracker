@@ -33,7 +33,7 @@ fun ScaffoldScreen(navController: NavHostController = rememberNavController()) {
                 showLabelOnlyOnSelected = false
             )
         },
-        snackbarHost = { SnackBar(snackBarHostState) },
+        //        snackbarHost = { SnackBar(snackBarHostState) },
     ) {
         HomeScreenNavGraph(
             navController = navController,
@@ -42,6 +42,7 @@ fun ScaffoldScreen(navController: NavHostController = rememberNavController()) {
             snackBarHostState = snackBarHostState,
         )
     }
+    SnackBar(snackBarHostState)
 }
 
 @Composable
