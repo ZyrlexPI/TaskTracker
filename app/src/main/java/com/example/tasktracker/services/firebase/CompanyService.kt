@@ -1,6 +1,7 @@
 package com.example.tasktracker.services.firebase
 
 import android.util.Log
+import androidx.lifecycle.ViewModel
 import com.example.tasktracker.data.Company
 import com.example.tasktracker.data.User
 import com.google.firebase.database.FirebaseDatabase
@@ -9,7 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.tasks.await
 
-class CompanyService {
+class CompanyService : ViewModel() {
     private val databaseCompaniesRef = FirebaseDatabase.getInstance().getReference("Сompanies")
     private val databaseUsersRef = FirebaseDatabase.getInstance().getReference("Users")
     private val _dataCompany = MutableStateFlow(Company())

@@ -64,20 +64,6 @@ fun JoinCompanyScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(modifier = Modifier.height(30.dp))
-        Text(
-            text = "Присоединиться к ",
-            modifier = Modifier.fillMaxWidth(0.9f),
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            text = "организации",
-            modifier = Modifier.fillMaxWidth(0.9f),
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-        )
-        Spacer(modifier = Modifier.height(30.dp))
         InfoCard(
             icon = IconParameters(value = Icons.Outlined.Info),
             title = TextParameters(value = "Информация", size = 19),

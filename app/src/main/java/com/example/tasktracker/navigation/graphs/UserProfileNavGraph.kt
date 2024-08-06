@@ -81,7 +81,7 @@ fun NavGraphBuilder.userProfileNavigationGraph(
         }
 
         composable(route = UserProfileGraph.COMPANY_JOIN) {
-            titleTopAppBar.value = "Присоединиться к организации"
+            titleTopAppBar.value = "Присоединиться"
             JoinCompanyScreen(
                 padding = padding,
                 snackBarHostState = snackBarHostState,
