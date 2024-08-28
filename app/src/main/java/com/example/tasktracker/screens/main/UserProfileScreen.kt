@@ -24,9 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,15 +32,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.tasktracker.data.User
-import com.example.tasktracker.services.firebase.CompanyService
-import com.example.tasktracker.services.firebase.UserService
 import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.firebase.logout
 import com.ravenzip.workshop.components.RowIconButton
 import com.ravenzip.workshop.components.Spinner
-import com.ravenzip.workshop.data.IconParameters
-import com.ravenzip.workshop.data.TextParameters
+import com.ravenzip.workshop.data.TextConfig
+import com.ravenzip.workshop.data.icon.IconConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -52,32 +46,12 @@ import kotlinx.coroutines.launch
 fun UserProfileScreen(
     padding: PaddingValues,
     vararg onClick: () -> Unit,
-    companyService: MutableState<CompanyService>,
-    userService: MutableState<UserService>
 ) {
     val emailUser = getUser()?.email.toString()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val isLoading = remember { mutableStateOf(false) }
     val spinnerText = remember { mutableStateOf("Выполняется выход...") }
-
-    val userData = remember { mutableStateOf(User()) }
-    userData.value = userService.value.dataUser.collectAsState().value
-    val isLoadingUser = remember { mutableStateOf(true) }
-    val isLoadingCompany = remember { mutableStateOf(false) }
-    LaunchedEffect(isLoadingUser.value) {
-        if (isLoadingUser.value) {
-            userService.value.get(getUser())
-            isLoadingCompany.value = true
-            isLoadingUser.value = false
-        }
-    }
-    LaunchedEffect(isLoadingCompany.value) {
-        if (isLoadingCompany.value) {
-            companyService.value.getCurrentCompany(userData.value)
-            isLoadingCompany.value = false
-        }
-    }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(padding),
@@ -117,45 +91,37 @@ fun UserProfileScreen(
         }
         Spacer(modifier = Modifier.height(40.dp))
         RowIconButton(
-            text =
-                TextParameters(
-                    "Личные данные",
-                    19,
-                ),
-            icon = IconParameters(Icons.Filled.Person)
+            text = "Личные данные",
+            textConfig = TextConfig(size = 19),
+            icon = Icons.Filled.Person,
+            iconConfig = IconConfig.Default,
         ) {
             onClick[0]()
         }
         Spacer(modifier = Modifier.height(20.dp))
         RowIconButton(
-            text =
-                TextParameters(
-                    "Безопасность",
-                    19,
-                ),
-            icon = IconParameters(Icons.Outlined.Lock)
+            text = "Безопасность",
+            textConfig = TextConfig(size = 19),
+            icon = Icons.Outlined.Lock,
+            iconConfig = IconConfig.Default,
         ) {
             onClick[1]()
         }
         Spacer(modifier = Modifier.height(20.dp))
         RowIconButton(
-            text =
-                TextParameters(
-                    "Настройки",
-                    19,
-                ),
-            icon = IconParameters(Icons.Outlined.Settings)
+            text = "Настройки",
+            textConfig = TextConfig(size = 19),
+            icon = Icons.Outlined.Settings,
+            iconConfig = IconConfig.Default,
         ) {
             onClick[2]()
         }
         Spacer(modifier = Modifier.height(20.dp))
         RowIconButton(
-            text =
-                TextParameters(
-                    "Выход",
-                    19,
-                ),
-            icon = IconParameters(Icons.AutoMirrored.TwoTone.Logout)
+            text = "Выход",
+            textConfig = TextConfig(size = 19),
+            icon = Icons.AutoMirrored.TwoTone.Logout,
+            iconConfig = IconConfig.Default,
         ) {
             scope.launch(Dispatchers.Main) {
                 val packageManager: PackageManager = context.packageManager
@@ -176,6 +142,6 @@ fun UserProfileScreen(
         }
     }
     if (isLoading.value) {
-        Spinner(text = TextParameters(value = spinnerText.value, size = 16))
+        Spinner(text = spinnerText.value)
     }
 }

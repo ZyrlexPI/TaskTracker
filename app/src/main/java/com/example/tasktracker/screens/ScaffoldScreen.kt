@@ -17,8 +17,8 @@ import com.example.tasktracker.navigation.models.BottomBar_Graph
 import com.ravenzip.workshop.components.BottomNavigationBar
 import com.ravenzip.workshop.components.SnackBar
 import com.ravenzip.workshop.components.TopAppBar
-import com.ravenzip.workshop.data.BottomNavigationItem
-import com.ravenzip.workshop.data.IconParameters
+import com.ravenzip.workshop.data.appbar.BottomNavigationItem
+import com.ravenzip.workshop.data.icon.IconConfig
 
 @Composable
 fun ScaffoldScreen(navController: NavHostController = rememberNavController()) {
@@ -33,7 +33,6 @@ fun ScaffoldScreen(navController: NavHostController = rememberNavController()) {
                 showLabelOnlyOnSelected = false
             )
         },
-        //        snackbarHost = { SnackBar(snackBarHostState) },
     ) {
         HomeScreenNavGraph(
             navController = navController,
@@ -51,23 +50,26 @@ private fun generateMenuItems(): List<BottomNavigationItem> {
         BottomNavigationItem(
             label = "Главная",
             route = BottomBar_Graph.HOME,
-            icon = IconParameters(value = Icons.Outlined.Home),
-            hasNews = false
+            icon = Icons.Outlined.Home,
+            iconConfig = IconConfig.Primary,
+            hasNews = false,
         )
 
     val tasksButton =
         BottomNavigationItem(
             label = "Задачи",
             route = BottomBar_Graph.TASKS,
-            icon = IconParameters(value = Icons.Outlined.Task),
-            hasNews = false
+            icon = Icons.Outlined.Task,
+            iconConfig = IconConfig.Primary,
+            hasNews = false,
         )
 
     val notificationsButton =
         BottomNavigationItem(
             label = "Уведомления",
             route = BottomBar_Graph.NOTIFICATIONS,
-            icon = IconParameters(value = Icons.Outlined.Notifications),
+            icon = Icons.Outlined.Notifications,
+            iconConfig = IconConfig.Primary,
             hasNews = false
         )
 
@@ -75,7 +77,8 @@ private fun generateMenuItems(): List<BottomNavigationItem> {
         BottomNavigationItem(
             label = "Профиль",
             route = BottomBar_Graph.USER_PROFILE,
-            icon = IconParameters(value = Icons.Outlined.AccountCircle),
+            icon = Icons.Outlined.AccountCircle,
+            iconConfig = IconConfig.Primary,
             hasNews = false
         )
 

@@ -13,8 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ravenzip.workshop.components.InfoCard
-import com.ravenzip.workshop.data.IconParameters
-import com.ravenzip.workshop.data.TextParameters
+import com.ravenzip.workshop.data.TextConfig
+import com.ravenzip.workshop.data.icon.IconConfig
 
 @Composable
 fun TasksScreen(padding: PaddingValues) {
@@ -24,10 +24,12 @@ fun TasksScreen(padding: PaddingValues) {
     ) {
         Spacer(modifier = Modifier.height(30.dp))
         InfoCard(
-            icon = IconParameters(value = Icons.Outlined.Warning),
-            title = TextParameters(value = "ВАЖНО", size = 20),
-            text = TextParameters(value = "Данный экран находится в разработке.", size = 20),
-            isTitleUnderIcon = false
+            icon = Icons.Outlined.Warning,
+            iconConfig = IconConfig.Default,
+            title = "ВАЖНО",
+            titleConfig = TextConfig.H1,
+            text = "Данный экран находится в разработке.",
+            textConfig = TextConfig(size = 20),
         )
     }
 }

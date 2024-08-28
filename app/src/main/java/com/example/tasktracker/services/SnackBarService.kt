@@ -9,41 +9,45 @@ import androidx.compose.material3.SnackbarHostState
 import com.example.tasktracker.ui.theme.errorColor
 import com.example.tasktracker.ui.theme.successColor
 import com.example.tasktracker.ui.theme.warningColor
-import com.ravenzip.workshop.data.IconParameters
-import com.ravenzip.workshop.data.SnackBarVisualsExtended
+import com.ravenzip.workshop.data.SnackBarVisualsConfig
+import com.ravenzip.workshop.data.icon.IconConfig
 
 suspend fun SnackbarHostState.showMessage(message: String) {
     this.showSnackbar(
-        SnackBarVisualsExtended(
+        SnackBarVisualsConfig(
             message = message,
-            icon = IconParameters(value = Icons.Outlined.Info)
+            icon = Icons.Outlined.Info,
+            iconConfig = IconConfig.Default,
         )
     )
 }
 
 suspend fun SnackbarHostState.showSuccess(message: String) {
     this.showSnackbar(
-        SnackBarVisualsExtended(
+        SnackBarVisualsConfig(
             message = message,
-            icon = IconParameters(value = Icons.Outlined.Done, color = successColor)
+            icon = Icons.Outlined.Done,
+            iconConfig = IconConfig(color = successColor)
         )
     )
 }
 
 suspend fun SnackbarHostState.showWarning(message: String) {
     this.showSnackbar(
-        SnackBarVisualsExtended(
+        SnackBarVisualsConfig(
             message = message,
-            icon = IconParameters(value = Icons.Outlined.Warning, color = warningColor)
+            icon = Icons.Outlined.Warning,
+            iconConfig = IconConfig(color = warningColor),
         )
     )
 }
 
 suspend fun SnackbarHostState.showError(message: String) {
     this.showSnackbar(
-        SnackBarVisualsExtended(
+        SnackBarVisualsConfig(
             message = message,
-            icon = IconParameters(value = Icons.Outlined.Error, color = errorColor)
+            icon = Icons.Outlined.Error,
+            iconConfig = IconConfig(color = errorColor),
         )
     )
 }

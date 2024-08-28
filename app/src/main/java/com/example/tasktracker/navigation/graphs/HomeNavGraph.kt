@@ -6,12 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.tasktracker.data.User
 import com.example.tasktracker.navigation.models.BottomBar_Graph
 import com.example.tasktracker.navigation.models.RootGraph
 import com.example.tasktracker.navigation.models.UserProfileGraph
@@ -30,27 +28,16 @@ fun HomeScreenNavGraph(
     titleTopAppBar: MutableState<String>,
     snackBarHostState: SnackbarHostState
 ) {
-    val userService = remember { mutableStateOf(UserService()) }
-    val companyService = remember { mutableStateOf(CompanyService()) }
-    val userData = remember { mutableStateOf(User()) }
-    val isLoadingUser = remember { mutableStateOf(true) }
-    userData.value = userService.value.dataUser.collectAsState().value
-    val isLoadingCompany = remember { mutableStateOf(false) }
-    /** Загрузка данных о пользователе */
-    LaunchedEffect(isLoadingUser.value) {
-        if (isLoadingUser.value) {
-            userService.value.get(getUser())
-            isLoadingCompany.value = true
-            isLoadingUser.value = false
-        }
+    val userService = hiltViewModel<UserService>()
+    val companyService = hiltViewModel<CompanyService>()
+    val userData = userService.dataUser.collectAsState().value
+
+    /** Загрузка данных о пользователе и организации */
+    LaunchedEffect(Unit) {
+        userService.get(getUser())
+        companyService.getCurrentCompany(userData)
     }
-    /** Загрузка данных о организации пользователя */
-    LaunchedEffect(isLoadingCompany.value) {
-        if (isLoadingCompany.value) {
-            companyService.value.getCurrentCompany(userData.value)
-            isLoadingCompany.value = false
-        }
-    }
+
     NavHost(
         navController = navController,
         route = RootGraph.MAIN,
@@ -82,8 +69,6 @@ fun HomeScreenNavGraph(
                         { navController.navigate(UserProfileGraph.SETTINGS) },
                         { navController.navigate(UserProfileGraph.COMPANY) }
                     ),
-                companyService = companyService,
-                userService = userService,
             )
         }
 

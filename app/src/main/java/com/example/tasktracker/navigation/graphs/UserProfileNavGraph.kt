@@ -21,8 +21,8 @@ import com.example.tasktracker.services.firebase.UserService
 fun NavGraphBuilder.userProfileNavigationGraph(
     padding: PaddingValues,
     navController: NavHostController,
-    userService: MutableState<UserService>,
-    companyService: MutableState<CompanyService>,
+    userService: UserService,
+    companyService: CompanyService,
     titleTopAppBar: MutableState<String>,
     snackBarHostState: SnackbarHostState
 ) {
@@ -57,10 +57,7 @@ fun NavGraphBuilder.userProfileNavigationGraph(
             ChangePasswordScreen(
                 padding = padding,
                 snackBarHostState = snackBarHostState,
-                onClick =
-                    arrayOf(
-                        { navController.navigate(UserProfileGraph.USER_PROFILE_START) },
-                    )
+                onClick = { navController.navigate(UserProfileGraph.USER_PROFILE_START) },
             )
         }
 

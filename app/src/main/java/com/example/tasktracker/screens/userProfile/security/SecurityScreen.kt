@@ -13,8 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ravenzip.workshop.components.RowIconButton
-import com.ravenzip.workshop.data.IconParameters
-import com.ravenzip.workshop.data.TextParameters
+import com.ravenzip.workshop.data.TextConfig
+import com.ravenzip.workshop.data.icon.IconConfig
 
 @Composable
 fun SecurityScreen(padding: PaddingValues, vararg onClick: () -> Unit) {
@@ -24,8 +24,10 @@ fun SecurityScreen(padding: PaddingValues, vararg onClick: () -> Unit) {
     ) {
         Spacer(modifier = Modifier.height(30.dp))
         RowIconButton(
-            text = TextParameters("Смена пароля", 19),
-            icon = IconParameters(Icons.Outlined.Key)
+            text = "Смена пароля",
+            textConfig = TextConfig(size = 19),
+            icon = Icons.Outlined.Key,
+            iconConfig = IconConfig.Default,
         ) {
             onClick[0]()
         }

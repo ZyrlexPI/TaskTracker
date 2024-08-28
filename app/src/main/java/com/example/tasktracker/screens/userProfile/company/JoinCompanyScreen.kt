@@ -16,7 +16,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,14 +26,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.data.Company
-import com.example.tasktracker.data.User
 import com.example.tasktracker.services.firebase.CompanyService
 import com.example.tasktracker.services.firebase.UserService
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.ravenzip.workshop.components.InfoCard
-import com.ravenzip.workshop.data.IconParameters
-import com.ravenzip.workshop.data.TextParameters
+import com.ravenzip.workshop.data.TextConfig
+import com.ravenzip.workshop.data.icon.IconConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -43,18 +41,17 @@ fun JoinCompanyScreen(
     padding: PaddingValues,
     snackBarHostState: SnackbarHostState,
     vararg onClick: () -> Unit,
-    userService: MutableState<UserService>,
-    companyService: MutableState<CompanyService>,
+    userService: UserService,
+    companyService: CompanyService,
 ) {
-    val userData = remember { mutableStateOf(User()) }
-    userData.value = userService.value.dataUser.collectAsState().value
+    val userData = userService.dataUser.collectAsState().value
     val scope = rememberCoroutineScope()
-
     val listCompanies = remember { mutableListOf<Company>() }
     val isLoadingList = remember { mutableStateOf(true) }
+
     LaunchedEffect(isLoadingList.value) {
         if (isLoadingList.value) {
-            listCompanies.addAll(companyService.value.getListCompany())
+            listCompanies.addAll(companyService.getListCompany())
             isLoadingList.value = false
         }
     }
@@ -65,15 +62,12 @@ fun JoinCompanyScreen(
     ) {
         Spacer(modifier = Modifier.height(30.dp))
         InfoCard(
-            icon = IconParameters(value = Icons.Outlined.Info),
-            title = TextParameters(value = "Информация", size = 19),
-            text =
-                TextParameters(
-                    value =
-                        "Выберите организацию из списка ниже, к которой желаете присоединиться.",
-                    size = 15
-                ),
-            isTitleUnderIcon = false
+            icon = Icons.Outlined.Info,
+            title = "Информация",
+            titleConfig = TextConfig(size = 19),
+            text = "Выберите организацию из списка ниже, к которой желаете присоединиться.",
+            textConfig = TextConfig(size = 15),
+            iconConfig = IconConfig.PrimarySmall,
         )
         Spacer(modifier = Modifier.height(10.dp))
         LazyColumn {
@@ -89,11 +83,8 @@ fun JoinCompanyScreen(
                 Card(
                     onClick = {
                         scope.launch(Dispatchers.Main) {
-                            if (userData.value.companyId == "") {
-                                companyService.value.joinСompany(
-                                    company.id,
-                                    userData = userData.value
-                                )
+                            if (userData.companyId == "") {
+                                companyService.joinСompany(company.id, userData = userData)
                                 snackBarHostState.showSuccess(
                                     message = "Вы успешно присоединились к организации"
                                 )

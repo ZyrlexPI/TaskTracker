@@ -14,6 +14,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.services.ValidationService
@@ -24,7 +25,7 @@ import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessTextField
 import com.ravenzip.workshop.components.SnackBar
 import com.ravenzip.workshop.components.Spinner
-import com.ravenzip.workshop.data.TextParameters
+import com.ravenzip.workshop.data.TextConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -79,7 +80,8 @@ fun AuthorizationScreen(
         BottomContainer {
             Spacer(modifier = Modifier.height(30.dp))
             SimpleButton(
-                text = TextParameters(value = "Вход", size = 19),
+                text = "Вход",
+                textConfig = TextConfig(size = 19, align = TextAlign.Center),
             ) {
                 scope.launch(Dispatchers.Main) {
                     isEmailValid.value = validationService.isEmailValid(email.value)
@@ -112,13 +114,15 @@ fun AuthorizationScreen(
             }
             Spacer(modifier = Modifier.height(20.dp))
             SimpleButton(
-                text = TextParameters(value = "Восстановить аккаунт", size = 19),
+                text = "Восстановить аккаунт",
+                textConfig = TextConfig(size = 19, align = TextAlign.Center),
             ) {
                 navigateToRecoveryScreen()
             }
             Spacer(modifier = Modifier.height(20.dp))
             SimpleButton(
-                text = TextParameters(value = "Регистрация", size = 19),
+                text = "Регистрация",
+                textConfig = TextConfig(size = 19, align = TextAlign.Center),
             ) {
                 navigateToRegistrationScreen()
             }
@@ -127,7 +131,9 @@ fun AuthorizationScreen(
     }
 
     if (isLoading.value) {
-        Spinner(text = TextParameters(value = spinnerText.value, size = 16))
+        Spinner(
+            text = spinnerText.value,
+        )
     }
 
     SnackBar(snackBarHostState = snackBarHostState)

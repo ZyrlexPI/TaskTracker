@@ -16,6 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.services.ValidationService
@@ -28,8 +29,8 @@ import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessTextField
 import com.ravenzip.workshop.components.SnackBar
 import com.ravenzip.workshop.components.Spinner
-import com.ravenzip.workshop.data.IconParameters
-import com.ravenzip.workshop.data.TextParameters
+import com.ravenzip.workshop.data.TextConfig
+import com.ravenzip.workshop.data.icon.IconConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -54,20 +55,19 @@ fun RecoveryScreen(navigateToAuthScreen: () -> Unit) {
         SinglenessTextField(text = email, label = "Электронная почта")
         Spacer(modifier = Modifier.height(10.dp))
         InfoCard(
-            icon = IconParameters(value = Icons.Outlined.Info),
-            title = TextParameters(value = "Информация о восстановлении", size = 18),
+            icon = Icons.Outlined.Info,
+            iconConfig = IconConfig.PrimarySmall,
+            title = "Информация о восстановлении",
+            titleConfig = TextConfig.H2,
             text =
-                TextParameters(
-                    value =
-                        "Укажите электронную почту привязанную к аккаунту, на него придет письмо для сброса пароля.",
-                    size = 15
-                ),
-            isTitleUnderIcon = false,
+                "Укажите электронную почту привязанную к аккаунту, на него придет письмо для сброса пароля.",
+            textConfig = TextConfig(size = 15),
         )
         BottomContainer {
             Spacer(modifier = Modifier.height(30.dp))
             SimpleButton(
-                text = TextParameters(value = "Восстановить", size = 19),
+                text = "Восстановить",
+                textConfig = TextConfig(size = 19, align = TextAlign.Center),
             ) {
                 scope.launch(Dispatchers.Main) {
                     isEmailValid.value = validationService.isEmailValid(email.value)
@@ -101,7 +101,9 @@ fun RecoveryScreen(navigateToAuthScreen: () -> Unit) {
     }
 
     if (isLoading.value) {
-        Spinner(text = TextParameters(value = spinnerText.value, size = 16))
+        Spinner(
+            text = spinnerText.value,
+        )
     }
 
     SnackBar(snackBarHostState = snackBarHostState)
