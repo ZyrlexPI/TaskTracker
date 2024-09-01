@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.tasktracker.navigation.models.AuthGraph
 import com.example.tasktracker.navigation.models.RootGraph
 import com.example.tasktracker.screens.ScaffoldScreen
 
@@ -15,6 +16,14 @@ fun RootNavigationGraph(navController: NavHostController, startDestination: Stri
         startDestination = startDestination
     ) {
         authNavigationGraph(navController = navController)
-        composable(route = RootGraph.MAIN) { ScaffoldScreen() }
+        composable(route = RootGraph.MAIN) {
+            ScaffoldScreen(
+                returnInAuth = {
+                    navController.navigate(AuthGraph.AUTHORIZATION) {
+                        popUpTo(RootGraph.ROOT) { inclusive = true }
+                    }
+                }
+            )
+        }
     }
 }

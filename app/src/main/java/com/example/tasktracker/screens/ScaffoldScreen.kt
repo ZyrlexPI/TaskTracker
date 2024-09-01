@@ -8,12 +8,16 @@ import androidx.compose.material.icons.outlined.Task
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.tasktracker.navigation.graphs.HomeScreenNavGraph
 import com.example.tasktracker.navigation.models.BottomBar_Graph
+import com.example.tasktracker.navigation.models.UserProfileGraph
 import com.ravenzip.workshop.components.BottomNavigationBar
 import com.ravenzip.workshop.components.SnackBar
 import com.ravenzip.workshop.components.TopAppBar
@@ -21,9 +25,19 @@ import com.ravenzip.workshop.data.appbar.BottomNavigationItem
 import com.ravenzip.workshop.data.icon.IconConfig
 
 @Composable
-fun ScaffoldScreen(navController: NavHostController = rememberNavController()) {
-    val titleTopAppBar = remember { mutableStateOf("Информация") }
+fun ScaffoldScreen(
+    navController: NavHostController = rememberNavController(),
+    returnInAuth: () -> Unit
+) {
+    val titleTopAppBar = remember { mutableStateOf("") }
     val snackBarHostState = remember { SnackbarHostState() }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+    ChangeTopAppBarState(
+        currentRoute = navBackStackEntry?.destination?.route,
+        titleTopAppBar = titleTopAppBar
+    )
+
     Scaffold(
         topBar = { TopAppBar(titleTopAppBar.value) },
         bottomBar = {
@@ -37,8 +51,8 @@ fun ScaffoldScreen(navController: NavHostController = rememberNavController()) {
         HomeScreenNavGraph(
             navController = navController,
             padding = it,
-            titleTopAppBar = titleTopAppBar,
             snackBarHostState = snackBarHostState,
+            returnInAuth = returnInAuth,
         )
     }
     SnackBar(snackBarHostState)
@@ -83,4 +97,21 @@ private fun generateMenuItems(): List<BottomNavigationItem> {
         )
 
     return listOf(homeButton, tasksButton, notificationsButton, userProfileButton)
+}
+
+@Composable
+private fun ChangeTopAppBarState(currentRoute: String?, titleTopAppBar: MutableState<String>) {
+    when (currentRoute) {
+        BottomBar_Graph.HOME -> titleTopAppBar.value = "Главный экран"
+        BottomBar_Graph.TASKS -> titleTopAppBar.value = "Задачи"
+        BottomBar_Graph.NOTIFICATIONS -> titleTopAppBar.value = "Уведомления"
+        BottomBar_Graph.USER_PROFILE -> titleTopAppBar.value = "Профиль"
+        UserProfileGraph.USER_DATA -> titleTopAppBar.value = "Личные данные"
+        UserProfileGraph.SECURITY -> titleTopAppBar.value = "Безопасность аккаунта"
+        UserProfileGraph.SETTINGS -> titleTopAppBar.value = "Настройки"
+        UserProfileGraph.CHANGE_PASSWORD -> titleTopAppBar.value = "Смена пароля"
+        UserProfileGraph.COMPANY -> titleTopAppBar.value = "Организация"
+        UserProfileGraph.COMPANY_JOIN -> titleTopAppBar.value = "Присоединиться к организации"
+        UserProfileGraph.COMPANY_ADD -> titleTopAppBar.value = "Добавить организацию"
+    }
 }

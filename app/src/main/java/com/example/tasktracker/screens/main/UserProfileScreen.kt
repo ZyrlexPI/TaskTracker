@@ -1,8 +1,5 @@
 package com.example.tasktracker.screens.main
 
-import android.content.ComponentName
-import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,22 +21,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.firebase.logout
 import com.ravenzip.workshop.components.RowIconButton
-import com.ravenzip.workshop.components.Spinner
 import com.ravenzip.workshop.data.TextConfig
 import com.ravenzip.workshop.data.icon.IconConfig
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -48,10 +40,7 @@ fun UserProfileScreen(
     vararg onClick: () -> Unit,
 ) {
     val emailUser = getUser()?.email.toString()
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val isLoading = remember { mutableStateOf(false) }
-    val spinnerText = remember { mutableStateOf("Выполняется выход...") }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(padding),
@@ -124,24 +113,9 @@ fun UserProfileScreen(
             iconConfig = IconConfig.Default,
         ) {
             scope.launch(Dispatchers.Main) {
-                val packageManager: PackageManager = context.packageManager
-                val intent: Intent? = packageManager.getLaunchIntentForPackage(context.packageName)
-                val componentName: ComponentName? = intent?.component
-                val mainIntent: Intent = Intent.makeRestartActivityTask(componentName)
                 logout()
-                isLoading.value = true
-                var timer = 3
-                while (timer != 0) {
-                    delay(1000)
-                    timer -= 1
-                }
-                isLoading.value = false
-                context.startActivity(mainIntent)
-                Runtime.getRuntime().exit(0)
+                onClick[4]()
             }
         }
-    }
-    if (isLoading.value) {
-        Spinner(text = spinnerText.value)
     }
 }
