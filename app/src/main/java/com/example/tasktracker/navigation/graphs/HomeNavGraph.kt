@@ -16,8 +16,8 @@ import com.example.tasktracker.screens.main.MainScreen
 import com.example.tasktracker.screens.main.NotificationsScreen
 import com.example.tasktracker.screens.main.TasksScreen
 import com.example.tasktracker.screens.main.UserProfileScreen
-import com.example.tasktracker.services.firebase.CompanyService
-import com.example.tasktracker.services.firebase.UserService
+import com.example.tasktracker.services.firebase.CompanyViewModel
+import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.firebase.getUser
 
 @Composable
@@ -27,14 +27,14 @@ fun HomeScreenNavGraph(
     snackBarHostState: SnackbarHostState,
     returnInAuth: () -> Unit,
 ) {
-    val userService = hiltViewModel<UserService>()
-    val companyService = hiltViewModel<CompanyService>()
-    val userData = userService.dataUser.collectAsState().value
+    val userViewModel = hiltViewModel<UserViewModel>()
+    val companyViewModel = hiltViewModel<CompanyViewModel>()
+    val userData = userViewModel.dataUser.collectAsState().value
 
     /** Загрузка данных о пользователе и организации */
     LaunchedEffect(Unit) {
-        userService.get(getUser())
-        companyService.getCurrentCompany(userData)
+        userViewModel.get(getUser())
+        companyViewModel.getCurrentCompany(userData)
     }
 
     NavHost(
@@ -65,8 +65,8 @@ fun HomeScreenNavGraph(
         userProfileNavigationGraph(
             padding = padding,
             navController = navController,
-            userService = userService,
-            companyService = companyService,
+            userViewModel = userViewModel,
+            companyViewModel = companyViewModel,
             snackBarHostState = snackBarHostState
         )
     }

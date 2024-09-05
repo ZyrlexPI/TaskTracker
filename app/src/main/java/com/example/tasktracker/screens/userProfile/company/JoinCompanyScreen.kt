@@ -26,8 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.data.Company
-import com.example.tasktracker.services.firebase.CompanyService
-import com.example.tasktracker.services.firebase.UserService
+import com.example.tasktracker.services.firebase.CompanyViewModel
+import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.ravenzip.workshop.components.InfoCard
@@ -41,17 +41,17 @@ fun JoinCompanyScreen(
     padding: PaddingValues,
     snackBarHostState: SnackbarHostState,
     vararg onClick: () -> Unit,
-    userService: UserService,
-    companyService: CompanyService,
+    userViewModel: UserViewModel,
+    companyViewModel: CompanyViewModel,
 ) {
-    val userData = userService.dataUser.collectAsState().value
+    val userData = userViewModel.dataUser.collectAsState().value
     val scope = rememberCoroutineScope()
     val listCompanies = remember { mutableListOf<Company>() }
     val isLoadingList = remember { mutableStateOf(true) }
 
     LaunchedEffect(isLoadingList.value) {
         if (isLoadingList.value) {
-            listCompanies.addAll(companyService.getListCompany())
+            listCompanies.addAll(companyViewModel.getListCompany())
             isLoadingList.value = false
         }
     }
@@ -84,7 +84,7 @@ fun JoinCompanyScreen(
                     onClick = {
                         scope.launch(Dispatchers.Main) {
                             if (userData.companyId == "") {
-                                companyService.joinСompany(company.id, userData = userData)
+                                companyViewModel.joinСompany(company.id, userData = userData)
                                 snackBarHostState.showSuccess(
                                     message = "Вы успешно присоединились к организации"
                                 )

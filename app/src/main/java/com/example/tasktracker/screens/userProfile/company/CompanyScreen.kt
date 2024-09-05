@@ -20,8 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.tasktracker.services.firebase.CompanyService
-import com.example.tasktracker.services.firebase.UserService
+import com.example.tasktracker.services.firebase.CompanyViewModel
+import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.showSuccess
 import com.ravenzip.workshop.components.RowIconButton
 import com.ravenzip.workshop.data.TextConfig
@@ -33,11 +33,11 @@ fun CompanyScreen(
     padding: PaddingValues,
     snackBarHostState: SnackbarHostState,
     vararg onClick: () -> Unit,
-    companyService: CompanyService,
-    userService: UserService
+    companyViewModel: CompanyViewModel,
+    userViewModel: UserViewModel
 ) {
-    val companyData = companyService.dataCompany.collectAsState().value
-    val userData = userService.dataUser.collectAsState().value
+    val companyData = companyViewModel.dataCompany.collectAsState().value
+    val userData = userViewModel.dataUser.collectAsState().value
     val scope = rememberCoroutineScope()
 
     Column(
@@ -81,7 +81,7 @@ fun CompanyScreen(
                 icon = Icons.Outlined.Output,
             ) {
                 scope.launch(Dispatchers.Main) {
-                    companyService.deleteCurrentUser(userData)
+                    companyViewModel.deleteCurrentUser(userData)
                     snackBarHostState.showSuccess(message = "Вы успешно вышли из организации")
                     onClick[2]()
                 }

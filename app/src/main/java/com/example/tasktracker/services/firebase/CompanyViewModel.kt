@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.tasks.await
 
-class CompanyService : ViewModel() {
+class CompanyViewModel : ViewModel() {
     private val databaseCompaniesRef = FirebaseDatabase.getInstance().getReference("Сompanies")
     private val databaseUsersRef = FirebaseDatabase.getInstance().getReference("Users")
     private val _dataCompany = MutableStateFlow(Company())

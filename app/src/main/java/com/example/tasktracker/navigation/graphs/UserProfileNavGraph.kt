@@ -14,14 +14,14 @@ import com.example.tasktracker.screens.userProfile.company.CreateCompanyScreen
 import com.example.tasktracker.screens.userProfile.company.JoinCompanyScreen
 import com.example.tasktracker.screens.userProfile.security.ChangePasswordScreen
 import com.example.tasktracker.screens.userProfile.security.SecurityScreen
-import com.example.tasktracker.services.firebase.CompanyService
-import com.example.tasktracker.services.firebase.UserService
+import com.example.tasktracker.services.firebase.CompanyViewModel
+import com.example.tasktracker.services.firebase.UserViewModel
 
 fun NavGraphBuilder.userProfileNavigationGraph(
     padding: PaddingValues,
     navController: NavHostController,
-    userService: UserService,
-    companyService: CompanyService,
+    userViewModel: UserViewModel,
+    companyViewModel: CompanyViewModel,
     snackBarHostState: SnackbarHostState
 ) {
     navigation(
@@ -32,7 +32,7 @@ fun NavGraphBuilder.userProfileNavigationGraph(
             UserDataScreen(
                 padding = padding,
                 snackBarHostState = snackBarHostState,
-                userService = userService,
+                userViewModel = userViewModel,
             )
         }
         composable(route = UserProfileGraph.SECURITY) {
@@ -63,8 +63,8 @@ fun NavGraphBuilder.userProfileNavigationGraph(
                         { navController.navigate(UserProfileGraph.COMPANY_ADD) },
                         { navController.navigate(UserProfileGraph.USER_PROFILE_START) },
                     ),
-                companyService = companyService,
-                userService = userService,
+                companyViewModel = companyViewModel,
+                userViewModel = userViewModel,
             )
         }
 
@@ -73,8 +73,8 @@ fun NavGraphBuilder.userProfileNavigationGraph(
                 padding = padding,
                 snackBarHostState = snackBarHostState,
                 onClick = arrayOf({ navController.popBackStack() }),
-                userService = userService,
-                companyService = companyService,
+                userViewModel = userViewModel,
+                companyViewModel = companyViewModel,
             )
         }
         composable(route = UserProfileGraph.COMPANY_ADD) {
@@ -82,7 +82,7 @@ fun NavGraphBuilder.userProfileNavigationGraph(
                 padding = padding,
                 snackBarHostState = snackBarHostState,
                 onClick = arrayOf({ navController.popBackStack() }),
-                userService = userService,
+                userViewModel = userViewModel,
             )
         }
     }

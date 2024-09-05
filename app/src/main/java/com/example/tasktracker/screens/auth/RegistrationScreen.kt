@@ -18,7 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.services.ValidationService
-import com.example.tasktracker.services.firebase.UserService
+import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.firebase.createUserWithEmail
 import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.firebase.reloadUser
@@ -42,7 +42,7 @@ fun RegistrationScreen(navigateToHomeScreen: () -> Unit) {
     val isLoading = remember { mutableStateOf(false) }
     val spinnerText = remember { mutableStateOf("Регистрация") }
     val validationService = ValidationService()
-    val userService = UserService()
+    val userViewModel = UserViewModel()
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(30.dp))
         Text(
@@ -93,7 +93,7 @@ fun RegistrationScreen(navigateToHomeScreen: () -> Unit) {
                     }
 
                     isLoading.value = false
-                    userService.add(getUser())
+                    userViewModel.add(getUser())
                     navigateToHomeScreen()
                 }
             }

@@ -16,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.tasktracker.services.firebase.CompanyService
-import com.example.tasktracker.services.firebase.UserService
+import com.example.tasktracker.services.firebase.CompanyViewModel
+import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
@@ -32,11 +32,11 @@ fun CreateCompanyScreen(
     padding: PaddingValues,
     snackBarHostState: SnackbarHostState,
     vararg onClick: () -> Unit,
-    userService: UserService
+    userViewModel: UserViewModel
 ) {
-    val companyService = CompanyService()
+    val companyViewModel = CompanyViewModel()
     val nameCompany = remember { mutableStateOf("") }
-    val userData = userService.dataUser.collectAsState().value
+    val userData = userViewModel.dataUser.collectAsState().value
     val scope = rememberCoroutineScope()
     Column(
         modifier = Modifier.fillMaxSize().padding(padding),
@@ -58,8 +58,8 @@ fun CreateCompanyScreen(
                     onClick[0]()
                 }
                 if (nameCompany.value != "") {
-                    companyService.add(nameCompany = nameCompany.value, userData = userData)
-                    userService.get(getUser())
+                    companyViewModel.add(nameCompany = nameCompany.value, userData = userData)
+                    userViewModel.get(getUser())
                     snackBarHostState.showSuccess(message = "Организация успешно создана")
 
                     onClick[0]()
