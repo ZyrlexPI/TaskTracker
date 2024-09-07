@@ -22,6 +22,7 @@ import com.ravenzip.workshop.components.BottomNavigationBar
 import com.ravenzip.workshop.components.SnackBar
 import com.ravenzip.workshop.components.TopAppBar
 import com.ravenzip.workshop.data.appbar.BottomNavigationItem
+import com.ravenzip.workshop.data.icon.Icon
 import com.ravenzip.workshop.data.icon.IconConfig
 
 @Composable
@@ -64,7 +65,7 @@ private fun generateMenuItems(): List<BottomNavigationItem> {
         BottomNavigationItem(
             label = "Главная",
             route = BottomBar_Graph.HOME,
-            icon = Icons.Outlined.Home,
+            icon = Icon.ImageVectorIcon(Icons.Outlined.Home),
             iconConfig = IconConfig.Primary,
             hasNews = false,
         )
@@ -73,7 +74,7 @@ private fun generateMenuItems(): List<BottomNavigationItem> {
         BottomNavigationItem(
             label = "Задачи",
             route = BottomBar_Graph.TASKS,
-            icon = Icons.Outlined.Task,
+            icon = Icon.ImageVectorIcon(Icons.Outlined.Task),
             iconConfig = IconConfig.Primary,
             hasNews = false,
         )
@@ -82,7 +83,7 @@ private fun generateMenuItems(): List<BottomNavigationItem> {
         BottomNavigationItem(
             label = "Уведомления",
             route = BottomBar_Graph.NOTIFICATIONS,
-            icon = Icons.Outlined.Notifications,
+            icon = Icon.ImageVectorIcon(Icons.Outlined.Notifications),
             iconConfig = IconConfig.Primary,
             hasNews = false
         )
@@ -91,7 +92,7 @@ private fun generateMenuItems(): List<BottomNavigationItem> {
         BottomNavigationItem(
             label = "Профиль",
             route = BottomBar_Graph.USER_PROFILE,
-            icon = Icons.Outlined.AccountCircle,
+            icon = Icon.ImageVectorIcon(Icons.Outlined.AccountCircle),
             iconConfig = IconConfig.Primary,
             hasNews = false
         )

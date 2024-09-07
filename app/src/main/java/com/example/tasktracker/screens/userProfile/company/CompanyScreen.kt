@@ -25,6 +25,7 @@ import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.showSuccess
 import com.ravenzip.workshop.components.RowIconButton
 import com.ravenzip.workshop.data.TextConfig
+import com.ravenzip.workshop.data.icon.Icon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -61,24 +62,24 @@ fun CompanyScreen(
         if (companyData.id == "") {
             RowIconButton(
                 text = "Присоединиться",
-                textConfig = TextConfig(size = 19),
-                icon = Icons.Outlined.Add,
+                textConfig = TextConfig(size = 19.sp),
+                icon = Icon.ImageVectorIcon(Icons.Outlined.Add),
             ) {
                 onClick[0]()
             }
             Spacer(modifier = Modifier.height(20.dp))
             RowIconButton(
                 text = "Создать",
-                textConfig = TextConfig(size = 19),
-                icon = Icons.Outlined.Create,
+                textConfig = TextConfig(size = 19.sp),
+                icon = Icon.ImageVectorIcon(Icons.Outlined.Create),
             ) {
                 onClick[1]()
             }
         } else {
             RowIconButton(
                 text = "Выйти из организации",
-                textConfig = TextConfig(size = 19),
-                icon = Icons.Outlined.Output,
+                textConfig = TextConfig(size = 19.sp),
+                icon = Icon.ImageVectorIcon(Icons.Outlined.Output),
             ) {
                 scope.launch(Dispatchers.Main) {
                     companyViewModel.deleteCurrentUser(userData)

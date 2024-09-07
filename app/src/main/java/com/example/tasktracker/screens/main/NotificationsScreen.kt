@@ -12,8 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ravenzip.workshop.components.InfoCard
 import com.ravenzip.workshop.data.TextConfig
+import com.ravenzip.workshop.data.icon.Icon
 import com.ravenzip.workshop.data.icon.IconConfig
 
 @Composable
@@ -24,12 +26,12 @@ fun NotificationsScreen(padding: PaddingValues) {
     ) {
         Spacer(modifier = Modifier.height(30.dp))
         InfoCard(
-            icon = Icons.Outlined.Warning,
+            icon = Icon.ImageVectorIcon(Icons.Outlined.Warning),
             iconConfig = IconConfig.Default,
             title = "ВАЖНО",
             titleConfig = TextConfig.H1,
             text = "Данный экран находится в разработке.",
-            textConfig = TextConfig(size = 20),
+            textConfig = TextConfig(size = 20.sp),
         )
     }
 }

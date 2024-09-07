@@ -81,7 +81,7 @@ fun AuthorizationScreen(
             Spacer(modifier = Modifier.height(30.dp))
             SimpleButton(
                 text = "Вход",
-                textConfig = TextConfig(size = 19, align = TextAlign.Center),
+                textConfig = TextConfig(size = 19.sp, align = TextAlign.Center),
             ) {
                 scope.launch(Dispatchers.Main) {
                     isEmailValid.value = validationService.isEmailValid(email.value)
@@ -115,14 +115,14 @@ fun AuthorizationScreen(
             Spacer(modifier = Modifier.height(20.dp))
             SimpleButton(
                 text = "Восстановить аккаунт",
-                textConfig = TextConfig(size = 19, align = TextAlign.Center),
+                textConfig = TextConfig(size = 19.sp, align = TextAlign.Center),
             ) {
                 navigateToRecoveryScreen()
             }
             Spacer(modifier = Modifier.height(20.dp))
             SimpleButton(
                 text = "Регистрация",
-                textConfig = TextConfig(size = 19, align = TextAlign.Center),
+                textConfig = TextConfig(size = 19.sp, align = TextAlign.Center),
             ) {
                 navigateToRegistrationScreen()
             }

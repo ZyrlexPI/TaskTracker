@@ -30,6 +30,7 @@ import com.ravenzip.workshop.components.SinglenessTextField
 import com.ravenzip.workshop.components.SnackBar
 import com.ravenzip.workshop.components.Spinner
 import com.ravenzip.workshop.data.TextConfig
+import com.ravenzip.workshop.data.icon.Icon
 import com.ravenzip.workshop.data.icon.IconConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -55,19 +56,19 @@ fun RecoveryScreen(navigateToAuthScreen: () -> Unit) {
         SinglenessTextField(text = email, label = "Электронная почта")
         Spacer(modifier = Modifier.height(10.dp))
         InfoCard(
-            icon = Icons.Outlined.Info,
+            icon = Icon.ImageVectorIcon(Icons.Outlined.Info),
             iconConfig = IconConfig.PrimarySmall,
             title = "Информация о восстановлении",
             titleConfig = TextConfig.H2,
             text =
                 "Укажите электронную почту привязанную к аккаунту, на него придет письмо для сброса пароля.",
-            textConfig = TextConfig(size = 15),
+            textConfig = TextConfig(size = 15.sp),
         )
         BottomContainer {
             Spacer(modifier = Modifier.height(30.dp))
             SimpleButton(
                 text = "Восстановить",
-                textConfig = TextConfig(size = 19, align = TextAlign.Center),
+                textConfig = TextConfig(size = 19.sp, align = TextAlign.Center),
             ) {
                 scope.launch(Dispatchers.Main) {
                     isEmailValid.value = validationService.isEmailValid(email.value)

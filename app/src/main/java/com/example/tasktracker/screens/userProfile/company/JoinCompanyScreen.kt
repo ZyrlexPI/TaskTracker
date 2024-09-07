@@ -32,6 +32,7 @@ import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.ravenzip.workshop.components.InfoCard
 import com.ravenzip.workshop.data.TextConfig
+import com.ravenzip.workshop.data.icon.Icon
 import com.ravenzip.workshop.data.icon.IconConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -62,11 +63,11 @@ fun JoinCompanyScreen(
     ) {
         Spacer(modifier = Modifier.height(30.dp))
         InfoCard(
-            icon = Icons.Outlined.Info,
+            icon = Icon.ImageVectorIcon(Icons.Outlined.Info),
             title = "Информация",
-            titleConfig = TextConfig(size = 19),
+            titleConfig = TextConfig(size = 19.sp),
             text = "Выберите организацию из списка ниже, к которой желаете присоединиться.",
-            textConfig = TextConfig(size = 15),
+            textConfig = TextConfig(size = 15.sp),
             iconConfig = IconConfig.PrimarySmall,
         )
         Spacer(modifier = Modifier.height(10.dp))

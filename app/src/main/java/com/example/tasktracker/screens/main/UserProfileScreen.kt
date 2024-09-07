@@ -30,6 +30,7 @@ import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.firebase.logout
 import com.ravenzip.workshop.components.RowIconButton
 import com.ravenzip.workshop.data.TextConfig
+import com.ravenzip.workshop.data.icon.Icon
 import com.ravenzip.workshop.data.icon.IconConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -81,8 +82,8 @@ fun UserProfileScreen(
         Spacer(modifier = Modifier.height(40.dp))
         RowIconButton(
             text = "Личные данные",
-            textConfig = TextConfig(size = 19),
-            icon = Icons.Filled.Person,
+            textConfig = TextConfig(size = 19.sp),
+            icon = Icon.ImageVectorIcon(Icons.Filled.Person),
             iconConfig = IconConfig.Default,
         ) {
             onClick[0]()
@@ -90,8 +91,8 @@ fun UserProfileScreen(
         Spacer(modifier = Modifier.height(20.dp))
         RowIconButton(
             text = "Безопасность",
-            textConfig = TextConfig(size = 19),
-            icon = Icons.Outlined.Lock,
+            textConfig = TextConfig(size = 19.sp),
+            icon = Icon.ImageVectorIcon(Icons.Outlined.Lock),
             iconConfig = IconConfig.Default,
         ) {
             onClick[1]()
@@ -99,8 +100,8 @@ fun UserProfileScreen(
         Spacer(modifier = Modifier.height(20.dp))
         RowIconButton(
             text = "Настройки",
-            textConfig = TextConfig(size = 19),
-            icon = Icons.Outlined.Settings,
+            textConfig = TextConfig(size = 19.sp),
+            icon = Icon.ImageVectorIcon(Icons.Outlined.Settings),
             iconConfig = IconConfig.Default,
         ) {
             onClick[2]()
@@ -108,8 +109,8 @@ fun UserProfileScreen(
         Spacer(modifier = Modifier.height(20.dp))
         RowIconButton(
             text = "Выход",
-            textConfig = TextConfig(size = 19),
-            icon = Icons.AutoMirrored.TwoTone.Logout,
+            textConfig = TextConfig(size = 19.sp),
+            icon = Icon.ImageVectorIcon(Icons.AutoMirrored.TwoTone.Logout),
             iconConfig = IconConfig.Default,
         ) {
             scope.launch(Dispatchers.Main) {

@@ -59,7 +59,7 @@ fun RegistrationScreen(navigateToHomeScreen: () -> Unit) {
             Spacer(modifier = Modifier.height(30.dp))
             SimpleButton(
                 text = "Зарегистрироваться",
-                textConfig = TextConfig(size = 19, align = TextAlign.Center),
+                textConfig = TextConfig(size = 19.sp, align = TextAlign.Center),
             ) {
                 scope.launch(Dispatchers.Main) {
                     isEmailValid.value = validationService.isEmailValid(email.value)

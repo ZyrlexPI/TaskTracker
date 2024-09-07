@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.showError
@@ -48,7 +49,7 @@ fun UserDataScreen(
         Spacer(modifier = Modifier.height(40.dp))
         SimpleButton(
             text = "Сохранить",
-            textConfig = TextConfig(size = 19, align = TextAlign.Center)
+            textConfig = TextConfig(size = 19.sp, align = TextAlign.Center)
         ) {
             scope.launch(Dispatchers.Main) {
                 if (name.value == "" || surname.value == "") {
