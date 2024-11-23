@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.tasktracker.navigation.models.BottomBar_Graph
 import com.example.tasktracker.navigation.models.RootGraph
+import com.example.tasktracker.navigation.models.TasksGraph
 import com.example.tasktracker.navigation.models.UserProfileGraph
 import com.example.tasktracker.screens.main.MainScreen
 import com.example.tasktracker.screens.main.NotificationsScreen
@@ -44,7 +45,15 @@ fun HomeScreenNavGraph(
     ) {
         composable(route = BottomBar_Graph.HOME) { MainScreen(padding) }
 
-        composable(route = BottomBar_Graph.TASKS) { TasksScreen(padding) }
+        composable(route = BottomBar_Graph.TASKS) {
+            TasksScreen(
+                padding = padding,
+                onClick =
+                    arrayOf(
+                        { navController.navigate(TasksGraph.TASK_LIST) },
+                    ),
+            )
+        }
 
         composable(route = BottomBar_Graph.NOTIFICATIONS) { NotificationsScreen(padding) }
 
@@ -63,6 +72,14 @@ fun HomeScreenNavGraph(
         }
 
         userProfileNavigationGraph(
+            padding = padding,
+            navController = navController,
+            userViewModel = userViewModel,
+            companyViewModel = companyViewModel,
+            snackBarHostState = snackBarHostState
+        )
+
+        tasksNavigationGraph(
             padding = padding,
             navController = navController,
             userViewModel = userViewModel,

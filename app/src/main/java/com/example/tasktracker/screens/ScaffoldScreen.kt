@@ -17,6 +17,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.tasktracker.navigation.graphs.HomeScreenNavGraph
 import com.example.tasktracker.navigation.models.BottomBar_Graph
+import com.example.tasktracker.navigation.models.TasksGraph
 import com.example.tasktracker.navigation.models.UserProfileGraph
 import com.ravenzip.workshop.components.BottomNavigationBar
 import com.ravenzip.workshop.components.SnackBar
@@ -107,6 +108,8 @@ private fun ChangeTopAppBarState(currentRoute: String?, titleTopAppBar: MutableS
         BottomBar_Graph.TASKS -> titleTopAppBar.value = "Задачи"
         BottomBar_Graph.NOTIFICATIONS -> titleTopAppBar.value = "Уведомления"
         BottomBar_Graph.USER_PROFILE -> titleTopAppBar.value = "Профиль"
+        TasksGraph.TASK_LIST -> titleTopAppBar.value = "Новые задачи"
+        // Добавить Задачи в прогрессе и Завершенные
         UserProfileGraph.USER_DATA -> titleTopAppBar.value = "Личные данные"
         UserProfileGraph.SECURITY -> titleTopAppBar.value = "Безопасность аккаунта"
         UserProfileGraph.SETTINGS -> titleTopAppBar.value = "Настройки"

@@ -10,12 +10,12 @@ plugins {
 
 android {
     namespace = "com.example.tasktracker"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.tasktracker"
         minSdk = 27
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
