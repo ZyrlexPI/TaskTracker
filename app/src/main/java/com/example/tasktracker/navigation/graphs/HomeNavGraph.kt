@@ -50,7 +50,9 @@ fun HomeScreenNavGraph(
                 padding = padding,
                 onClick =
                     arrayOf(
-                        { navController.navigate(TasksGraph.TASK_LIST) },
+                        { navController.navigate(TasksGraph.TASK_NEW_LIST) },
+                        { navController.navigate(TasksGraph.TASK_IN_PROGRESS_LIST) },
+                        { navController.navigate(TasksGraph.TASK_COMPLETED_LIST) },
                     ),
             )
         }

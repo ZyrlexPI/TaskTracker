@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ControlPoint
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.PublishedWithChanges
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +42,7 @@ fun TasksScreen(padding: PaddingValues, vararg onClick: () -> Unit) {
             icon = Icon.ImageVectorIcon(Icons.Outlined.PublishedWithChanges),
             iconConfig = IconConfig.Default,
         ) {
-            // Todo
+            onClick[1]()
         }
         Spacer(modifier = Modifier.height(20.dp))
         RowIconButton(
@@ -50,7 +51,7 @@ fun TasksScreen(padding: PaddingValues, vararg onClick: () -> Unit) {
             icon = Icon.ImageVectorIcon(Icons.Outlined.Done),
             iconConfig = IconConfig.Default,
         ) {
-            // Todo
+            onClick[2]()
         }
     }
 }

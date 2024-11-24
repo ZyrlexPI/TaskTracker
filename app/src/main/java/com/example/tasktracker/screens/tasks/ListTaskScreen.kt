@@ -28,7 +28,7 @@ import com.example.tasktracker.data.Task
 import com.example.tasktracker.enums.TaskStatus
 
 @Composable
-fun ListTaskScreen(padding: PaddingValues) {
+fun ListTaskScreen(padding: PaddingValues, status: TaskStatus) {
     val listTask =
         listOf(
             Task(
@@ -62,12 +62,16 @@ fun ListTaskScreen(padding: PaddingValues) {
                 companyId = "4321"
             )
         )
+    val listTaskFiltered =
+        listTask.filter { task ->
+            task.status == status && task.companyId == "4321" && task.executor_id == "213"
+        }
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(padding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        items(listTask) { task ->
+        items(listTaskFiltered) { task ->
             Card(
                 modifier =
                     Modifier.clip(shape = RoundedCornerShape(8.dp)).clickable {

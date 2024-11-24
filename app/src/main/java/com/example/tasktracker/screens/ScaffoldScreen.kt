@@ -108,8 +108,9 @@ private fun ChangeTopAppBarState(currentRoute: String?, titleTopAppBar: MutableS
         BottomBar_Graph.TASKS -> titleTopAppBar.value = "Задачи"
         BottomBar_Graph.NOTIFICATIONS -> titleTopAppBar.value = "Уведомления"
         BottomBar_Graph.USER_PROFILE -> titleTopAppBar.value = "Профиль"
-        TasksGraph.TASK_LIST -> titleTopAppBar.value = "Новые задачи"
-        // Добавить Задачи в прогрессе и Завершенные
+        TasksGraph.TASK_NEW_LIST -> titleTopAppBar.value = "Новые задачи"
+        TasksGraph.TASK_IN_PROGRESS_LIST -> titleTopAppBar.value = "Задачи в прогрессе"
+        TasksGraph.TASK_COMPLETED_LIST -> titleTopAppBar.value = "Завершенные задачи"
         UserProfileGraph.USER_DATA -> titleTopAppBar.value = "Личные данные"
         UserProfileGraph.SECURITY -> titleTopAppBar.value = "Безопасность аккаунта"
         UserProfileGraph.SETTINGS -> titleTopAppBar.value = "Настройки"
