@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.tasktracker.enums.TaskStatus
 import com.example.tasktracker.navigation.models.TasksGraph
-import com.example.tasktracker.screens.tasks.ListTaskScreen
+import com.example.tasktracker.screens.tasks.listTask.ListTaskScreen
 import com.example.tasktracker.services.firebase.CompanyViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
 

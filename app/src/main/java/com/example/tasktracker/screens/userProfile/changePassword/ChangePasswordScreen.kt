@@ -1,4 +1,4 @@
-package com.example.tasktracker.screens.userProfile.security
+package com.example.tasktracker.screens.userProfile.changePassword
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues

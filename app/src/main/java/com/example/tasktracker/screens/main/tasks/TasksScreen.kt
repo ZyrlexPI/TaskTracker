@@ -1,4 +1,4 @@
-package com.example.tasktracker.screens.main
+package com.example.tasktracker.screens.main.tasks
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ControlPoint
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.PublishedWithChanges
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier

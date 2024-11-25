@@ -1,4 +1,4 @@
-package com.example.tasktracker.screens.tasks
+package com.example.tasktracker.screens.tasks.listTask
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

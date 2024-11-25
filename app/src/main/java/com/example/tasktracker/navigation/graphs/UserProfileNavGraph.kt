@@ -7,13 +7,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.tasktracker.navigation.models.UserProfileGraph
-import com.example.tasktracker.screens.userProfile.SettingsScreen
-import com.example.tasktracker.screens.userProfile.UserDataScreen
+import com.example.tasktracker.screens.userProfile.changePassword.ChangePasswordScreen
 import com.example.tasktracker.screens.userProfile.company.CompanyScreen
-import com.example.tasktracker.screens.userProfile.company.CreateCompanyScreen
-import com.example.tasktracker.screens.userProfile.company.JoinCompanyScreen
-import com.example.tasktracker.screens.userProfile.security.ChangePasswordScreen
+import com.example.tasktracker.screens.userProfile.createCompany.CreateCompanyScreen
+import com.example.tasktracker.screens.userProfile.joinCompany.JoinCompanyScreen
 import com.example.tasktracker.screens.userProfile.security.SecurityScreen
+import com.example.tasktracker.screens.userProfile.settings.SettingsScreen
+import com.example.tasktracker.screens.userProfile.userData.UserDataScreen
 import com.example.tasktracker.services.firebase.CompanyViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
 

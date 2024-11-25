@@ -1,4 +1,4 @@
-package com.example.tasktracker.screens.main
+package com.example.tasktracker.screens.userProfile.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,7 +19,7 @@ import com.ravenzip.workshop.data.icon.Icon
 import com.ravenzip.workshop.data.icon.IconConfig
 
 @Composable
-fun MainScreen(padding: PaddingValues) {
+fun SettingsScreen(padding: PaddingValues) {
     Column(
         modifier = Modifier.fillMaxSize().padding(padding),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -29,7 +29,7 @@ fun MainScreen(padding: PaddingValues) {
             icon = Icon.ImageVectorIcon(Icons.Outlined.Warning),
             iconConfig = IconConfig.Default,
             title = "ВАЖНО",
-            titleConfig = TextConfig.H1,
+            titleConfig = TextConfig(size = 20.sp),
             text = "Данный экран находится в разработке.",
             textConfig = TextConfig(size = 20.sp),
         )

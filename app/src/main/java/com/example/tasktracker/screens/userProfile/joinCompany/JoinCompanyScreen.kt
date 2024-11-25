@@ -1,4 +1,4 @@
-package com.example.tasktracker.screens.userProfile.company
+package com.example.tasktracker.screens.userProfile.joinCompany
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues

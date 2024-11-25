@@ -1,4 +1,4 @@
-package com.example.tasktracker.screens.main
+package com.example.tasktracker.screens.main.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,10 +19,10 @@ import com.ravenzip.workshop.data.icon.Icon
 import com.ravenzip.workshop.data.icon.IconConfig
 
 @Composable
-fun NotificationsScreen(padding: PaddingValues) {
+fun HomeScreen(padding: PaddingValues) {
     Column(
         modifier = Modifier.fillMaxSize().padding(padding),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(30.dp))
         InfoCard(

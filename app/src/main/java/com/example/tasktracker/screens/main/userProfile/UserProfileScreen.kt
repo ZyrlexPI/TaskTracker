@@ -1,4 +1,4 @@
-package com.example.tasktracker.screens.main
+package com.example.tasktracker.screens.main.userProfile
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

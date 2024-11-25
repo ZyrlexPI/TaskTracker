@@ -13,10 +13,10 @@ import com.example.tasktracker.navigation.models.BottomBar_Graph
 import com.example.tasktracker.navigation.models.RootGraph
 import com.example.tasktracker.navigation.models.TasksGraph
 import com.example.tasktracker.navigation.models.UserProfileGraph
-import com.example.tasktracker.screens.main.MainScreen
-import com.example.tasktracker.screens.main.NotificationsScreen
-import com.example.tasktracker.screens.main.TasksScreen
-import com.example.tasktracker.screens.main.UserProfileScreen
+import com.example.tasktracker.screens.main.home.HomeScreen
+import com.example.tasktracker.screens.main.notifications.NotificationsScreen
+import com.example.tasktracker.screens.main.tasks.TasksScreen
+import com.example.tasktracker.screens.main.userProfile.UserProfileScreen
 import com.example.tasktracker.services.firebase.CompanyViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.firebase.getUser
@@ -43,7 +43,7 @@ fun HomeScreenNavGraph(
         route = RootGraph.MAIN,
         startDestination = BottomBar_Graph.HOME
     ) {
-        composable(route = BottomBar_Graph.HOME) { MainScreen(padding) }
+        composable(route = BottomBar_Graph.HOME) { HomeScreen(padding) }
 
         composable(route = BottomBar_Graph.TASKS) {
             TasksScreen(

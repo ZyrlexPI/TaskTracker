@@ -1,4 +1,4 @@
-package com.example.tasktracker.screens.userProfile
+package com.example.tasktracker.screens.main.notifications
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,17 +19,17 @@ import com.ravenzip.workshop.data.icon.Icon
 import com.ravenzip.workshop.data.icon.IconConfig
 
 @Composable
-fun SettingsScreen(padding: PaddingValues) {
+fun NotificationsScreen(padding: PaddingValues) {
     Column(
         modifier = Modifier.fillMaxSize().padding(padding),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(modifier = Modifier.height(30.dp))
         InfoCard(
             icon = Icon.ImageVectorIcon(Icons.Outlined.Warning),
             iconConfig = IconConfig.Default,
             title = "ВАЖНО",
-            titleConfig = TextConfig(size = 20.sp),
+            titleConfig = TextConfig.H1,
             text = "Данный экран находится в разработке.",
             textConfig = TextConfig(size = 20.sp),
         )
