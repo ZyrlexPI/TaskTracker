@@ -14,7 +14,7 @@ fun UserProfileScreenScaffold(
 ) {
     Scaffold(
         modifier = Modifier.padding(padding),
-        topBar = { TopAppBar(title = "Задачи", backArrow = null, items = listOf()) },
+        topBar = { TopAppBar(title = "Профиль", backArrow = null, items = listOf()) },
     ) { innerPadding ->
         UserProfileScreen(
             padding = innerPadding,

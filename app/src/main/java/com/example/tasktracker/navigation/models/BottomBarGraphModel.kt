@@ -1,6 +1,6 @@
 package com.example.tasktracker.navigation.models
 
-object BottomBar_Graph {
+object BottomBarGraph {
     const val HOME = "HOME"
     const val TASKS = "TASKS"
     const val NOTIFICATIONS = "NOTIFICATIONS"

@@ -1,42 +1,59 @@
 package com.example.tasktracker.navigation.graphs
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.SnackbarHostState
-import androidx.navigation.NavGraphBuilder
+import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import androidx.navigation.compose.rememberNavController
+import com.example.tasktracker.navigation.models.BottomBarGraph
 import com.example.tasktracker.navigation.models.UserProfileGraph
-import com.example.tasktracker.screens.userProfile.changePassword.ChangePasswordScreen
-import com.example.tasktracker.screens.userProfile.company.CompanyScreen
-import com.example.tasktracker.screens.userProfile.createCompany.CreateCompanyScreen
-import com.example.tasktracker.screens.userProfile.joinCompany.JoinCompanyScreen
-import com.example.tasktracker.screens.userProfile.security.SecurityScreen
-import com.example.tasktracker.screens.userProfile.settings.SettingsScreen
-import com.example.tasktracker.screens.userProfile.userData.UserDataScreen
+import com.example.tasktracker.screens.main.userProfile.UserProfileScreenScaffold
+import com.example.tasktracker.screens.userProfile.changePassword.ChangePasswordScreenScaffold
+import com.example.tasktracker.screens.userProfile.company.CompanyScreenScaffold
+import com.example.tasktracker.screens.userProfile.createCompany.CreateCompanyScreenScaffold
+import com.example.tasktracker.screens.userProfile.joinCompany.JoinCompanyScreenScaffold
+import com.example.tasktracker.screens.userProfile.security.SecurityScreenScaffold
+import com.example.tasktracker.screens.userProfile.settings.SettingsScreenScaffold
+import com.example.tasktracker.screens.userProfile.userData.UserDataScreenScaffold
 import com.example.tasktracker.services.firebase.CompanyViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
 
-fun NavGraphBuilder.userProfileNavigationGraph(
+@Composable
+fun UserProfileNavigationGraph(
     padding: PaddingValues,
-    navController: NavHostController,
+    navController: NavHostController = rememberNavController(),
     userViewModel: UserViewModel,
     companyViewModel: CompanyViewModel,
-    snackBarHostState: SnackbarHostState
+    returnInAuth: () -> Unit,
 ) {
-    navigation(
-        route = UserProfileGraph.USER_PROFILE_START,
-        startDestination = UserProfileGraph.USER_DATA
+    NavHost(
+        navController = navController,
+        route = BottomBarGraph.USER_PROFILE,
+        startDestination = UserProfileGraph.USER_PROFILE_ROOT
     ) {
-        composable(route = UserProfileGraph.USER_DATA) {
-            UserDataScreen(
+        composable(route = UserProfileGraph.USER_PROFILE_ROOT) {
+            UserProfileScreenScaffold(
                 padding = padding,
-                snackBarHostState = snackBarHostState,
+                onClick =
+                    arrayOf(
+                        { navController.navigate(UserProfileGraph.USER_DATA) },
+                        { navController.navigate(UserProfileGraph.SECURITY) },
+                        { navController.navigate(UserProfileGraph.SETTINGS) },
+                        { navController.navigate(UserProfileGraph.COMPANY) },
+                        returnInAuth,
+                    ),
+            )
+        }
+
+        composable(route = UserProfileGraph.USER_DATA) {
+            UserDataScreenScaffold(
+                padding = padding,
                 userViewModel = userViewModel,
             )
         }
         composable(route = UserProfileGraph.SECURITY) {
-            SecurityScreen(
+            SecurityScreenScaffold(
                 padding = padding,
                 onClick =
                     arrayOf(
@@ -44,24 +61,23 @@ fun NavGraphBuilder.userProfileNavigationGraph(
                     )
             )
         }
-        composable(route = UserProfileGraph.SETTINGS) { SettingsScreen(padding = padding) }
+        composable(route = UserProfileGraph.SETTINGS) { SettingsScreenScaffold(padding = padding) }
+
         composable(route = UserProfileGraph.CHANGE_PASSWORD) {
-            ChangePasswordScreen(
+            ChangePasswordScreenScaffold(
                 padding = padding,
-                snackBarHostState = snackBarHostState,
-                onClick = { navController.navigate(UserProfileGraph.USER_PROFILE_START) },
+                onClick = { navController.navigate(UserProfileGraph.USER_PROFILE_ROOT) },
             )
         }
 
         composable(route = UserProfileGraph.COMPANY) {
-            CompanyScreen(
+            CompanyScreenScaffold(
                 padding = padding,
-                snackBarHostState = snackBarHostState,
                 onClick =
                     arrayOf(
                         { navController.navigate(UserProfileGraph.COMPANY_JOIN) },
                         { navController.navigate(UserProfileGraph.COMPANY_ADD) },
-                        { navController.navigate(UserProfileGraph.USER_PROFILE_START) },
+                        { navController.navigate(UserProfileGraph.USER_PROFILE_ROOT) },
                     ),
                 companyViewModel = companyViewModel,
                 userViewModel = userViewModel,
@@ -69,18 +85,16 @@ fun NavGraphBuilder.userProfileNavigationGraph(
         }
 
         composable(route = UserProfileGraph.COMPANY_JOIN) {
-            JoinCompanyScreen(
+            JoinCompanyScreenScaffold(
                 padding = padding,
-                snackBarHostState = snackBarHostState,
                 onClick = arrayOf({ navController.popBackStack() }),
                 userViewModel = userViewModel,
                 companyViewModel = companyViewModel,
             )
         }
         composable(route = UserProfileGraph.COMPANY_ADD) {
-            CreateCompanyScreen(
+            CreateCompanyScreenScaffold(
                 padding = padding,
-                snackBarHostState = snackBarHostState,
                 onClick = arrayOf({ navController.popBackStack() }),
                 userViewModel = userViewModel,
             )

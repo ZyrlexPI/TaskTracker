@@ -1,4 +1,4 @@
-package com.example.tasktracker.screens.main.home
+package com.example.tasktracker.screens.userProfile.security
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -8,15 +8,18 @@ import androidx.compose.ui.Modifier
 import com.ravenzip.workshop.components.TopAppBar
 
 @Composable
-fun HomeScreenScaffold(
+fun SecurityScreenScaffold(
     padding: PaddingValues,
+    vararg onClick: () -> Unit,
 ) {
+
     Scaffold(
         modifier = Modifier.padding(padding),
-        topBar = { TopAppBar(title = "Главный экран", backArrow = null, items = listOf()) },
+        topBar = { TopAppBar(title = "Безопасность аккаунта", backArrow = null, items = listOf()) },
     ) { innerPadding ->
-        HomeScreen(
+        SecurityScreen(
             padding = innerPadding,
+            onClick = onClick,
         )
     }
 }

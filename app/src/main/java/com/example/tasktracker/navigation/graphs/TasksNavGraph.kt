@@ -1,44 +1,58 @@
 package com.example.tasktracker.navigation.graphs
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.SnackbarHostState
-import androidx.navigation.NavGraphBuilder
+import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import androidx.navigation.compose.rememberNavController
 import com.example.tasktracker.enums.TaskStatus
+import com.example.tasktracker.navigation.models.BottomBarGraph
 import com.example.tasktracker.navigation.models.TasksGraph
-import com.example.tasktracker.screens.tasks.listTask.ListTaskScreen
-import com.example.tasktracker.services.firebase.CompanyViewModel
-import com.example.tasktracker.services.firebase.UserViewModel
+import com.example.tasktracker.screens.main.tasks.TasksScreenScaffold
+import com.example.tasktracker.screens.tasks.listTask.ListTaskScreenScaffold
 
-fun NavGraphBuilder.tasksNavigationGraph(
+@Composable
+fun TasksNavigationGraph(
     padding: PaddingValues,
-    navController: NavHostController,
-    userViewModel: UserViewModel,
-    companyViewModel: CompanyViewModel,
-    snackBarHostState: SnackbarHostState
+    navController: NavHostController = rememberNavController(),
 ) {
-    navigation(route = TasksGraph.TASKS_START, startDestination = TasksGraph.TASK_LIST) {
+    NavHost(
+        navController = navController,
+        route = BottomBarGraph.TASKS,
+        startDestination = TasksGraph.TASKS_ROOT
+    ) {
+        composable(route = TasksGraph.TASKS_ROOT) {
+            TasksScreenScaffold(
+                padding = padding,
+                onClick =
+                    arrayOf(
+                        { navController.navigate(TasksGraph.TASK_NEW_LIST) },
+                        { navController.navigate(TasksGraph.TASK_IN_PROGRESS_LIST) },
+                        { navController.navigate(TasksGraph.TASK_COMPLETED_LIST) },
+                    ),
+            )
+        }
+
         composable(route = TasksGraph.TASK_NEW_LIST) {
-            ListTaskScreen(
+            ListTaskScreenScaffold(
                 padding = padding,
                 status = TaskStatus.NEW_TASK,
             )
         }
+
         composable(route = TasksGraph.TASK_IN_PROGRESS_LIST) {
-            ListTaskScreen(
+            ListTaskScreenScaffold(
                 padding = padding,
                 status = TaskStatus.IN_PROGRESS,
             )
         }
+
         composable(route = TasksGraph.TASK_COMPLETED_LIST) {
-            ListTaskScreen(
+            ListTaskScreenScaffold(
                 padding = padding,
                 status = TaskStatus.COMPLETED,
             )
         }
     }
-
-    // Добавить Задачи в прогрессе и Завершенные
 }
