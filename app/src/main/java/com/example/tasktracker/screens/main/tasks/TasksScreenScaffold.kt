@@ -3,8 +3,9 @@ package com.example.tasktracker.screens.main.tasks
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -24,6 +25,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -43,6 +45,12 @@ fun TasksScreenScaffold(
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
 
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+
+    val taskName = remember { mutableStateOf("") }
+    val taskValue = remember { mutableStateOf("") }
+    val taskCode = remember { mutableStateOf("") }
+
     Scaffold(
         modifier = Modifier.padding(padding),
         topBar = { TopAppBar(title = "Задачи", backArrow = null, items = listOf()) },
@@ -59,10 +67,8 @@ fun TasksScreenScaffold(
         )
 
         if (showBottomSheet) {
-            val taskName = remember { mutableStateOf("") }
-            val taskValue = remember { mutableStateOf("") }
-            val taskCode = remember { mutableStateOf("") }
             ModalBottomSheet(
+                modifier = Modifier.heightIn(screenHeight * 0.8f),
                 onDismissRequest = {
                     showBottomSheet = false
                     taskName.value = ""
@@ -72,12 +78,12 @@ fun TasksScreenScaffold(
                 sheetState = sheetState,
             ) {
                 Column(
-                    modifier = Modifier.fillMaxSize().padding(padding),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = "Создание задачи",
-                        fontSize = 30.sp,
+                        fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
                     )
 
@@ -93,7 +99,7 @@ fun TasksScreenScaffold(
 
                     SinglenessTextField(text = taskCode, label = "Исполнитель")
 
-                    Spacer(modifier = Modifier.height(40.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     SimpleButton(
                         text = "Создать",
