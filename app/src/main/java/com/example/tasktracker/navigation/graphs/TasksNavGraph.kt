@@ -10,6 +10,7 @@ import com.example.tasktracker.enums.TaskStatus
 import com.example.tasktracker.navigation.models.BottomBarGraph
 import com.example.tasktracker.navigation.models.TasksGraph
 import com.example.tasktracker.screens.main.tasks.TasksScreenScaffold
+import com.example.tasktracker.screens.tasks.infoTask.InfoTaskScreenScaffold
 import com.example.tasktracker.screens.tasks.listTask.ListTaskScreenScaffold
 
 @Composable
@@ -38,6 +39,7 @@ fun TasksNavigationGraph(
             ListTaskScreenScaffold(
                 padding = padding,
                 status = TaskStatus.NEW_TASK,
+                { navController.navigate(TasksGraph.TASK_INFO) },
             )
         }
 
@@ -45,6 +47,7 @@ fun TasksNavigationGraph(
             ListTaskScreenScaffold(
                 padding = padding,
                 status = TaskStatus.IN_PROGRESS,
+                { navController.navigate(TasksGraph.TASK_INFO) },
             )
         }
 
@@ -52,6 +55,13 @@ fun TasksNavigationGraph(
             ListTaskScreenScaffold(
                 padding = padding,
                 status = TaskStatus.COMPLETED,
+                { navController.navigate(TasksGraph.TASK_INFO) },
+            )
+        }
+
+        composable(route = TasksGraph.TASK_INFO) {
+            InfoTaskScreenScaffold(
+                padding = padding,
             )
         }
     }

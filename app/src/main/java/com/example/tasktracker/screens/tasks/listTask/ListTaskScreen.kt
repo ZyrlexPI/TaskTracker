@@ -22,13 +22,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.tasktracker.data.Task
 import com.example.tasktracker.enums.TaskStatus
 
 @Composable
-fun ListTaskScreen(padding: PaddingValues, status: TaskStatus) {
+fun ListTaskScreen(
+    padding: PaddingValues,
+    status: TaskStatus,
+    navigateToInfoTask: () -> Unit,
+) {
     val listTask =
         listOf(
             Task(
@@ -75,12 +78,12 @@ fun ListTaskScreen(padding: PaddingValues, status: TaskStatus) {
             Card(
                 modifier =
                     Modifier.clip(shape = RoundedCornerShape(8.dp)).clickable {
-                        // Todo
+                        navigateToInfoTask()
                     },
                 colors =
                     CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = Color.Black
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     ),
             ) {
                 Row(modifier = Modifier.fillMaxSize(0.92f).padding(10.dp)) {
@@ -94,7 +97,6 @@ fun ListTaskScreen(padding: PaddingValues, status: TaskStatus) {
                     )
                     Column {
                         Text(text = "#" + task.id + " - " + task.name)
-                        //      Text(text = "Статус: " + task.status.value)
                         Text(text = "Автор: " + task.author)
                         Text(text = "Исполнитель: " + task.executor)
                     }

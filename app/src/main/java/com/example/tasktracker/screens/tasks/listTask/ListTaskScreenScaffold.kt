@@ -13,6 +13,7 @@ import com.ravenzip.workshop.components.TopAppBar
 fun ListTaskScreenScaffold(
     padding: PaddingValues,
     status: TaskStatus,
+    navigateToInfoTask: () -> Unit,
 ) {
     val statusTobBar =
         remember(status) {
@@ -30,6 +31,7 @@ fun ListTaskScreenScaffold(
         ListTaskScreen(
             padding = innerPadding,
             status = status,
+            navigateToInfoTask = navigateToInfoTask,
         )
     }
 }
