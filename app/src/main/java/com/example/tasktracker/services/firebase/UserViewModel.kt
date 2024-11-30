@@ -25,6 +25,14 @@ class UserViewModel : ViewModel() {
         }
     }
 
+    /** Получить список существующих пользователей в БД */
+    suspend fun getListUsers(): MutableList<User> {
+        val response = databaseRef.get().await().children
+        val listUsers = mutableListOf<User>()
+        response.forEach { data -> data.getValue<User>()?.let { listUsers.add(it) } }
+        return listUsers
+    }
+
     /** Получить данные о текущем пользователе из БД */
     suspend fun get(currentUser: FirebaseUser?) {
         if (currentUser !== null) {

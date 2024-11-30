@@ -23,7 +23,7 @@ import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.ravenzip.workshop.components.InfoCard
 import com.ravenzip.workshop.components.SimpleButton
-import com.ravenzip.workshop.components.SinglenessTextField
+import com.ravenzip.workshop.components.SinglenessOutlinedTextField
 import com.ravenzip.workshop.data.TextConfig
 import com.ravenzip.workshop.data.icon.Icon
 import com.ravenzip.workshop.data.icon.IconConfig
@@ -45,9 +45,13 @@ fun ChangePasswordScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(30.dp))
-        SinglenessTextField(text = oldPassword, label = "Текущий пароль", isHiddenText = true)
+        SinglenessOutlinedTextField(
+            text = oldPassword,
+            label = "Текущий пароль",
+            isHiddenText = true
+        )
         Spacer(modifier = Modifier.height(10.dp))
-        SinglenessTextField(text = newPassword, label = "Новый пароль", isHiddenText = true)
+        SinglenessOutlinedTextField(text = newPassword, label = "Новый пароль", isHiddenText = true)
         Spacer(modifier = Modifier.height(20.dp))
         InfoCard(
             icon = Icon.ImageVectorIcon(Icons.Outlined.Info),

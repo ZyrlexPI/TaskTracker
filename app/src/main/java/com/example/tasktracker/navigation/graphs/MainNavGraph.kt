@@ -13,6 +13,7 @@ import com.example.tasktracker.navigation.models.RootGraph
 import com.example.tasktracker.screens.main.home.HomeScreenScaffold
 import com.example.tasktracker.screens.main.notifications.NotificationsScreenScaffold
 import com.example.tasktracker.services.firebase.CompanyViewModel
+import com.example.tasktracker.services.firebase.TasksViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.firebase.getUser
 
@@ -24,6 +25,7 @@ fun HomeScreenNavGraph(
 ) {
     val userViewModel = hiltViewModel<UserViewModel>()
     val companyViewModel = hiltViewModel<CompanyViewModel>()
+    val tasksViewModel = hiltViewModel<TasksViewModel>()
     val userData = userViewModel.dataUser.collectAsState().value
 
     /** Загрузка данных о пользователе и организации */
@@ -37,11 +39,19 @@ fun HomeScreenNavGraph(
         route = RootGraph.MAIN,
         startDestination = BottomBarGraph.HOME
     ) {
-        composable(route = BottomBarGraph.HOME) { HomeScreenScaffold(padding) }
+        composable(route = BottomBarGraph.HOME) {
+            HomeScreenScaffold(
+                padding = padding,
+                navigationToLastViewTask = { navController.navigate(BottomBarGraph.TASKS) },
+            )
+        }
 
         composable(route = BottomBarGraph.TASKS) {
             TasksNavigationGraph(
                 padding = padding,
+                userViewModel = userViewModel,
+                companyViewModel = companyViewModel,
+                tasksViewModel = tasksViewModel,
             )
         }
 

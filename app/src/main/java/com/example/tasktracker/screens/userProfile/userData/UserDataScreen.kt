@@ -22,7 +22,7 @@ import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.ravenzip.workshop.components.SimpleButton
-import com.ravenzip.workshop.components.SinglenessTextField
+import com.ravenzip.workshop.components.SinglenessOutlinedTextField
 import com.ravenzip.workshop.data.TextConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,9 +43,9 @@ fun UserDataScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(30.dp))
-        SinglenessTextField(text = name, label = "Имя")
+        SinglenessOutlinedTextField(text = name, label = "Имя")
         Spacer(modifier = Modifier.height(20.dp))
-        SinglenessTextField(text = surname, label = "Фамилия")
+        SinglenessOutlinedTextField(text = surname, label = "Фамилия")
         Spacer(modifier = Modifier.height(40.dp))
         SimpleButton(
             text = "Сохранить",

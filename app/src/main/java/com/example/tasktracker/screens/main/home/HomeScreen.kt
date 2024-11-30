@@ -1,5 +1,6 @@
 package com.example.tasktracker.screens.main.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,7 +24,7 @@ import com.example.tasktracker.data.Task
 import com.example.tasktracker.enums.TaskStatus
 
 @Composable
-fun HomeScreen(padding: PaddingValues) {
+fun HomeScreen(padding: PaddingValues, navigationToLastViewTask: () -> Unit) {
     val lastOpenedTask =
         Task(
             id = "1",
@@ -47,7 +48,7 @@ fun HomeScreen(padding: PaddingValues) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Карточка последней задачи
-        TaskCard(task = lastOpenedTask)
+        TaskCard(task = lastOpenedTask, navigationToLastViewTask = navigationToLastViewTask)
 
         // Карточка общего состояния задач
         StatsCard(
@@ -69,13 +70,16 @@ fun HomeScreen(padding: PaddingValues) {
 
 // Карточка последней открытой задачи
 @Composable
-fun TaskCard(task: Task) {
+fun TaskCard(task: Task, navigationToLastViewTask: () -> Unit) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors =
             CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         elevation = CardDefaults.cardElevation(8.dp),
-        modifier = Modifier.fillMaxWidth().padding(top = 5.dp, start = 16.dp, end = 16.dp)
+        modifier =
+            Modifier.fillMaxWidth().padding(top = 5.dp, start = 16.dp, end = 16.dp).clickable {
+                navigationToLastViewTask()
+            },
     ) {
         Column(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),

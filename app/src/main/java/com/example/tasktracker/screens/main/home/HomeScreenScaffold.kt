@@ -10,6 +10,7 @@ import com.ravenzip.workshop.components.TopAppBar
 @Composable
 fun HomeScreenScaffold(
     padding: PaddingValues,
+    navigationToLastViewTask: () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.padding(padding),
@@ -17,6 +18,7 @@ fun HomeScreenScaffold(
     ) { innerPadding ->
         HomeScreen(
             padding = innerPadding,
+            navigationToLastViewTask = navigationToLastViewTask,
         )
     }
 }

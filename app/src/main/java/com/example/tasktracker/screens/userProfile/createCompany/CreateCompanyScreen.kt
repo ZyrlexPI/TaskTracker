@@ -23,7 +23,7 @@ import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.ravenzip.workshop.components.SimpleButton
-import com.ravenzip.workshop.components.SinglenessTextField
+import com.ravenzip.workshop.components.SinglenessOutlinedTextField
 import com.ravenzip.workshop.data.TextConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,7 +44,7 @@ fun CreateCompanyScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(modifier = Modifier.height(30.dp))
-        SinglenessTextField(text = nameCompany, label = "Название компании")
+        SinglenessOutlinedTextField(text = nameCompany, label = "Название компании")
         Spacer(modifier = Modifier.height(40.dp))
         SimpleButton(
             text = "Создать",

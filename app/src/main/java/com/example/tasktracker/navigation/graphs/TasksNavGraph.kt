@@ -12,11 +12,17 @@ import com.example.tasktracker.navigation.models.TasksGraph
 import com.example.tasktracker.screens.main.tasks.TasksScreenScaffold
 import com.example.tasktracker.screens.tasks.infoTask.InfoTaskScreenScaffold
 import com.example.tasktracker.screens.tasks.listTask.ListTaskScreenScaffold
+import com.example.tasktracker.services.firebase.CompanyViewModel
+import com.example.tasktracker.services.firebase.TasksViewModel
+import com.example.tasktracker.services.firebase.UserViewModel
 
 @Composable
 fun TasksNavigationGraph(
     padding: PaddingValues,
     navController: NavHostController = rememberNavController(),
+    userViewModel: UserViewModel,
+    companyViewModel: CompanyViewModel,
+    tasksViewModel: TasksViewModel,
 ) {
     NavHost(
         navController = navController,
@@ -32,6 +38,8 @@ fun TasksNavigationGraph(
                         { navController.navigate(TasksGraph.TASK_IN_PROGRESS_LIST) },
                         { navController.navigate(TasksGraph.TASK_COMPLETED_LIST) },
                     ),
+                userViewModel = userViewModel,
+                tasksViewModel = tasksViewModel,
             )
         }
 
@@ -39,7 +47,7 @@ fun TasksNavigationGraph(
             ListTaskScreenScaffold(
                 padding = padding,
                 status = TaskStatus.NEW_TASK,
-                { navController.navigate(TasksGraph.TASK_INFO) },
+                navigateToInfoTask = { navController.navigate(TasksGraph.TASK_INFO) },
             )
         }
 

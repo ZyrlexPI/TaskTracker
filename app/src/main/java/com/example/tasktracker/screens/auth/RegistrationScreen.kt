@@ -24,7 +24,7 @@ import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.firebase.reloadUser
 import com.example.tasktracker.services.showError
 import com.ravenzip.workshop.components.SimpleButton
-import com.ravenzip.workshop.components.SinglenessTextField
+import com.ravenzip.workshop.components.SinglenessOutlinedTextField
 import com.ravenzip.workshop.components.SnackBar
 import com.ravenzip.workshop.components.Spinner
 import com.ravenzip.workshop.data.TextConfig
@@ -52,9 +52,9 @@ fun RegistrationScreen(navigateToHomeScreen: () -> Unit) {
             fontWeight = FontWeight.Bold,
         )
         Spacer(modifier = Modifier.height(20.dp))
-        SinglenessTextField(text = email, label = "Электронная почта")
+        SinglenessOutlinedTextField(text = email, label = "Электронная почта")
         Spacer(modifier = Modifier.height(20.dp))
-        SinglenessTextField(text = password, label = "Пароль", isHiddenText = true)
+        SinglenessOutlinedTextField(text = password, label = "Пароль", isHiddenText = true)
         BottomContainer {
             Spacer(modifier = Modifier.height(30.dp))
             SimpleButton(
