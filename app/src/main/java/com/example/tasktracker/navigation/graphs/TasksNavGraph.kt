@@ -48,6 +48,7 @@ fun TasksNavigationGraph(
                 padding = padding,
                 status = TaskStatus.NEW_TASK,
                 navigateToInfoTask = { navController.navigate(TasksGraph.TASK_INFO) },
+                tasksViewModel = tasksViewModel,
             )
         }
 
@@ -56,6 +57,7 @@ fun TasksNavigationGraph(
                 padding = padding,
                 status = TaskStatus.IN_PROGRESS,
                 { navController.navigate(TasksGraph.TASK_INFO) },
+                tasksViewModel = tasksViewModel,
             )
         }
 
@@ -64,6 +66,7 @@ fun TasksNavigationGraph(
                 padding = padding,
                 status = TaskStatus.COMPLETED,
                 { navController.navigate(TasksGraph.TASK_INFO) },
+                tasksViewModel = tasksViewModel,
             )
         }
 

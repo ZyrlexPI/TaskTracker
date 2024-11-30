@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.tasktracker.data.Company
 import com.example.tasktracker.data.Task
 import com.example.tasktracker.enums.TaskStatus
+import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.getValue
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,11 +29,14 @@ class TasksViewModel : ViewModel() {
         companyId: String
     ) {
         /** Создание индефикатора задачи */
-        val pushKey = databaseTasksRef.push().key.toString()
+        val snapshot: DataSnapshot = databaseTasksRef.get().await() // Получаем данные
+        val pushKey = snapshot.childrenCount.toInt() + 1 // Считаем количество узлов
+
+        //        val pushKey = databaseTasksRef.push().key.toString()
         /** Формирование объекта задачи */
         val dataTask =
             Task(
-                id = pushKey,
+                id = pushKey.toString(),
                 name = nameTask,
                 status = statusTask,
                 author = author,
@@ -48,7 +52,7 @@ class TasksViewModel : ViewModel() {
         if (valueTasks != null) {
             dataTasks.addAll(valueTasks)
         }
-        dataTasks.add(pushKey)
+        dataTasks.add(pushKey.toString())
         databaseCompaniesRef.child(companyId).child("members").setValue(dataTasks)
         /** Добавление индефикатора задачи автору */
         val responseUser = databaseUsersRef.child(authorId).child("tasks").get().await()
@@ -57,7 +61,7 @@ class TasksViewModel : ViewModel() {
         if (valueUsersTasks != null) {
             dataUsersTasks.addAll(valueUsersTasks)
         }
-        dataUsersTasks.add(pushKey)
+        dataUsersTasks.add(pushKey.toString())
         databaseUsersRef.child(authorId).child("tasks").setValue(dataUsersTasks)
         /** Добавление индефикатора задачи исполнителю, если он не автор */
         if (authorId != executorId) {
@@ -67,10 +71,18 @@ class TasksViewModel : ViewModel() {
             if (valueExecutorTasks != null) {
                 dataExecutorTasks.addAll(valueExecutorTasks)
             }
-            dataExecutorTasks.add(pushKey)
+            dataExecutorTasks.add(pushKey.toString())
             databaseUsersRef.child(executorId).child("tasks").setValue(dataExecutorTasks)
         }
         /** Добавление задачи в БД */
-        databaseTasksRef.child(pushKey).setValue(dataTask).await()
+        databaseTasksRef.child(pushKey.toString()).setValue(dataTask).await()
+    }
+
+    /** Получить список заданий существующих в БД */
+    suspend fun getListTasks(): MutableList<Task> {
+        val response = databaseTasksRef.get().await().children
+        val listTasks = mutableListOf<Task>()
+        response.forEach { data -> data.getValue<Task>()?.let { listTasks.add(it) } }
+        return listTasks
     }
 }

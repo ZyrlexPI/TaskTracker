@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.example.tasktracker.enums.TaskStatus
+import com.example.tasktracker.services.firebase.TasksViewModel
 import com.ravenzip.workshop.components.TopAppBar
 
 @Composable
@@ -14,6 +15,7 @@ fun ListTaskScreenScaffold(
     padding: PaddingValues,
     status: TaskStatus,
     navigateToInfoTask: () -> Unit,
+    tasksViewModel: TasksViewModel,
 ) {
     val statusTobBar =
         remember(status) {
@@ -32,6 +34,7 @@ fun ListTaskScreenScaffold(
             padding = innerPadding,
             status = status,
             navigateToInfoTask = navigateToInfoTask,
+            tasksViewModel = tasksViewModel,
         )
     }
 }

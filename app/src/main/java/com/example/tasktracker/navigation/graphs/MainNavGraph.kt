@@ -10,7 +10,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.tasktracker.navigation.models.BottomBarGraph
 import com.example.tasktracker.navigation.models.RootGraph
-import com.example.tasktracker.screens.main.home.HomeScreenScaffold
 import com.example.tasktracker.screens.main.notifications.NotificationsScreenScaffold
 import com.example.tasktracker.services.firebase.CompanyViewModel
 import com.example.tasktracker.services.firebase.TasksViewModel
@@ -40,9 +39,11 @@ fun HomeScreenNavGraph(
         startDestination = BottomBarGraph.HOME
     ) {
         composable(route = BottomBarGraph.HOME) {
-            HomeScreenScaffold(
+            HomeNavigationGraph(
                 padding = padding,
-                navigationToLastViewTask = { navController.navigate(BottomBarGraph.TASKS) },
+                userViewModel = userViewModel,
+                companyViewModel = companyViewModel,
+                tasksViewModel = tasksViewModel,
             )
         }
 

@@ -5,12 +5,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.tasktracker.services.firebase.TasksViewModel
 import com.ravenzip.workshop.components.TopAppBar
 
 @Composable
 fun HomeScreenScaffold(
     padding: PaddingValues,
     navigationToLastViewTask: () -> Unit,
+    tasksViewModel: TasksViewModel,
 ) {
     Scaffold(
         modifier = Modifier.padding(padding),
