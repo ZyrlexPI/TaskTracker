@@ -85,7 +85,7 @@ fun JoinCompanyScreen(
                     onClick = {
                         scope.launch(Dispatchers.Main) {
                             if (userData.companyId == "") {
-                                companyViewModel.joinСompany(company.id, userData = userData)
+                                companyViewModel.joinCompany(company.id, userData = userData)
                                 snackBarHostState.showSuccess(
                                     message = "Вы успешно присоединились к организации"
                                 )

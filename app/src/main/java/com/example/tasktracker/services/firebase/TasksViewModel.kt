@@ -1,24 +1,51 @@
 package com.example.tasktracker.services.firebase
 
 import androidx.lifecycle.ViewModel
-import com.example.tasktracker.data.Company
+import androidx.lifecycle.viewModelScope
 import com.example.tasktracker.data.Task
 import com.example.tasktracker.enums.TaskStatus
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.FirebaseDatabase
+import com.example.tasktracker.repositories.SharedRepository
+import com.example.tasktracker.repositories.TasksRepository
 import com.google.firebase.database.getValue
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class TasksViewModel : ViewModel() {
-    private val databaseCompaniesRef = FirebaseDatabase.getInstance().getReference("Сompanies")
-    private val databaseUsersRef = FirebaseDatabase.getInstance().getReference("Users")
-    private val databaseTasksRef = FirebaseDatabase.getInstance().getReference("Tasks")
-    private val _dataTask = MutableStateFlow(Company())
-    val dataTask = _dataTask.asStateFlow()
+@HiltViewModel
+class TasksViewModel
+@Inject
+constructor(
+    private val tasksRepository: TasksRepository,
+    private val sharedRepository: SharedRepository,
+) : ViewModel() {
 
-    /** Создание новой задачи */
+    private val _listTasks = MutableStateFlow(listOf<Task>())
+    val listTasks = _listTasks.asStateFlow()
+
+    val filteredTaskCount =
+        listTasks.map { list ->
+            TaskByType(
+                new = list.count { task -> task.status == TaskStatus.NEW_TASK },
+                inProgress = list.count { task -> task.status == TaskStatus.IN_PROGRESS },
+                complete = list.count { task -> task.status == TaskStatus.COMPLETED }
+            )
+        }
+
+    private val updateListTask = MutableSharedFlow<Unit>()
+
+    init {
+        viewModelScope.launch {
+            updateListTask.collect { _listTasks.update { tasksRepository.getListTasks() } }
+        }
+
+        viewModelScope.launch { updateListTask.emit(Unit) }
+    }
+
     suspend fun add(
         nameTask: String,
         statusTask: TaskStatus,
@@ -28,15 +55,14 @@ class TasksViewModel : ViewModel() {
         executorId: String,
         companyId: String
     ) {
-        /** Создание индефикатора задачи */
-        val snapshot: DataSnapshot = databaseTasksRef.get().await() // Получаем данные
-        val pushKey = snapshot.childrenCount.toInt() + 1 // Считаем количество узлов
 
-        //        val pushKey = databaseTasksRef.push().key.toString()
+        /** Создание индефикатора задачи */
+        val pushKey = (tasksRepository.getListTasks().count() + 1).toString()
+
         /** Формирование объекта задачи */
         val dataTask =
             Task(
-                id = pushKey.toString(),
+                id = pushKey,
                 name = nameTask,
                 status = statusTask,
                 author = author,
@@ -45,44 +71,18 @@ class TasksViewModel : ViewModel() {
                 executor_id = executorId,
                 companyId = companyId
             )
-        /** Добавление индефикатора задачи в компанию */
-        val responseCompany = databaseCompaniesRef.child(companyId).child("tasks").get().await()
-        val dataTasks = mutableListOf<String>()
-        val valueTasks = responseCompany.getValue<List<String>>()
-        if (valueTasks != null) {
-            dataTasks.addAll(valueTasks)
-        }
-        dataTasks.add(pushKey.toString())
-        databaseCompaniesRef.child(companyId).child("members").setValue(dataTasks)
-        /** Добавление индефикатора задачи автору */
-        val responseUser = databaseUsersRef.child(authorId).child("tasks").get().await()
-        val dataUsersTasks = mutableListOf<String>()
-        val valueUsersTasks = responseUser.getValue<List<String>>()
-        if (valueUsersTasks != null) {
-            dataUsersTasks.addAll(valueUsersTasks)
-        }
-        dataUsersTasks.add(pushKey.toString())
-        databaseUsersRef.child(authorId).child("tasks").setValue(dataUsersTasks)
-        /** Добавление индефикатора задачи исполнителю, если он не автор */
-        if (authorId != executorId) {
-            val responseExecutor = databaseUsersRef.child(executorId).child("tasks").get().await()
-            val dataExecutorTasks = mutableListOf<String>()
-            val valueExecutorTasks = responseExecutor.getValue<List<String>>()
-            if (valueExecutorTasks != null) {
-                dataExecutorTasks.addAll(valueExecutorTasks)
-            }
-            dataExecutorTasks.add(pushKey.toString())
-            databaseUsersRef.child(executorId).child("tasks").setValue(dataExecutorTasks)
-        }
-        /** Добавление задачи в БД */
-        databaseTasksRef.child(pushKey.toString()).setValue(dataTask).await()
+
+        tasksRepository.add(dataTask)
     }
 
-    /** Получить список заданий существующих в БД */
-    suspend fun getListTasks(): MutableList<Task> {
-        val response = databaseTasksRef.get().await().children
-        val listTasks = mutableListOf<Task>()
-        response.forEach { data -> data.getValue<Task>()?.let { listTasks.add(it) } }
-        return listTasks
+    suspend fun getListTasks() = tasksRepository.getListTasks()
+
+    fun setCurrentTask(task: Task) = sharedRepository.setCurrentTask(task)
+
+    fun updateListTask() {
+
+        viewModelScope.launch { updateListTask.emit(Unit) }
     }
 }
+
+class TaskByType(val new: Int = 0, val inProgress: Int = 0, val complete: Int = 0)

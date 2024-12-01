@@ -21,6 +21,7 @@ fun HomeScreenScaffold(
         HomeScreen(
             padding = innerPadding,
             navigationToLastViewTask = navigationToLastViewTask,
+            tasksViewModel = tasksViewModel,
         )
     }
 }

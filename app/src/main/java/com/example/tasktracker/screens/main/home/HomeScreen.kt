@@ -16,15 +16,23 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tasktracker.data.Task
 import com.example.tasktracker.enums.TaskStatus
+import com.example.tasktracker.services.firebase.TaskByType
+import com.example.tasktracker.services.firebase.TasksViewModel
 
 @Composable
-fun HomeScreen(padding: PaddingValues, navigationToLastViewTask: () -> Unit) {
+fun HomeScreen(
+    padding: PaddingValues,
+    navigationToLastViewTask: () -> Unit,
+    tasksViewModel: TasksViewModel
+) {
     val lastOpenedTask =
         Task(
             id = "1",
@@ -36,10 +44,11 @@ fun HomeScreen(padding: PaddingValues, navigationToLastViewTask: () -> Unit) {
             executor_id = "",
             companyId = ""
         )
-    val totalTasks = 40
-    val newTasksCount = 15
-    val inProgressTasksCount = 15
-    val completedTasksCount = 10
+
+    val taskCount = tasksViewModel.filteredTaskCount.collectAsStateWithLifecycle(TaskByType()).value
+
+    val totalTasks =
+        remember(taskCount) { taskCount.new + taskCount.inProgress + taskCount.complete }
 
     // Основной макет
     Column(
@@ -53,17 +62,9 @@ fun HomeScreen(padding: PaddingValues, navigationToLastViewTask: () -> Unit) {
         // Карточка общего состояния задач
         StatsCard(
             totalTasks = totalTasks,
-            newTasksCount = newTasksCount,
-            inProgressTasksCount = inProgressTasksCount,
-            completedTasksCount = completedTasksCount
-        )
-
-        // Карточка общего состояния задач
-        StatsCard(
-            totalTasks = totalTasks,
-            newTasksCount = newTasksCount,
-            inProgressTasksCount = inProgressTasksCount,
-            completedTasksCount = completedTasksCount
+            newTasksCount = taskCount.new,
+            inProgressTasksCount = taskCount.inProgress,
+            completedTasksCount = taskCount.complete
         )
     }
 }
@@ -127,9 +128,18 @@ fun StatsCard(
             )
 
             // Прогресс-бары для каждой категории задач
-            ProgressBar(label = "Новые", value = newTasksCount / totalTasks.toFloat())
-            ProgressBar(label = "В процессе", value = inProgressTasksCount / totalTasks.toFloat())
-            ProgressBar(label = "Завершенные", value = completedTasksCount / totalTasks.toFloat())
+            ProgressBar(
+                label = "Новые",
+                value = if (totalTasks == 0) 0f else newTasksCount / totalTasks.toFloat()
+            )
+            ProgressBar(
+                label = "В процессе",
+                value = if (totalTasks == 0) 0f else inProgressTasksCount / totalTasks.toFloat()
+            )
+            ProgressBar(
+                label = "Завершенные",
+                value = if (totalTasks == 0) 0f else completedTasksCount / totalTasks.toFloat()
+            )
         }
     }
 }

@@ -17,7 +17,7 @@ import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.firebase.getUser
 
 @Composable
-fun HomeScreenNavGraph(
+fun MainNavGraph(
     navController: NavHostController,
     padding: PaddingValues,
     returnInAuth: () -> Unit,

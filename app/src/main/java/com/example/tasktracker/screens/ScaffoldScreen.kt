@@ -9,7 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.tasktracker.navigation.graphs.HomeScreenNavGraph
+import com.example.tasktracker.navigation.graphs.MainNavGraph
 import com.example.tasktracker.navigation.models.BottomBarGraph
 import com.ravenzip.workshop.components.BottomNavigationBar
 import com.ravenzip.workshop.data.appbar.BottomNavigationItem
@@ -31,7 +31,7 @@ fun ScaffoldScreen(
             )
         },
     ) {
-        HomeScreenNavGraph(
+        MainNavGraph(
             navController = navController,
             padding = it,
             returnInAuth = returnInAuth,

@@ -44,7 +44,7 @@ fun AuthorizationScreen(
     val isLoading = remember { mutableStateOf(false) }
     val spinnerText = remember { mutableStateOf("Авторизация") }
     val validationService = ValidationService()
-    // var hiddenTextPass = true
+
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(30.dp))
         Text(
@@ -64,18 +64,6 @@ fun AuthorizationScreen(
         SinglenessOutlinedTextField(text = email, label = "Электронная почта")
         Spacer(modifier = Modifier.height(20.dp))
         SinglenessOutlinedTextField(text = password, label = "Пароль", isHiddenText = true)
-        //        IconButton(
-        //            onClick = {
-        //                hiddenTextPass =
-        //                    if (hiddenTextPass) {
-        //                        false
-        //                    } else {
-        //                        true
-        //                    }
-        //            }
-        //        ) {
-        //            Icon(imageVector = Icons.Outlined.Visibility, contentDescription = "")
-        //        }
 
         BottomContainer {
             Spacer(modifier = Modifier.height(30.dp))

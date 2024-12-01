@@ -161,6 +161,8 @@ fun TasksScreenScaffold(
                                     taskUser.value!!.id,
                                     userData.companyId
                                 )
+                                /** Обновление списка задач */
+                                tasksViewModel.updateListTask()
                                 /** Обнуление вводимых данных */
                                 taskName.value = ""
                                 taskStatus.value = null
