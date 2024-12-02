@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.services.firebase.CompanyViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
-import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.ravenzip.workshop.components.SimpleButton
@@ -33,9 +32,9 @@ fun CreateCompanyScreen(
     padding: PaddingValues,
     snackBarHostState: SnackbarHostState,
     vararg onClick: () -> Unit,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    companyViewModel: CompanyViewModel,
 ) {
-    val companyViewModel = CompanyViewModel()
     val nameCompany = remember { mutableStateOf("") }
     val userData = userViewModel.dataUser.collectAsState().value
     val scope = rememberCoroutineScope()
@@ -60,7 +59,8 @@ fun CreateCompanyScreen(
                 }
                 if (nameCompany.value != "") {
                     companyViewModel.add(nameCompany = nameCompany.value, userData = userData)
-                    userViewModel.get(getUser())
+                    //                    userViewModel.get(getUser())
+                    //                    companyViewModel.getCurrentCompany(userData)
                     snackBarHostState.showSuccess(message = "Организация успешно создана")
 
                     onClick[0]()

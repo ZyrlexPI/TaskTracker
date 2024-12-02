@@ -32,6 +32,7 @@ fun HomeNavigationGraph(
             HomeScreenScaffold(
                 padding = padding,
                 navigationToLastViewTask = { navController.navigate(TasksGraph.TASK_INFO) },
+                userViewModel = userViewModel,
                 tasksViewModel = tasksViewModel,
             )
         }

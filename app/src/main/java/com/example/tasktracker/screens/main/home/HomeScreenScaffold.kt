@@ -6,12 +6,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.tasktracker.services.firebase.TasksViewModel
+import com.example.tasktracker.services.firebase.UserViewModel
 import com.ravenzip.workshop.components.TopAppBar
 
 @Composable
 fun HomeScreenScaffold(
     padding: PaddingValues,
     navigationToLastViewTask: () -> Unit,
+    userViewModel: UserViewModel,
     tasksViewModel: TasksViewModel,
 ) {
     Scaffold(
@@ -21,6 +23,7 @@ fun HomeScreenScaffold(
         HomeScreen(
             padding = innerPadding,
             navigationToLastViewTask = navigationToLastViewTask,
+            userViewModel = userViewModel,
             tasksViewModel = tasksViewModel,
         )
     }

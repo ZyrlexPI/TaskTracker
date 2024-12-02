@@ -36,7 +36,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun RecoveryScreen(navigateToAuthScreen: () -> Unit) {
+fun RecoveryScreen(
+    navigateToAuthScreen: () -> Unit,
+) {
     val email = remember { mutableStateOf("") }
     val isEmailValid = remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()

@@ -71,4 +71,9 @@ constructor(
         response.forEach { data -> data.getValue<Task>()?.let { listTasks.add(it) } }
         return listTasks
     }
+
+    /** Получить задачу из БД */
+    suspend fun getCurrentTask(taskId: String): Task? {
+        return tasksSources.currentTask(taskId).get().await().getValue<Task>()
+    }
 }

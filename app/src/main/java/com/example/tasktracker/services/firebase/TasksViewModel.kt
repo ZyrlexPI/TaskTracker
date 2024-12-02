@@ -6,7 +6,6 @@ import com.example.tasktracker.data.Task
 import com.example.tasktracker.enums.TaskStatus
 import com.example.tasktracker.repositories.SharedRepository
 import com.example.tasktracker.repositories.TasksRepository
-import com.google.firebase.database.getValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,6 +22,9 @@ constructor(
     private val tasksRepository: TasksRepository,
     private val sharedRepository: SharedRepository,
 ) : ViewModel() {
+
+    private val _dataCurrentTask = MutableStateFlow(Task())
+    val dataCurrentTask = _dataCurrentTask.asStateFlow()
 
     private val _listTasks = MutableStateFlow(listOf<Task>())
     val listTasks = _listTasks.asStateFlow()
@@ -82,6 +84,10 @@ constructor(
     fun updateListTask() {
 
         viewModelScope.launch { updateListTask.emit(Unit) }
+    }
+
+    suspend fun getCurrentTask(taskId: String) {
+        _dataCurrentTask.update { tasksRepository.getCurrentTask(taskId)!! }
     }
 }
 

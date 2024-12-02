@@ -23,7 +23,7 @@ constructor(private val companySources: CompanySources, private val userSources:
         val dataUser = User(userData.id, userData.name, userData.surname, pushKey)
         companySources.companySource
             .child(pushKey)
-            .setValue(Company(pushKey, nameCompany, listOf(dataUser)))
+            .setValue(Company(pushKey, nameCompany, listOf(dataUser), listOf()))
             .await()
     }
 

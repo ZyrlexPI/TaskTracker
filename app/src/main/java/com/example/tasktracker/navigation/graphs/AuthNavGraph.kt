@@ -12,6 +12,7 @@ import com.example.tasktracker.screens.auth.RecoveryScreen
 import com.example.tasktracker.screens.auth.RegistrationScreen
 
 fun NavGraphBuilder.authNavigationGraph(navController: NavHostController) {
+
     navigation(route = RootGraph.AUTHENTICATION, startDestination = AuthGraph.AUTHORIZATION) {
         composable(route = AuthGraph.AUTHORIZATION) {
             AuthorizationScreen(

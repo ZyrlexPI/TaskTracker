@@ -18,7 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.tasktracker.services.firebase.updatePasswordUser
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.tasktracker.services.firebase.AuthViewModel
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.ravenzip.workshop.components.InfoCard
@@ -34,6 +35,7 @@ import kotlinx.coroutines.launch
 fun ChangePasswordScreen(
     padding: PaddingValues,
     snackBarHostState: SnackbarHostState,
+    authViewModel: AuthViewModel = hiltViewModel<AuthViewModel>(),
     onClick: () -> Unit
 ) {
     val oldPassword = remember { mutableStateOf("") }
@@ -68,7 +70,7 @@ fun ChangePasswordScreen(
             textConfig = TextConfig(size = 19.sp, align = TextAlign.Center)
         ) {
             scope.launch(Dispatchers.Main) {
-                if (updatePasswordUser(oldPassword.value, newPassword.value)) {
+                if (authViewModel.updatePasswordUser(oldPassword.value, newPassword.value)) {
                     snackBarHostState.showSuccess(message = "Пароль успешно обновлен")
                     onClick()
                 } else {

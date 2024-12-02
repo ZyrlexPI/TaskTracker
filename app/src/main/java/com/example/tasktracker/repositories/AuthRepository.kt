@@ -117,6 +117,11 @@ class AuthRepository @Inject constructor(private val authSources: AuthSources) {
         }
     }
 
+    /** Получение текущего пользователя */
+    fun getUser(): FirebaseUser? {
+        return FirebaseAuth.getInstance().currentUser
+    }
+
     /** Выполнение выхода из аккаунта */
     suspend fun logout() {
         firebaseAuth.signOut()

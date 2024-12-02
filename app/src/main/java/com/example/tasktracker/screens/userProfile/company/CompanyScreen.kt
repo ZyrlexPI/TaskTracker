@@ -1,5 +1,6 @@
 package com.example.tasktracker.screens.userProfile.company
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tasktracker.services.firebase.CompanyViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.showSuccess
@@ -37,10 +39,11 @@ fun CompanyScreen(
     companyViewModel: CompanyViewModel,
     userViewModel: UserViewModel
 ) {
-    val companyData = companyViewModel.dataCompany.collectAsState().value
+    val companyData = companyViewModel.dataCompany.collectAsStateWithLifecycle().value
     val userData = userViewModel.dataUser.collectAsState().value
     val scope = rememberCoroutineScope()
-
+    Log.d("CompanyScreen_CD", companyData.toString())
+    Log.d("CompanyScreen_UD", userData.toString())
     Column(
         modifier = Modifier.fillMaxSize().padding(padding),
         horizontalAlignment = Alignment.CenterHorizontally,

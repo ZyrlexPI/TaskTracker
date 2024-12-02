@@ -97,6 +97,7 @@ fun UserProfileNavigationGraph(
                 padding = padding,
                 onClick = arrayOf({ navController.popBackStack() }),
                 userViewModel = userViewModel,
+                companyViewModel = companyViewModel,
             )
         }
     }

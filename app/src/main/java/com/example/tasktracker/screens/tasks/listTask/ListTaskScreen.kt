@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,16 +28,20 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tasktracker.enums.TaskStatus
 import com.example.tasktracker.services.firebase.TasksViewModel
+import com.example.tasktracker.services.firebase.UserViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun ListTaskScreen(
     padding: PaddingValues,
     status: TaskStatus,
     navigateToInfoTask: () -> Unit,
+    userViewModel: UserViewModel,
     tasksViewModel: TasksViewModel,
 ) {
     val scope = rememberCoroutineScope()
     val listTask = tasksViewModel.listTasks.collectAsStateWithLifecycle().value
+    val userData = userViewModel.dataUser.collectAsState().value
 
     val listTaskFiltered =
         listTask.filter { task ->
@@ -52,8 +57,11 @@ fun ListTaskScreen(
             Card(
                 modifier =
                     Modifier.clip(shape = RoundedCornerShape(8.dp)).clickable {
-                        tasksViewModel.setCurrentTask(task)
-                        navigateToInfoTask()
+                        scope.launch {
+                            userViewModel.updateLastTaskViewId(userData = userData, task.id)
+                            tasksViewModel.setCurrentTask(task)
+                            navigateToInfoTask()
+                        }
                     },
                 colors =
                     CardDefaults.cardColors(

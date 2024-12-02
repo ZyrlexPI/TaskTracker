@@ -40,4 +40,8 @@ constructor(
     suspend fun update(userData: User, name: String, surname: String): Boolean {
         return userRepository.update(userData, name, surname)
     }
+
+    suspend fun updateLastTaskViewId(userData: User, lastTaskViewId: String) {
+        userRepository.updateLastTaskViewId(userData, lastTaskViewId)
+    }
 }

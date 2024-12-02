@@ -78,4 +78,9 @@ constructor(private val userSources: UserSources, private val companySources: Co
         }
         return true
     }
+
+    suspend fun updateLastTaskViewId(userData: User, lastTaskViewId: String) {
+        val dataUser = mapOf("lastTaskViewId" to lastTaskViewId)
+        userSources.currentUser(userData.id).updateChildren(dataUser)
+    }
 }

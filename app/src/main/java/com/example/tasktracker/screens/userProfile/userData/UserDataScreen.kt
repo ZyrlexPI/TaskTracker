@@ -17,8 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.tasktracker.services.firebase.AuthViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
-import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.ravenzip.workshop.components.SimpleButton
@@ -31,7 +32,8 @@ import kotlinx.coroutines.launch
 fun UserDataScreen(
     padding: PaddingValues,
     snackBarHostState: SnackbarHostState,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    authViewModel: AuthViewModel = hiltViewModel<AuthViewModel>(),
 ) {
     val userData = userViewModel.dataUser.collectAsState().value
     val name = remember { mutableStateOf(userData.name) }
@@ -64,7 +66,7 @@ fun UserDataScreen(
                         surname = surname.value
                     )
                 ) {
-                    userViewModel.get(getUser())
+                    userViewModel.get(authViewModel.getUser())
                     snackBarHostState.showSuccess(message = "Данные пользователя успешно обновлены")
                 } else {
                     snackBarHostState.showError(message = "Ошибка при обновлении данных")

@@ -26,8 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.tasktracker.services.firebase.getUser
-import com.example.tasktracker.services.firebase.logout
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.tasktracker.services.firebase.AuthViewModel
 import com.ravenzip.workshop.components.RowIconButton
 import com.ravenzip.workshop.data.TextConfig
 import com.ravenzip.workshop.data.icon.Icon
@@ -38,9 +38,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun UserProfileScreen(
     padding: PaddingValues,
+    authViewModel: AuthViewModel = hiltViewModel<AuthViewModel>(),
     vararg onClick: () -> Unit,
 ) {
-    val emailUser = getUser()?.email.toString()
+    val emailUser = authViewModel.getUser()?.email.toString()
     val scope = rememberCoroutineScope()
 
     Column(
@@ -114,7 +115,7 @@ fun UserProfileScreen(
             iconConfig = IconConfig.Default,
         ) {
             scope.launch(Dispatchers.Main) {
-                logout()
+                authViewModel.logout()
                 onClick[4]()
             }
         }

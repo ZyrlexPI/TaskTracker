@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 fun AuthorizationScreen(
     navigateToHomeScreen: () -> Unit,
     navigateToRegistrationScreen: () -> Unit,
-    navigateToRecoveryScreen: () -> Unit
+    navigateToRecoveryScreen: () -> Unit,
 ) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }

@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tasktracker.services.ValidationService
 import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.firebase.createUserWithEmail
@@ -32,7 +33,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun RegistrationScreen(navigateToHomeScreen: () -> Unit) {
+fun RegistrationScreen(
+    navigateToHomeScreen: () -> Unit,
+) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val isEmailValid = remember { mutableStateOf(true) }
@@ -42,7 +45,7 @@ fun RegistrationScreen(navigateToHomeScreen: () -> Unit) {
     val isLoading = remember { mutableStateOf(false) }
     val spinnerText = remember { mutableStateOf("Регистрация") }
     val validationService = ValidationService()
-    val userViewModel = UserViewModel()
+    val userViewModel = hiltViewModel<UserViewModel>()
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(30.dp))
         Text(

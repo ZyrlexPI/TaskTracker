@@ -16,6 +16,9 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,27 +26,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tasktracker.data.Task
-import com.example.tasktracker.enums.TaskStatus
 import com.example.tasktracker.services.firebase.TaskByType
 import com.example.tasktracker.services.firebase.TasksViewModel
+import com.example.tasktracker.services.firebase.UserViewModel
 
 @Composable
 fun HomeScreen(
     padding: PaddingValues,
     navigationToLastViewTask: () -> Unit,
+    userViewModel: UserViewModel,
     tasksViewModel: TasksViewModel
 ) {
-    val lastOpenedTask =
-        Task(
-            id = "1",
-            name = "Тестовое задание",
-            status = TaskStatus.NEW_TASK,
-            author = "Алексей",
-            author_id = "",
-            executor = "Александр",
-            executor_id = "",
-            companyId = ""
-        )
+    val userData = userViewModel.dataUser.collectAsState().value
+    val taskData = tasksViewModel.dataCurrentTask.collectAsState().value
+
+    val isLoadingList = remember(userData.lastTaskViewId) { mutableStateOf(true) }
+
+    LaunchedEffect(isLoadingList.value) {
+        if (isLoadingList.value) {
+            isLoadingList.value = false
+            if (userData.lastTaskViewId != "") {
+                tasksViewModel.getCurrentTask(userData.lastTaskViewId)
+            }
+        }
+    }
 
     val taskCount = tasksViewModel.filteredTaskCount.collectAsStateWithLifecycle(TaskByType()).value
 
@@ -56,8 +62,17 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Карточка последней задачи
-        TaskCard(task = lastOpenedTask, navigationToLastViewTask = navigationToLastViewTask)
+        if (userData.lastTaskViewId != "") {
+            // Карточка последней задачи
+            TaskCard(
+                task = taskData,
+                tasksViewModel = tasksViewModel,
+                navigationToLastViewTask = navigationToLastViewTask
+            )
+        } else {
+            // Карточка последней задачи если ещё нет
+            TaskCardNotFound()
+        }
 
         // Карточка общего состояния задач
         StatsCard(
@@ -71,7 +86,7 @@ fun HomeScreen(
 
 // Карточка последней открытой задачи
 @Composable
-fun TaskCard(task: Task, navigationToLastViewTask: () -> Unit) {
+fun TaskCard(task: Task, tasksViewModel: TasksViewModel, navigationToLastViewTask: () -> Unit) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors =
@@ -79,6 +94,7 @@ fun TaskCard(task: Task, navigationToLastViewTask: () -> Unit) {
         elevation = CardDefaults.cardElevation(8.dp),
         modifier =
             Modifier.fillMaxWidth().padding(top = 5.dp, start = 16.dp, end = 16.dp).clickable {
+                tasksViewModel.setCurrentTask(task)
                 navigationToLastViewTask()
             },
     ) {
@@ -87,7 +103,7 @@ fun TaskCard(task: Task, navigationToLastViewTask: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "Последняя задача",
+                text = "Последняя открытая задача №${task.id}",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
@@ -98,6 +114,29 @@ fun TaskCard(task: Task, navigationToLastViewTask: () -> Unit) {
                 text = "Исполнитель: ${task.executor}",
                 style = MaterialTheme.typography.bodyMedium
             )
+        }
+    }
+}
+
+@Composable
+fun TaskCardNotFound() {
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        colors =
+            CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        elevation = CardDefaults.cardElevation(8.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 5.dp, start = 16.dp, end = 16.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp).fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "Последняя открытая задача",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+            Text(text = "Ничего не найдено", style = MaterialTheme.typography.bodyMedium)
         }
     }
 }

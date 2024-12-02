@@ -7,6 +7,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.example.tasktracker.services.firebase.CompanyViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
 import com.ravenzip.workshop.components.SnackBar
 import com.ravenzip.workshop.components.TopAppBar
@@ -15,7 +16,8 @@ import com.ravenzip.workshop.components.TopAppBar
 fun CreateCompanyScreenScaffold(
     padding: PaddingValues,
     vararg onClick: () -> Unit,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    companyViewModel: CompanyViewModel,
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -27,7 +29,8 @@ fun CreateCompanyScreenScaffold(
             padding = innerPadding,
             snackBarHostState = snackBarHostState,
             onClick = onClick,
-            userViewModel = userViewModel
+            userViewModel = userViewModel,
+            companyViewModel = companyViewModel,
         )
     }
 
