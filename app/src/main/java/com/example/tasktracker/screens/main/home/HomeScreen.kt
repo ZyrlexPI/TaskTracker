@@ -16,9 +16,6 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,19 +34,19 @@ fun HomeScreen(
     userViewModel: UserViewModel,
     tasksViewModel: TasksViewModel
 ) {
-    val userData = userViewModel.dataUser.collectAsState().value
-    val taskData = tasksViewModel.dataCurrentTask.collectAsState().value
+    val userData = userViewModel.dataUser.collectAsStateWithLifecycle().value
+    val taskData = tasksViewModel.dataCurrentTask.collectAsStateWithLifecycle().value
 
-    val isLoadingList = remember(userData.lastTaskViewId) { mutableStateOf(true) }
-
-    LaunchedEffect(isLoadingList.value) {
-        if (isLoadingList.value) {
-            isLoadingList.value = false
-            if (userData.lastTaskViewId != "") {
-                tasksViewModel.getCurrentTask(userData.lastTaskViewId)
-            }
-        }
-    }
+    //    val isLoadingList = remember(userData.lastTaskViewId) { mutableStateOf(true) }
+    //
+    //    LaunchedEffect(isLoadingList.value) {
+    //        if (isLoadingList.value) {
+    //            isLoadingList.value = false
+    //            if (userData.lastTaskViewId != "") {
+    //                tasksViewModel.getCurrentTask(userData.lastTaskViewId)
+    //            }
+    //        }
+    //    }
 
     val taskCount = tasksViewModel.filteredTaskCount.collectAsStateWithLifecycle(TaskByType()).value
 

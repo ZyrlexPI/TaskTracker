@@ -66,7 +66,7 @@ fun UserDataScreen(
                         surname = surname.value
                     )
                 ) {
-                    userViewModel.get(authViewModel.getUser())
+                    userViewModel.setUserData(authViewModel.getUser())
                     snackBarHostState.showSuccess(message = "Данные пользователя успешно обновлены")
                 } else {
                     snackBarHostState.showError(message = "Ошибка при обновлении данных")

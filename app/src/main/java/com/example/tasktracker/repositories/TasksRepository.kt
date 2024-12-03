@@ -1,5 +1,6 @@
 package com.example.tasktracker.repositories
 
+import android.util.Log
 import com.example.tasktracker.data.Task
 import com.example.tasktracker.sources.CompanySources
 import com.example.tasktracker.sources.TasksSources
@@ -32,7 +33,7 @@ constructor(
         }
 
         dataTasks.add(dataTask.id)
-        companySources.companySource.child(dataTask.companyId).child("members").setValue(dataTasks)
+        companySources.companySource.child(dataTask.companyId).child("tasks").setValue(dataTasks)
         /** Добавление индефикатора задачи автору */
         val responseUser =
             userSources.userSource.child(dataTask.author_id).child("tasks").get().await()
@@ -73,7 +74,17 @@ constructor(
     }
 
     /** Получить задачу из БД */
-    suspend fun getCurrentTask(taskId: String): Task? {
-        return tasksSources.currentTask(taskId).get().await().getValue<Task>()
+    suspend fun getCurrentTask(taskId: String): Task {
+        if (taskId !== "") {
+            val response = tasksSources.currentTask(taskId).get().await()
+            val dataTaskCurrent = response.getValue<Task>()
+            if (dataTaskCurrent != null) {
+                Log.d("taskId_get", dataTaskCurrent.toString())
+                return dataTaskCurrent
+            }
+        } else {
+            Log.d("Exception", "taskId is null")
+        }
+        return Task()
     }
 }

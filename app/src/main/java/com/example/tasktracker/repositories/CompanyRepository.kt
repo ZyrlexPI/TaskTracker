@@ -20,7 +20,15 @@ constructor(private val companySources: CompanySources, private val userSources:
         val pushKey = companySources.companySource.push().key.toString()
         val data = mapOf("companyId" to pushKey)
         userSources.userSource.child(userData.id).updateChildren(data)
-        val dataUser = User(userData.id, userData.name, userData.surname, pushKey)
+        val dataUser =
+            User(
+                userData.id,
+                userData.name,
+                userData.surname,
+                pushKey,
+                userData.lastTaskViewId,
+                userData.tasks
+            )
         companySources.companySource
             .child(pushKey)
             .setValue(Company(pushKey, nameCompany, listOf(dataUser), listOf()))
@@ -53,7 +61,15 @@ constructor(private val companySources: CompanySources, private val userSources:
     suspend fun joinCompany(targetCompany: String, userData: User) {
         val data = mapOf("companyId" to targetCompany)
         userSources.userSource.child(userData.id).updateChildren(data)
-        val dataUser = User(userData.id, userData.name, userData.surname, targetCompany)
+        val dataUser =
+            User(
+                userData.id,
+                userData.name,
+                userData.surname,
+                targetCompany,
+                userData.lastTaskViewId,
+                userData.tasks
+            )
 
         val response =
             companySources.companySource.child(targetCompany).child("members").get().await()

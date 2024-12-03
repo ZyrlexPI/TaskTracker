@@ -15,7 +15,6 @@ import androidx.compose.material.icons.outlined.Output
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -46,8 +45,6 @@ fun CompanyScreen(
     val scope = rememberCoroutineScope()
     Log.d("CompanyScreen_CD", companyData.toString())
     Log.d("CompanyScreen_UD", userData.toString())
-
-    LaunchedEffect(Unit) { companyViewModel.getCurrentCompany(userData) }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(padding),
@@ -91,7 +88,7 @@ fun CompanyScreen(
             ) {
                 scope.launch(Dispatchers.Main) {
                     companyViewModel.deleteCurrentUser(userData)
-                    userViewModel.get(getUser())
+                    userViewModel.setUserData(getUser())
                     Log.d("ExitInCompany", userData.toString())
                     snackBarHostState.showSuccess(message = "Вы успешно вышли из организации")
                     onClick[2]()

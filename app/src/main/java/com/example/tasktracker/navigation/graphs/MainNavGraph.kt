@@ -3,7 +3,6 @@ package com.example.tasktracker.navigation.graphs
 import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -15,7 +14,6 @@ import com.example.tasktracker.screens.main.notifications.NotificationsScreenSca
 import com.example.tasktracker.services.firebase.CompanyViewModel
 import com.example.tasktracker.services.firebase.TasksViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
-import com.example.tasktracker.services.firebase.getUser
 
 @Composable
 fun MainNavGraph(
@@ -30,14 +28,6 @@ fun MainNavGraph(
     val companyData = companyViewModel.dataCompany.collectAsStateWithLifecycle().value
     Log.d("UserDataInMainScreen", userData.toString())
     Log.d("CompanyDataInMainScreen", companyData.toString())
-
-    /** Загрузка данных о пользователе и организации */
-    LaunchedEffect(Unit) {
-        userViewModel.get(getUser())
-        Log.d("UserDataInMainScreen_LE", userData.toString())
-        companyViewModel.getCurrentCompany(userData)
-        Log.d("CompanyDataInMainScreen_LE", companyData.toString())
-    }
 
     NavHost(
         navController = navController,

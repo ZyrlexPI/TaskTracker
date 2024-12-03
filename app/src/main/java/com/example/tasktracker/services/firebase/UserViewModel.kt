@@ -1,25 +1,30 @@
 package com.example.tasktracker.services.firebase
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.tasktracker.data.User
+import com.example.tasktracker.repositories.SharedRepository
 import com.example.tasktracker.repositories.UserRepository
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.getValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class UserViewModel
 @Inject
 constructor(
+    private val sharedRepository: SharedRepository,
     private val userRepository: UserRepository,
 ) : ViewModel() {
 
-    private val _dataUser = MutableStateFlow(User())
-    val dataUser = _dataUser.asStateFlow()
+    val dataUser = sharedRepository.userData
+
+    init {
+        viewModelScope.launch { sharedRepository.setUserData(userRepository.get(getUser())) }
+    }
 
     /** Добавить нового пользователя в БД */
     suspend fun add(currentUser: FirebaseUser?) {
@@ -32,8 +37,8 @@ constructor(
     }
 
     /** Получить данные о текущем пользователе из БД */
-    suspend fun get(currentUser: FirebaseUser?) {
-        _dataUser.update { userRepository.get(currentUser) }
+    suspend fun setUserData(currentUser: FirebaseUser?) {
+        sharedRepository.setUserData(userRepository.get(getUser()))
     }
 
     /** Обновление данных о пользователе. Личной информации. */

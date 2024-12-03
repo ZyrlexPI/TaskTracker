@@ -2,6 +2,7 @@ package com.example.tasktracker.repositories
 
 import android.util.Log
 import com.example.tasktracker.data.Task
+import com.example.tasktracker.data.User
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,5 +17,12 @@ class SharedRepository @Inject constructor(private val tasksRepository: TasksRep
     fun setCurrentTask(task: Task) {
         _currentTask.update { task }
         Log.d("SharedRepository", currentTask.value.toString())
+    }
+
+    private val _userData = MutableStateFlow<User>(User())
+    val userData = _userData.asStateFlow()
+
+    fun setUserData(user: User) {
+        _userData.update { user }
     }
 }

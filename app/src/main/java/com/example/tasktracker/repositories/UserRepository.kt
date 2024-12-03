@@ -20,7 +20,7 @@ constructor(private val userSources: UserSources, private val companySources: Co
         if (currentUser !== null) {
             userSources.userSource
                 .child(currentUser.uid)
-                .setValue(User(currentUser.uid, "", "", ""))
+                .setValue(User(currentUser.uid, "", "", "", "", listOf()))
                 .await()
         } else {
             Log.d("Exception", "currentUser is null")
@@ -38,10 +38,10 @@ constructor(private val userSources: UserSources, private val companySources: Co
     /** Получить данные о текущем пользователе из БД */
     suspend fun get(currentUser: FirebaseUser?): User {
         if (currentUser !== null) {
-            val response = userSources.userSource.child(currentUser.uid).get().await()
+            val response = userSources.currentUser(currentUser.uid).get().await()
             val dataUser = response.getValue<User>()
             if (dataUser != null) {
-                Log.d("UserData", dataUser.toString())
+                Log.d("UserData_get", dataUser.toString())
                 return dataUser
             }
         } else {
@@ -62,7 +62,15 @@ constructor(private val userSources: UserSources, private val companySources: Co
                     .child("members")
                     .get()
                     .await()
-            val dataUser = User(userData.id, name, surname, userData.companyId)
+            val dataUser1 =
+                User(
+                    userData.id,
+                    name,
+                    surname,
+                    userData.companyId,
+                    userData.lastTaskViewId,
+                    userData.tasks
+                )
             val dataMembers = mutableListOf<User>()
             val valueMembers = response.getValue<List<User>>()
             valueMembers?.forEach { member ->
@@ -70,7 +78,7 @@ constructor(private val userSources: UserSources, private val companySources: Co
                     dataMembers.add(member)
                 }
             }
-            dataMembers.add(dataUser)
+            dataMembers.add(dataUser1)
             companySources.companySource
                 .child(userData.companyId)
                 .child("members")

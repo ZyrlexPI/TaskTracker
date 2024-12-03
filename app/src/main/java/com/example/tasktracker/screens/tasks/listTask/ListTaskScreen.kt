@@ -29,6 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tasktracker.enums.TaskStatus
 import com.example.tasktracker.services.firebase.TasksViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
+import com.example.tasktracker.services.firebase.getUser
 import kotlinx.coroutines.launch
 
 @Composable
@@ -59,6 +60,7 @@ fun ListTaskScreen(
                     Modifier.clip(shape = RoundedCornerShape(8.dp)).clickable {
                         scope.launch {
                             userViewModel.updateLastTaskViewId(userData = userData, task.id)
+                            userViewModel.setUserData(getUser())
                             tasksViewModel.setCurrentTask(task)
                             navigateToInfoTask()
                         }
