@@ -20,7 +20,7 @@ constructor(private val userSources: UserSources, private val companySources: Co
         if (currentUser !== null) {
             userSources.userSource
                 .child(currentUser.uid)
-                .setValue(User(currentUser.uid, "", "", "", "", listOf()))
+                .setValue(User(currentUser.uid, "", "", "", "", listOf("")))
                 .await()
         } else {
             Log.d("Exception", "currentUser is null")

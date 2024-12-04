@@ -39,6 +39,27 @@ constructor(
             )
         }
 
+    val filteredTaskUserCount =
+        listTasks.map { list ->
+            TaskByType(
+                new =
+                    list.count { task ->
+                        task.status == TaskStatus.NEW_TASK &&
+                            task.executor_id == sharedRepository.userData.value.id
+                    },
+                inProgress =
+                    list.count { task ->
+                        task.status == TaskStatus.IN_PROGRESS &&
+                            task.executor_id == sharedRepository.userData.value.id
+                    },
+                complete =
+                    list.count { task ->
+                        task.status == TaskStatus.COMPLETED &&
+                            task.executor_id == sharedRepository.userData.value.id
+                    }
+            )
+        }
+
     private val updateListTask = MutableSharedFlow<Unit>()
 
     init {

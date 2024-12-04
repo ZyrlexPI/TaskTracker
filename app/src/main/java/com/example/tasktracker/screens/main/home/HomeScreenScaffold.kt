@@ -1,10 +1,13 @@
 package com.example.tasktracker.screens.main.home
 
+import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.tasktracker.screens.main.noAccess.NoAccessScreen
 import com.example.tasktracker.services.firebase.TasksViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
 import com.ravenzip.workshop.components.TopAppBar
@@ -16,15 +19,21 @@ fun HomeScreenScaffold(
     userViewModel: UserViewModel,
     tasksViewModel: TasksViewModel,
 ) {
+    val userData = userViewModel.dataUser.collectAsStateWithLifecycle().value
+    Log.d("UserDataInHomeScreen", userData.toString())
     Scaffold(
         modifier = Modifier.padding(padding),
         topBar = { TopAppBar(title = "Главный экран", backArrow = null, items = listOf()) },
     ) { innerPadding ->
-        HomeScreen(
-            padding = innerPadding,
-            navigationToLastViewTask = navigationToLastViewTask,
-            userViewModel = userViewModel,
-            tasksViewModel = tasksViewModel,
-        )
+        if (userData.companyId != "") {
+            HomeScreen(
+                padding = innerPadding,
+                navigationToLastViewTask = navigationToLastViewTask,
+                userViewModel = userViewModel,
+                tasksViewModel = tasksViewModel,
+            )
+        } else {
+            NoAccessScreen(padding = innerPadding)
+        }
     }
 }

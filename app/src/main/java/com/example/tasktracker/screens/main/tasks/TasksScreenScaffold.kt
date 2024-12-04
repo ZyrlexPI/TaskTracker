@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.data.User
 import com.example.tasktracker.enums.TaskStatus
+import com.example.tasktracker.screens.main.noAccess.NoAccessScreen
+import com.example.tasktracker.services.firebase.CompanyViewModel
 import com.example.tasktracker.services.firebase.TasksViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.showError
@@ -53,6 +55,7 @@ fun TasksScreenScaffold(
     padding: PaddingValues,
     vararg onClick: () -> Unit,
     userViewModel: UserViewModel,
+    companyViewModel: CompanyViewModel,
     tasksViewModel: TasksViewModel,
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
@@ -69,6 +72,7 @@ fun TasksScreenScaffold(
     val taskUser = remember { mutableStateOf<User?>(null) }
 
     val userData = userViewModel.dataUser.collectAsState().value
+    val companyData = companyViewModel.dataCompany.collectAsState().value
 
     val listUsers = remember { mutableListOf<User>() }
     val isLoadingList = remember { mutableStateOf(true) }
@@ -80,106 +84,115 @@ fun TasksScreenScaffold(
         }
     }
 
-    val listUsersFiltered = listUsers.filter { user -> !isEmpty(user.name) }
+    val listUsersFiltered =
+        listUsers.filter { user -> !isEmpty(user.name) && user.companyId == companyData.id }
 
     Scaffold(
         modifier = Modifier.padding(padding),
         topBar = { TopAppBar(title = "Задачи", backArrow = null, items = listOf()) },
         floatingActionButtonPosition = FabPosition.EndOverlay,
         floatingActionButton = {
-            FloatingActionButton(onClick = { showBottomSheet = true }) {
-                Icon(Icons.Filled.Add, "")
+            if (userData.companyId != "") {
+                FloatingActionButton(onClick = { showBottomSheet = true }) {
+                    Icon(Icons.Filled.Add, "")
+                }
             }
         }
     ) { innerPadding ->
-        TasksScreen(
-            padding = innerPadding,
-            onClick = onClick,
-        )
+        if (userData.companyId != "") {
+            TasksScreen(
+                padding = innerPadding,
+                onClick = onClick,
+            )
 
-        if (showBottomSheet) {
-            ModalBottomSheet(
-                onDismissRequest = { showBottomSheet = false },
-                sheetState = sheetState,
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+            if (showBottomSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = { showBottomSheet = false },
+                    sheetState = sheetState,
                 ) {
-                    Text(
-                        text = "Создание задачи",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    SinglenessOutlinedTextField(text = taskName, label = "Наименование задачи")
-
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    DropDownTextField(
-                        state = taskStatus,
-                        menuItems = TaskStatus.values().toList(),
-                        view = { it.value },
-                        label = "Статус задачи"
-                    )
-
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    DropDownTextField(
-                        state = taskUser,
-                        menuItems = listUsersFiltered,
-                        view = { it.name + " " + it.surname },
-                        label = "Исполнитель"
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    SimpleButton(
-                        text = "Создать",
-                        textConfig = TextConfig(size = 19.sp, align = TextAlign.Center)
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        scope.launch {
-                            if (
-                                taskName.value.isNotEmpty() &&
-                                    taskUser.value != null &&
-                                    taskStatus.value != null &&
-                                    taskUser.value != null
-                            ) {
-                                /** Отключение видимости контейнера добавления задачи */
-                                showBottomSheet = false
-                                /** Включение спинера */
-                                isLoading.value = true
-                                /** Запрос на создание задачи */
-                                tasksViewModel.add(
-                                    taskName.value,
-                                    taskStatus.value!!,
-                                    taskUser.value!!.name + " " + taskUser.value!!.surname,
-                                    userData.id,
-                                    userData.name + " " + userData.surname,
-                                    taskUser.value!!.id,
-                                    userData.companyId
-                                )
-                                /** Обновление списка задач */
-                                tasksViewModel.updateListTask()
-                                /** Обнуление вводимых данных */
-                                taskName.value = ""
-                                taskStatus.value = null
-                                taskUser.value = null
-                                /** Отключение спинера */
-                                isLoading.value = false
-                                snackBarHostState.showSuccess(message = "Задача успешно создана")
-                            } else {
-                                snackBarHostState.showError(
-                                    message =
-                                        "Ошибка выполнения запроса. Проверьте введенные данные"
-                                )
+                        Text(
+                            text = "Создание задачи",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        SinglenessOutlinedTextField(text = taskName, label = "Наименование задачи")
+
+                        Spacer(modifier = Modifier.height(5.dp))
+
+                        DropDownTextField(
+                            state = taskStatus,
+                            menuItems = TaskStatus.values().toList(),
+                            view = { it.value },
+                            label = "Статус задачи"
+                        )
+
+                        Spacer(modifier = Modifier.height(5.dp))
+
+                        DropDownTextField(
+                            state = taskUser,
+                            menuItems = listUsersFiltered,
+                            view = { it.name + " " + it.surname },
+                            label = "Исполнитель"
+                        )
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        SimpleButton(
+                            text = "Создать",
+                            textConfig = TextConfig(size = 19.sp, align = TextAlign.Center)
+                        ) {
+                            scope.launch {
+                                if (
+                                    taskName.value.isNotEmpty() &&
+                                        taskUser.value != null &&
+                                        taskStatus.value != null &&
+                                        taskUser.value != null
+                                ) {
+                                    /** Отключение видимости контейнера добавления задачи */
+                                    showBottomSheet = false
+                                    /** Включение спинера */
+                                    isLoading.value = true
+                                    /** Запрос на создание задачи */
+                                    tasksViewModel.add(
+                                        nameTask = taskName.value,
+                                        statusTask = taskStatus.value!!,
+                                        userData.name + " " + userData.surname,
+                                        userData.id,
+                                        taskUser.value!!.name + " " + taskUser.value!!.surname,
+                                        taskUser.value!!.id,
+                                        userData.companyId
+                                    )
+                                    /** Обновление списка задач */
+                                    tasksViewModel.updateListTask()
+                                    /** Обнуление вводимых данных */
+                                    taskName.value = ""
+                                    taskStatus.value = null
+                                    taskUser.value = null
+                                    /** Отключение спинера */
+                                    isLoading.value = false
+                                    snackBarHostState.showSuccess(
+                                        message = "Задача успешно создана"
+                                    )
+                                } else {
+                                    snackBarHostState.showError(
+                                        message =
+                                            "Ошибка выполнения запроса. Проверьте введенные данные"
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
+        } else {
+            NoAccessScreen(padding = innerPadding)
         }
     }
     if (isLoading.value) {

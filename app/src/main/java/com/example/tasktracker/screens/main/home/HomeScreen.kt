@@ -37,21 +37,18 @@ fun HomeScreen(
     val userData = userViewModel.dataUser.collectAsStateWithLifecycle().value
     val taskData = tasksViewModel.dataCurrentTask.collectAsStateWithLifecycle().value
 
-    //    val isLoadingList = remember(userData.lastTaskViewId) { mutableStateOf(true) }
-    //
-    //    LaunchedEffect(isLoadingList.value) {
-    //        if (isLoadingList.value) {
-    //            isLoadingList.value = false
-    //            if (userData.lastTaskViewId != "") {
-    //                tasksViewModel.getCurrentTask(userData.lastTaskViewId)
-    //            }
-    //        }
-    //    }
-
     val taskCount = tasksViewModel.filteredTaskCount.collectAsStateWithLifecycle(TaskByType()).value
+
+    val taskUserCount =
+        tasksViewModel.filteredTaskUserCount.collectAsStateWithLifecycle(TaskByType()).value
 
     val totalTasks =
         remember(taskCount) { taskCount.new + taskCount.inProgress + taskCount.complete }
+
+    val totalUserTasks =
+        remember(taskUserCount) {
+            taskUserCount.new + taskUserCount.inProgress + taskUserCount.complete
+        }
 
     // Основной макет
     Column(
@@ -73,6 +70,16 @@ fun HomeScreen(
 
         // Карточка общего состояния задач
         StatsCard(
+            title = "Мои задачи",
+            totalTasks = totalUserTasks,
+            newTasksCount = taskUserCount.new,
+            inProgressTasksCount = taskUserCount.inProgress,
+            completedTasksCount = taskUserCount.complete
+        )
+
+        // Карточка общего состояния задач
+        StatsCard(
+            title = "Всего задач",
             totalTasks = totalTasks,
             newTasksCount = taskCount.new,
             inProgressTasksCount = taskCount.inProgress,
@@ -141,6 +148,7 @@ fun TaskCardNotFound() {
 // Карточка общего состояния задач
 @Composable
 fun StatsCard(
+    title: String,
     totalTasks: Int,
     newTasksCount: Int,
     inProgressTasksCount: Int,
@@ -158,7 +166,7 @@ fun StatsCard(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "Всего задач: $totalTasks",
+                text = "$title: $totalTasks",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )

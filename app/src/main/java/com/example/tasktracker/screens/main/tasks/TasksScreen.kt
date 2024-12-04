@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ControlPoint
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.PublishedWithChanges
+import androidx.compose.material.icons.outlined.RemoveRedEye
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +52,15 @@ fun TasksScreen(padding: PaddingValues, vararg onClick: () -> Unit) {
             iconConfig = IconConfig.Default,
         ) {
             onClick[2]()
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        RowIconButton(
+            text = "Отслеживаемые",
+            textConfig = TextConfig(size = 19.sp),
+            icon = Icon.ImageVectorIcon(Icons.Outlined.RemoveRedEye),
+            iconConfig = IconConfig.Default,
+        ) {
+            onClick[3]()
         }
     }
 }

@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.tasktracker.enums.TaskStatus
+import com.example.tasktracker.enums.TaskViewOption
 import com.example.tasktracker.navigation.models.BottomBarGraph
 import com.example.tasktracker.navigation.models.TasksGraph
 import com.example.tasktracker.screens.main.tasks.TasksScreenScaffold
@@ -37,8 +38,10 @@ fun TasksNavigationGraph(
                         { navController.navigate(TasksGraph.TASK_NEW_LIST) },
                         { navController.navigate(TasksGraph.TASK_IN_PROGRESS_LIST) },
                         { navController.navigate(TasksGraph.TASK_COMPLETED_LIST) },
+                        { navController.navigate(TasksGraph.TASK_AUTHOR_LIST) },
                     ),
                 userViewModel = userViewModel,
+                companyViewModel = companyViewModel,
                 tasksViewModel = tasksViewModel,
             )
         }
@@ -47,6 +50,7 @@ fun TasksNavigationGraph(
             ListTaskScreenScaffold(
                 padding = padding,
                 status = TaskStatus.NEW_TASK,
+                viewingOption = TaskViewOption.EXECUTOR,
                 navigateToInfoTask = { navController.navigate(TasksGraph.TASK_INFO) },
                 userViewModel = userViewModel,
                 tasksViewModel = tasksViewModel,
@@ -57,6 +61,7 @@ fun TasksNavigationGraph(
             ListTaskScreenScaffold(
                 padding = padding,
                 status = TaskStatus.IN_PROGRESS,
+                viewingOption = TaskViewOption.EXECUTOR,
                 { navController.navigate(TasksGraph.TASK_INFO) },
                 userViewModel = userViewModel,
                 tasksViewModel = tasksViewModel,
@@ -67,6 +72,18 @@ fun TasksNavigationGraph(
             ListTaskScreenScaffold(
                 padding = padding,
                 status = TaskStatus.COMPLETED,
+                viewingOption = TaskViewOption.EXECUTOR,
+                { navController.navigate(TasksGraph.TASK_INFO) },
+                userViewModel = userViewModel,
+                tasksViewModel = tasksViewModel,
+            )
+        }
+
+        composable(route = TasksGraph.TASK_AUTHOR_LIST) {
+            ListTaskScreenScaffold(
+                padding = padding,
+                status = TaskStatus.COMPLETED,
+                viewingOption = TaskViewOption.AUTHOR,
                 { navController.navigate(TasksGraph.TASK_INFO) },
                 userViewModel = userViewModel,
                 tasksViewModel = tasksViewModel,

@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.example.tasktracker.enums.TaskStatus
+import com.example.tasktracker.enums.TaskViewOption
 import com.example.tasktracker.services.firebase.TasksViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
 import com.ravenzip.workshop.components.TopAppBar
@@ -15,6 +16,7 @@ import com.ravenzip.workshop.components.TopAppBar
 fun ListTaskScreenScaffold(
     padding: PaddingValues,
     status: TaskStatus,
+    viewingOption: TaskViewOption,
     navigateToInfoTask: () -> Unit,
     userViewModel: UserViewModel,
     tasksViewModel: TasksViewModel,
@@ -28,13 +30,30 @@ fun ListTaskScreenScaffold(
             }
         }
 
+    val statusAuthorTopBar =
+        remember(viewingOption) {
+            when (viewingOption) {
+                TaskViewOption.EXECUTOR -> "Задачи"
+                TaskViewOption.AUTHOR -> "Отслеживаемые задачи"
+            }
+        }
+
     Scaffold(
         modifier = Modifier.padding(padding),
-        topBar = { TopAppBar(title = statusTobBar, backArrow = null, items = listOf()) },
+        topBar = {
+            TopAppBar(
+                title =
+                    if (viewingOption == TaskViewOption.AUTHOR) statusAuthorTopBar
+                    else statusTobBar,
+                backArrow = null,
+                items = listOf()
+            )
+        },
     ) { innerPadding ->
         ListTaskScreen(
             padding = innerPadding,
             status = status,
+            viewingOption = viewingOption,
             navigateToInfoTask = navigateToInfoTask,
             userViewModel = userViewModel,
             tasksViewModel = tasksViewModel,

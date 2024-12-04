@@ -5,5 +5,6 @@ object TasksGraph {
     const val TASK_NEW_LIST = "TASK_NEW_LIST"
     const val TASK_IN_PROGRESS_LIST = "TASK_IN_PROGRESS_LIST"
     const val TASK_COMPLETED_LIST = "TASK_COMPLETED_LIST"
+    const val TASK_AUTHOR_LIST = "TASK_AUTHOR_LIST"
     const val TASK_INFO = "TASK_INFO"
 }

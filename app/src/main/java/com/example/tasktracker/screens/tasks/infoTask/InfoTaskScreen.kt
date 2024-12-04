@@ -25,9 +25,8 @@ fun InfoTaskScreen(
     padding: PaddingValues,
     taskView: Task,
 ) {
-    val task = taskView
     // Весь экран
-    Box(modifier = Modifier.fillMaxSize().padding(padding)) { TaskCard(task) }
+    Box(modifier = Modifier.fillMaxSize().padding(padding)) { TaskCard(taskView) }
 }
 
 // Карточка для отображения задачи

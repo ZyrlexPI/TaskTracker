@@ -75,7 +75,7 @@ constructor(
 
     /** Получить задачу из БД */
     suspend fun getCurrentTask(taskId: String): Task {
-        if (taskId !== "") {
+        if (taskId != "") {
             val response = tasksSources.currentTask(taskId).get().await()
             val dataTaskCurrent = response.getValue<Task>()
             if (dataTaskCurrent != null) {
