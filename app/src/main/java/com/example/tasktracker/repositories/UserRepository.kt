@@ -50,6 +50,17 @@ constructor(private val userSources: UserSources, private val companySources: Co
         return User()
     }
 
+    /** Получить данные о пользователе по id */
+    suspend fun getUserById(id: String): User {
+        val response = userSources.userSource.child(id).get().await()
+        val dataUser = response.getValue<User>()
+        if (dataUser != null) {
+            Log.d("UserData_get", dataUser.toString())
+            return dataUser
+        }
+        return User()
+    }
+
     /** Обновление данных о пользователе. Личной информации. */
     suspend fun update(userData: User, name: String, surname: String): Boolean {
 

@@ -40,6 +40,8 @@ fun HomeNavigationGraph(
         composable(route = TasksGraph.TASK_INFO) {
             InfoTaskScreenScaffold(
                 padding = padding,
+                userViewModel = userViewModel,
+                tasksViewModel = tasksViewModel,
             )
         }
     }

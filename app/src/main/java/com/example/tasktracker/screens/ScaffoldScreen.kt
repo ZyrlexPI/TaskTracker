@@ -65,7 +65,8 @@ private fun generateMenuItems(): List<BottomNavigationItem> {
             route = BottomBarGraph.NOTIFICATIONS,
             icon = Icon.ImageVectorIcon(Icons.Outlined.Notifications),
             iconConfig = IconConfig.Primary,
-            hasNews = false
+            hasNews = false,
+            badgeCount = 10
         )
 
     val userProfileButton =
