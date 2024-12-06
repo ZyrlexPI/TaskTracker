@@ -65,6 +65,62 @@ constructor(
         tasksSources.taskSource.child(dataTask.id).setValue(dataTask).await()
     }
 
+    /** Удаление задачи */
+    suspend fun delete(taskData: Task) {
+
+        val responseCompany =
+            companySources.companySource.child(taskData.companyId).child("tasks").get().await()
+        val dataTaskInCompany = mutableListOf<String>()
+        val valueTaskInCompany = responseCompany.getValue<List<String>>()
+        if (valueTaskInCompany != null) {
+            valueTaskInCompany.forEach { data ->
+                if (data != taskData.id) {
+                    dataTaskInCompany.add(data)
+                }
+            }
+            companySources.companySource
+                .child(taskData.companyId)
+                .child("tasks")
+                .setValue(dataTaskInCompany)
+        }
+
+        val responseAuthor =
+            userSources.userSource.child(taskData.author_id).child("tasks").get().await()
+        val dataTaskInAuthor = mutableListOf<String>()
+        val valueTaskInAuthor = responseAuthor.getValue<List<String>>()
+        if (valueTaskInAuthor != null) {
+            valueTaskInAuthor.forEach { data ->
+                if (data != taskData.id) {
+                    dataTaskInAuthor.add(data)
+                }
+            }
+            userSources.userSource
+                .child(taskData.author_id)
+                .child("tasks")
+                .setValue(dataTaskInAuthor)
+        }
+
+        if (taskData.author_id != taskData.executor_id) {
+            val responseExecutor =
+                userSources.userSource.child(taskData.executor_id).child("tasks").get().await()
+            val dataTaskInExecutor = mutableListOf<String>()
+            val valueTaskInExecutor = responseExecutor.getValue<List<String>>()
+            if (valueTaskInExecutor != null) {
+                valueTaskInExecutor.forEach { data ->
+                    if (data != taskData.id) {
+                        dataTaskInExecutor.add(data)
+                    }
+                }
+                userSources.userSource
+                    .child(taskData.executor_id)
+                    .child("tasks")
+                    .setValue(dataTaskInExecutor)
+            }
+        }
+
+        tasksSources.taskSource.child(taskData.id).removeValue().await()
+    }
+
     /** Получить список заданий существующих в БД */
     suspend fun getListTasks(): List<Task> {
         val response = tasksSources.taskSource.get().await().children

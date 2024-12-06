@@ -33,9 +33,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.tasktracker.data.Task
+import com.example.tasktracker.data.User
 import com.example.tasktracker.services.firebase.InfoTasksViewModel
 import com.example.tasktracker.services.firebase.TasksViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
+import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.ravenzip.workshop.components.SimpleButton
@@ -47,6 +50,7 @@ import com.ravenzip.workshop.data.TextConfig
 import com.ravenzip.workshop.data.appbar.AppBarItem
 import com.ravenzip.workshop.data.icon.Icon
 import com.ravenzip.workshop.data.icon.IconConfig
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,6 +59,7 @@ fun InfoTaskScreenScaffold(
     padding: PaddingValues,
     userViewModel: UserViewModel,
     tasksViewModel: TasksViewModel,
+    returnToTaskList: () -> Unit,
     infoTasksViewModel: InfoTasksViewModel = hiltViewModel(),
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
@@ -78,7 +83,15 @@ fun InfoTaskScreenScaffold(
             TopAppBar(
                 title = "Задача №" + taskInfo.id,
                 backArrow = null,
-                items = generateTopAppBarItems()
+                items =
+                    generateTopAppBarItems(
+                        scope,
+                        userData,
+                        taskInfo,
+                        userViewModel,
+                        tasksViewModel,
+                        returnToTaskList
+                    ),
             )
         },
         floatingActionButtonPosition = FabPosition.EndOverlay,
@@ -164,7 +177,15 @@ fun InfoTaskScreenScaffold(
     SnackBar(snackBarHostState)
 }
 
-fun generateTopAppBarItems(): List<AppBarItem> {
+fun generateTopAppBarItems(
+    scope: CoroutineScope,
+    userData: User,
+    taskInfo: Task,
+    userViewModel: UserViewModel,
+    tasksViewModel: TasksViewModel,
+    returnToTaskList: () -> Unit
+): List<AppBarItem> {
+
     val editButton =
         AppBarItem(
             icon = Icon.ImageVectorIcon(Icons.Filled.Edit),
@@ -176,7 +197,15 @@ fun generateTopAppBarItems(): List<AppBarItem> {
         AppBarItem(
             icon = Icon.ImageVectorIcon(Icons.Filled.Delete),
             iconConfig = IconConfig.Small,
-            onClick = {},
+            onClick = {
+                scope.launch {
+                    tasksViewModel.delete(taskInfo)
+                    tasksViewModel.updateListTask()
+                    userViewModel.updateLastTaskViewId(userData, "")
+                    userViewModel.setUserData(getUser())
+                    returnToTaskList()
+                }
+            },
         )
 
     return listOf(editButton, deleteButton)

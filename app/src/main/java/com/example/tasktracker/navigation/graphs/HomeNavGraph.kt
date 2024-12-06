@@ -42,6 +42,7 @@ fun HomeNavigationGraph(
                 padding = padding,
                 userViewModel = userViewModel,
                 tasksViewModel = tasksViewModel,
+                returnToTaskList = { navController.popBackStack() },
             )
         }
     }

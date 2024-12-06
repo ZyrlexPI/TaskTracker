@@ -1,5 +1,6 @@
 package com.example.tasktracker.screens.tasks.infoTask
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,15 +49,14 @@ fun InfoTaskScreen(
     taskView: Task,
 ) {
     val scope = rememberCoroutineScope()
-    val listComments = tasksViewModel.listComments.collectAsStateWithLifecycle().value
 
+    val listComments = tasksViewModel.listComments.collectAsStateWithLifecycle().value
+    Log.d("InfoTaskScreen_LIST", "$listComments")
     val refreshState = rememberPullToRefreshState()
     val isRefreshing = remember { mutableStateOf(false) }
 
     val authorName = infoTasksViewModel.userNameAuthor.collectAsStateWithLifecycle().value
     val executorName = infoTasksViewModel.userNameExecutor.collectAsStateWithLifecycle().value
-
-    val userNameComment = remember { mutableStateOf("") }
 
     // Весь экран
     PullToRefreshBox(
@@ -88,14 +87,10 @@ fun InfoTaskScreen(
                     textAlign = TextAlign.Center
                 )
             }
-
-            items(listComments) { comment ->
-                LaunchedEffect(Unit) {
-                    scope.launch {
-                        userNameComment.value = tasksViewModel.getUserNameById(comment.userId)
-                    }
-                }
-                CommentItem(userNameComment.value, comment)
+            if (listComments.isEmpty()) {
+                item { Text(text = "Нет комментариев") }
+            } else {
+                items(listComments) { comment -> CommentItem(comment) }
             }
         }
     }
@@ -159,7 +154,7 @@ fun addComment(comments: MutableList<Comment>, userName: String, text: String) {
 
 // Элемент комментария
 @Composable
-fun CommentItem(userName: String, comment: Comment) {
+fun CommentItem(comment: Comment) {
     Card(
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(4.dp),
@@ -167,7 +162,7 @@ fun CommentItem(userName: String, comment: Comment) {
     ) {
         Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
             Text(
-                text = userName,
+                text = comment.userName,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.primary

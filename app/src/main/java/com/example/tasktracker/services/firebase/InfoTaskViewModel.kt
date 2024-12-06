@@ -8,6 +8,7 @@ import com.example.tasktracker.repositories.SharedRepository
 import com.example.tasktracker.repositories.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,11 +32,13 @@ constructor(
     private val _task = MutableStateFlow(Task())
     val task = _task.asStateFlow()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val userNameAuthor =
         task
             .map { task -> task.author_id }
             .flatMapLatest { flowOf(getUserNameById(it)) }
             .stateIn(scope = viewModelScope, SharingStarted.Lazily, initialValue = "")
+    @OptIn(ExperimentalCoroutinesApi::class)
     val userNameExecutor =
         task
             .map { task -> task.executor_id }

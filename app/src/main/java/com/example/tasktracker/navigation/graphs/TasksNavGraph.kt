@@ -94,7 +94,8 @@ fun TasksNavigationGraph(
             InfoTaskScreenScaffold(
                 padding = padding,
                 userViewModel = userViewModel,
-                tasksViewModel = tasksViewModel
+                tasksViewModel = tasksViewModel,
+                returnToTaskList = { navController.popBackStack() }
             )
         }
     }

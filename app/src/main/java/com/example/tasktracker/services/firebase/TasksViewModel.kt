@@ -9,13 +9,14 @@ import com.example.tasktracker.repositories.CommentsRepository
 import com.example.tasktracker.repositories.SharedRepository
 import com.example.tasktracker.repositories.TasksRepository
 import com.example.tasktracker.repositories.UserRepository
-import com.ravenzip.kotlinflowextended.functions.forkJoin
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -36,11 +37,13 @@ constructor(
     private val _dataCurrentTask = MutableStateFlow(Task())
     val dataCurrentTask = _dataCurrentTask.asStateFlow()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val userNameAuthor =
         dataCurrentTask
             .map { task -> task.author_id }
             .flatMapLatest { flowOf(getUserNameById(it)) }
             .stateIn(scope = viewModelScope, SharingStarted.Lazily, initialValue = "")
+    @OptIn(ExperimentalCoroutinesApi::class)
     val userNameExecutor =
         dataCurrentTask
             .map { task -> task.executor_id }
@@ -53,10 +56,18 @@ constructor(
     private val _listComments = MutableStateFlow(listOf<Comment>())
     val listComments = _listComments.asStateFlow()
 
-    val namesComments =
-        listComments.map { comments ->
-            forkJoin(comments.map { flowOf(getUserNameById(it.userId)) })
-        }
+    //    @OptIn(ExperimentalCoroutinesApi::class)
+    //    val namesComments =
+    //        listComments
+    //            .onEach { Log.d("NamesComments_get", it.toString()) }
+    //            .filter { it.isNotEmpty() }
+    //            .flatMapLatest { comments ->
+    //                forkJoin(
+    //                    comments.map { flowOf(getFilteredComment(it.text, it.userId)) },
+    //                    flowLimit = if (comments.count() <= 3) comments.count() else 3
+    //                )
+    //            }
+    //            .onEach { Log.d("NamesComments_get_2", it.toString()) }
 
     val filteredTaskCount =
         listTasks.map { list ->
@@ -122,7 +133,7 @@ constructor(
     ) {
 
         /** Создание индефикатора задачи */
-        val pushKey = (tasksRepository.getListTasks().count() + 1).toString()
+        val pushKey = (tasksRepository.getListTasks().last().id.toInt() + 1).toString()
 
         /** Формирование объекта задачи */
         val dataTask =
@@ -140,12 +151,13 @@ constructor(
         tasksRepository.add(dataTask)
     }
 
+    suspend fun delete(taskData: Task) = tasksRepository.delete(taskData)
+
     suspend fun getListTasks() = tasksRepository.getListTasks()
 
     fun setCurrentTask(task: Task) = sharedRepository.setCurrentTask(task)
 
     fun updateListTask() {
-
         viewModelScope.launch { updateListTask.emit(Unit) }
     }
 
@@ -165,6 +177,15 @@ constructor(
         val userData = userRepository.getUserById(userId)
         return userData.name + " " + userData.surname
     }
+
+    suspend fun getFilteredComment(text: String, userId: String): CommentFiltered {
+        val userData = userRepository.getUserById(userId)
+        val dataFiltered =
+            CommentFiltered(userName = userData.name + " " + userData.surname, text = text)
+        return dataFiltered
+    }
 }
 
 class TaskByType(val new: Int = 0, val inProgress: Int = 0, val complete: Int = 0)
+
+data class CommentFiltered(val userName: String = "", val text: String = "")
