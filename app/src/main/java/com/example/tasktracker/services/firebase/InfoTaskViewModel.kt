@@ -50,6 +50,10 @@ constructor(
         return userData.name + " " + userData.surname
     }
 
+    suspend fun updateTask(task: Task) {
+        _task.update { task }
+    }
+
     init {
         viewModelScope.launch {
             sharedRepository.currentTask

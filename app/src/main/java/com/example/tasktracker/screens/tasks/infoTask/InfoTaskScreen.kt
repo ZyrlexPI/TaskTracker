@@ -80,7 +80,13 @@ fun InfoTaskScreen(
         state = refreshState,
     ) {
         if (editState.value) {
-            EditTaskScreen(taskView, tasksViewModel, editState, snackBarHostState)
+            EditTaskScreen(
+                taskView,
+                infoTasksViewModel,
+                tasksViewModel,
+                editState,
+                snackBarHostState
+            )
         } else {
 
             LazyColumn(
@@ -111,6 +117,7 @@ fun InfoTaskScreen(
 @Composable
 fun EditTaskScreen(
     task: Task,
+    infoTasksViewModel: InfoTasksViewModel,
     tasksViewModel: TasksViewModel,
     editState: MutableState<Boolean>,
     snackBarHostState: SnackbarHostState
@@ -145,6 +152,7 @@ fun EditTaskScreen(
                             companyId = task.companyId,
                         )
                     tasksViewModel.update(newTask)
+                    infoTasksViewModel.updateTask(newTask)
                     tasksViewModel.setCurrentTask(newTask)
                     tasksViewModel.updateListTask()
                     snackBarHostState.showSuccess(message = "Задача успешно изменена")
