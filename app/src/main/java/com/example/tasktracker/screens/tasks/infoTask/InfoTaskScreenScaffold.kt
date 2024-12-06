@@ -20,6 +20,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -77,6 +78,8 @@ fun InfoTaskScreenScaffold(
 
     val textComment = remember { mutableStateOf("") }
 
+    val editState = remember { mutableStateOf(false) }
+
     Scaffold(
         modifier = Modifier.padding(padding),
         topBar = {
@@ -90,7 +93,8 @@ fun InfoTaskScreenScaffold(
                         taskInfo,
                         userViewModel,
                         tasksViewModel,
-                        returnToTaskList
+                        returnToTaskList,
+                        editState
                     ),
             )
         },
@@ -105,7 +109,8 @@ fun InfoTaskScreenScaffold(
             padding = innerPadding,
             infoTasksViewModel = infoTasksViewModel,
             tasksViewModel = tasksViewModel,
-            taskView = taskInfo,
+            editState = editState,
+            snackBarHostState = snackBarHostState,
         )
 
         if (showBottomSheet) {
@@ -183,14 +188,21 @@ fun generateTopAppBarItems(
     taskInfo: Task,
     userViewModel: UserViewModel,
     tasksViewModel: TasksViewModel,
-    returnToTaskList: () -> Unit
+    returnToTaskList: () -> Unit,
+    editState: MutableState<Boolean>,
 ): List<AppBarItem> {
 
     val editButton =
         AppBarItem(
             icon = Icon.ImageVectorIcon(Icons.Filled.Edit),
             iconConfig = IconConfig.Small,
-            onClick = {},
+            onClick = {
+                if (editState.value) {
+                    editState.value = false
+                } else {
+                    editState.value = true
+                }
+            },
         )
 
     val deleteButton =

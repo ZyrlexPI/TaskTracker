@@ -26,6 +26,8 @@ import com.example.tasktracker.data.Task
 import com.example.tasktracker.services.firebase.TaskByType
 import com.example.tasktracker.services.firebase.TasksViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 @Composable
 fun HomeScreen(
@@ -174,15 +176,33 @@ fun StatsCard(
             // Прогресс-бары для каждой категории задач
             ProgressBar(
                 label = "Новые",
-                value = if (totalTasks == 0) 0f else newTasksCount / totalTasks.toFloat()
+                count = newTasksCount,
+                value =
+                    if (totalTasks == 0) 0f
+                    else
+                        BigDecimal(newTasksCount / totalTasks.toFloat().toDouble())
+                            .setScale(2, RoundingMode.HALF_UP)
+                            .toFloat()
             )
             ProgressBar(
                 label = "В процессе",
-                value = if (totalTasks == 0) 0f else inProgressTasksCount / totalTasks.toFloat()
+                count = inProgressTasksCount,
+                value =
+                    if (totalTasks == 0) 0f
+                    else
+                        BigDecimal(inProgressTasksCount / totalTasks.toFloat().toDouble())
+                            .setScale(2, RoundingMode.HALF_UP)
+                            .toFloat()
             )
             ProgressBar(
                 label = "Завершенные",
-                value = if (totalTasks == 0) 0f else completedTasksCount / totalTasks.toFloat()
+                count = completedTasksCount,
+                value =
+                    if (totalTasks == 0) 0f
+                    else
+                        BigDecimal(completedTasksCount / totalTasks.toFloat().toDouble())
+                            .setScale(2, RoundingMode.HALF_UP)
+                            .toFloat()
             )
         }
     }
@@ -190,10 +210,10 @@ fun StatsCard(
 
 // Прогресс-бар с текстом
 @Composable
-fun ProgressBar(label: String, value: Float) {
+fun ProgressBar(label: String, count: Int, value: Float) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = label + " - " + value * 100 + "%",
+            text = label + ": " + count + " - " + value * 100 + "%",
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onBackground
         )

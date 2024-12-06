@@ -16,10 +16,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,8 +34,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tasktracker.data.Comment
 import com.example.tasktracker.data.Task
+import com.example.tasktracker.enums.TaskStatus
 import com.example.tasktracker.services.firebase.InfoTasksViewModel
 import com.example.tasktracker.services.firebase.TasksViewModel
+import com.example.tasktracker.services.showError
+import com.example.tasktracker.services.showSuccess
+import com.ravenzip.workshop.components.DropDownTextField
 import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessOutlinedTextField
 import kotlin.time.Duration.Companion.seconds
@@ -46,10 +52,11 @@ fun InfoTaskScreen(
     padding: PaddingValues,
     infoTasksViewModel: InfoTasksViewModel,
     tasksViewModel: TasksViewModel,
-    taskView: Task,
+    editState: MutableState<Boolean>,
+    snackBarHostState: SnackbarHostState,
 ) {
     val scope = rememberCoroutineScope()
-
+    val taskView = infoTasksViewModel.task.collectAsStateWithLifecycle().value
     val listComments = tasksViewModel.listComments.collectAsStateWithLifecycle().value
     Log.d("InfoTaskScreen_LIST", "$listComments")
     val refreshState = rememberPullToRefreshState()
@@ -72,25 +79,81 @@ fun InfoTaskScreen(
         modifier = Modifier.padding(padding),
         state = refreshState,
     ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            item { TaskCard(authorName, executorName, taskView) }
-            item {
-                Text(
-                    text = "Комментарии",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
+        if (editState.value) {
+            EditTaskScreen(taskView, tasksViewModel, editState, snackBarHostState)
+        } else {
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                item { TaskCard(authorName, executorName, taskView) }
+                item {
+                    Text(
+                        text = "Комментарии",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+                if (listComments.isEmpty()) {
+                    item { Text(text = "Нет комментариев") }
+                } else {
+                    items(listComments) { comment -> CommentItem(comment) }
+                }
             }
-            if (listComments.isEmpty()) {
-                item { Text(text = "Нет комментариев") }
-            } else {
-                items(listComments) { comment -> CommentItem(comment) }
+        }
+    }
+}
+
+@Composable
+fun EditTaskScreen(
+    task: Task,
+    tasksViewModel: TasksViewModel,
+    editState: MutableState<Boolean>,
+    snackBarHostState: SnackbarHostState
+) {
+    val scope = rememberCoroutineScope()
+    val newNameTask = remember(task) { mutableStateOf(task.name) }
+
+    val newStatusTask = remember(task) { mutableStateOf(task.status) }
+
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        SinglenessOutlinedTextField(text = newNameTask, label = "Имя задачи")
+        Spacer(modifier = Modifier.height(8.dp))
+        DropDownTextField(
+            state = newStatusTask,
+            menuItems = TaskStatus.values().toList(),
+            view = { it.value },
+            label = "Статус задачи"
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        SimpleButton(text = "Изменить задачу") {
+            scope.launch {
+                if (newNameTask.value.isNotBlank() && newStatusTask.value != null) {
+                    val newTask =
+                        Task(
+                            id = task.id,
+                            name = newNameTask.value,
+                            status = newStatusTask.value,
+                            author = task.author,
+                            author_id = task.author_id,
+                            executor = task.executor,
+                            executor_id = task.executor_id,
+                            companyId = task.companyId,
+                        )
+                    tasksViewModel.update(newTask)
+                    tasksViewModel.setCurrentTask(newTask)
+                    tasksViewModel.updateListTask()
+                    snackBarHostState.showSuccess(message = "Задача успешно изменена")
+                    editState.value = false
+                } else {
+                    snackBarHostState.showError(
+                        message = "Ошибка выполнения запроса. Проверьте введенные данные"
+                    )
+                }
             }
         }
     }

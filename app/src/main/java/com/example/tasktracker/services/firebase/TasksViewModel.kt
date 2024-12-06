@@ -110,6 +110,14 @@ constructor(
         viewModelScope.launch {
             sharedRepository.currentTask.collect {
                 if (it != null) {
+                    getCurrentTask(it.id)
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            sharedRepository.currentTask.collect {
+                if (it != null) {
                     getListComments(it.id)
                 }
             }
@@ -122,6 +130,7 @@ constructor(
         viewModelScope.launch { updateListTask.emit(Unit) }
     }
 
+    /** Добавление задачи */
     suspend fun add(
         nameTask: String,
         statusTask: TaskStatus,
@@ -151,6 +160,26 @@ constructor(
         tasksRepository.add(dataTask)
     }
 
+    /** Обновление задачи */
+    suspend fun update(taskData: Task) {
+
+        /** Формирование объекта задачи */
+        //        val dataTask =
+        //            Task(
+        //                id = id,
+        //                name = nameTask,
+        //                status = statusTask,
+        //                author = author,
+        //                author_id = authorId,
+        //                executor = executor,
+        //                executor_id = executorId,
+        //                companyId = companyId
+        //            )
+
+        tasksRepository.update(taskData)
+    }
+
+    /** Удаление задачи */
     suspend fun delete(taskData: Task) = tasksRepository.delete(taskData)
 
     suspend fun getListTasks() = tasksRepository.getListTasks()

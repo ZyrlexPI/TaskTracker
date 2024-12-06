@@ -65,9 +65,14 @@ constructor(
         tasksSources.taskSource.child(dataTask.id).setValue(dataTask).await()
     }
 
+    /** Обновление данных задачи */
+    suspend fun update(dataTask: Task) {
+        tasksSources.taskSource.child(dataTask.id).setValue(dataTask).await()
+    }
+
     /** Удаление задачи */
     suspend fun delete(taskData: Task) {
-
+        /** Удаление задачи из компании */
         val responseCompany =
             companySources.companySource.child(taskData.companyId).child("tasks").get().await()
         val dataTaskInCompany = mutableListOf<String>()
@@ -83,7 +88,7 @@ constructor(
                 .child("tasks")
                 .setValue(dataTaskInCompany)
         }
-
+        /** Удаление задачи из автора */
         val responseAuthor =
             userSources.userSource.child(taskData.author_id).child("tasks").get().await()
         val dataTaskInAuthor = mutableListOf<String>()
@@ -99,7 +104,7 @@ constructor(
                 .child("tasks")
                 .setValue(dataTaskInAuthor)
         }
-
+        /** Удаление задачи из исполнителя */
         if (taskData.author_id != taskData.executor_id) {
             val responseExecutor =
                 userSources.userSource.child(taskData.executor_id).child("tasks").get().await()
@@ -117,7 +122,7 @@ constructor(
                     .setValue(dataTaskInExecutor)
             }
         }
-
+        /** Удаление задачи из БД */
         tasksSources.taskSource.child(taskData.id).removeValue().await()
     }
 
