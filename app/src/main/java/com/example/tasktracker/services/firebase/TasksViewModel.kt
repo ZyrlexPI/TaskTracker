@@ -9,6 +9,7 @@ import com.example.tasktracker.repositories.CommentsRepository
 import com.example.tasktracker.repositories.SharedRepository
 import com.example.tasktracker.repositories.TasksRepository
 import com.example.tasktracker.repositories.UserRepository
+import com.ravenzip.kotlinflowextended.functions.forkJoin
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,8 +18,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -56,18 +59,23 @@ constructor(
     private val _listComments = MutableStateFlow(listOf<Comment>())
     val listComments = _listComments.asStateFlow()
 
-    //    @OptIn(ExperimentalCoroutinesApi::class)
-    //    val namesComments =
-    //        listComments
-    //            .onEach { Log.d("NamesComments_get", it.toString()) }
-    //            .filter { it.isNotEmpty() }
-    //            .flatMapLatest { comments ->
-    //                forkJoin(
-    //                    comments.map { flowOf(getFilteredComment(it.text, it.userId)) },
-    //                    flowLimit = if (comments.count() <= 3) comments.count() else 3
-    //                )
-    //            }
-    //            .onEach { Log.d("NamesComments_get_2", it.toString()) }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val namesComments =
+        listComments
+            .filter { it.isNotEmpty() }
+            .flatMapLatest { comments ->
+                forkJoin(comments.map { flowOf(getFilteredComment(it.text, it.userId)) })
+            }
+
+    val countTask = listTasks.map { task -> task.count() }
+
+    val idNewTask = listTasks.map { task -> task.last().id.toInt() + 1 }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val listActualTasks =
+        listTasks
+            .filter { it.isNotEmpty() }
+            .flatMapLatest { tasks -> forkJoin(tasks.map { flowOf(getActualTask(it)) }) }
 
     val filteredTaskCount =
         listTasks.map { list ->
@@ -162,20 +170,6 @@ constructor(
 
     /** Обновление задачи */
     suspend fun update(taskData: Task) {
-
-        /** Формирование объекта задачи */
-        //        val dataTask =
-        //            Task(
-        //                id = id,
-        //                name = nameTask,
-        //                status = statusTask,
-        //                author = author,
-        //                author_id = authorId,
-        //                executor = executor,
-        //                executor_id = executorId,
-        //                companyId = companyId
-        //            )
-
         tasksRepository.update(taskData)
     }
 
@@ -212,6 +206,39 @@ constructor(
         val dataFiltered =
             CommentFiltered(userName = userData.name + " " + userData.surname, text = text)
         return dataFiltered
+    }
+
+    suspend fun getActualTask(taskData: Task): Task {
+
+        val authorData = userRepository.getUserById(taskData.author_id)
+        if (taskData.author_id != taskData.executor_id) {
+            val executorData = userRepository.getUserById(taskData.executor_id)
+            val dataTask =
+                Task(
+                    id = taskData.id,
+                    name = taskData.name,
+                    status = taskData.status,
+                    author = authorData.name + " " + authorData.surname,
+                    author_id = taskData.author_id,
+                    executor = executorData.name + " " + executorData.surname,
+                    executor_id = taskData.executor_id,
+                    companyId = taskData.companyId
+                )
+            return dataTask
+        } else {
+            val dataTask =
+                Task(
+                    id = taskData.id,
+                    name = taskData.name,
+                    status = taskData.status,
+                    author = authorData.name + " " + authorData.surname,
+                    author_id = taskData.author_id,
+                    executor = authorData.name + " " + authorData.surname,
+                    executor_id = taskData.executor_id,
+                    companyId = taskData.companyId
+                )
+            return dataTask
+        }
     }
 }
 

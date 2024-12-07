@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ControlPoint
+import androidx.compose.material.icons.outlined.Archive
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.PublishedWithChanges
 import androidx.compose.material.icons.outlined.RemoveRedEye
@@ -61,6 +62,15 @@ fun TasksScreen(padding: PaddingValues, vararg onClick: () -> Unit) {
             iconConfig = IconConfig.Default,
         ) {
             onClick[3]()
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        RowIconButton(
+            text = "Архивированные",
+            textConfig = TextConfig(size = 19.sp),
+            icon = Icon.ImageVectorIcon(Icons.Outlined.Archive),
+            iconConfig = IconConfig.Default,
+        ) {
+            onClick[4]()
         }
     }
 }

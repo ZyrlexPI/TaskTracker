@@ -27,6 +27,7 @@ fun ListTaskScreenScaffold(
                 TaskStatus.NEW_TASK -> "Новые задачи"
                 TaskStatus.IN_PROGRESS -> "Задачи в процессе"
                 TaskStatus.COMPLETED -> "Завершенные задачи"
+                TaskStatus.ARHIVED -> "Архивированные задачи"
             }
         }
 

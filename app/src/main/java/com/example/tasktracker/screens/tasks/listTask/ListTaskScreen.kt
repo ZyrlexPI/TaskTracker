@@ -24,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,7 +53,7 @@ fun ListTaskScreen(
     tasksViewModel: TasksViewModel,
 ) {
     val scope = rememberCoroutineScope()
-    val listTask = tasksViewModel.listTasks.collectAsStateWithLifecycle().value
+    val listTask = tasksViewModel.listActualTasks.collectAsStateWithLifecycle(listOf()).value
     val userData = userViewModel.dataUser.collectAsState().value
 
     val listTaskFiltered =
@@ -66,11 +65,9 @@ fun ListTaskScreen(
                     .sortedBy { task -> task.status }
                     .filter { task -> task.author_id == userData.id }
         }
+
     val refreshState = rememberPullToRefreshState()
     val isRefreshing = remember { mutableStateOf(false) }
-
-    val authorName = remember { mutableStateOf("") }
-    val executorName = remember { mutableStateOf("") }
 
     PullToRefreshBox(
         isRefreshing = isRefreshing.value,
@@ -94,18 +91,13 @@ fun ListTaskScreen(
                 Text(text = "Список задач пуст")
             }
         } else {
+
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 items(listTaskFiltered) { task ->
-                    LaunchedEffect(Unit) {
-                        scope.launch {
-                            authorName.value = tasksViewModel.getUserNameById(task.author_id)
-                            executorName.value = tasksViewModel.getUserNameById(task.executor_id)
-                        }
-                    }
                     Card(
                         modifier =
                             Modifier.clip(shape = RoundedCornerShape(8.dp)).clickable {
@@ -136,8 +128,8 @@ fun ListTaskScreen(
                                 if (viewingOption == TaskViewOption.AUTHOR) {
                                     Text(text = "Статус: " + task.status.value)
                                 }
-                                Text(text = "Автор: " + authorName.value)
-                                Text(text = "Исполнитель: " + executorName.value)
+                                Text(text = "Автор: " + task.author)
+                                Text(text = "Исполнитель: " + task.executor)
                             }
                         }
                     }

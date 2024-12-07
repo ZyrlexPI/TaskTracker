@@ -32,10 +32,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tasktracker.data.User
 import com.example.tasktracker.enums.TaskStatus
 import com.example.tasktracker.screens.main.noAccess.NoAccessScreen
 import com.example.tasktracker.services.firebase.CompanyViewModel
+import com.example.tasktracker.services.firebase.NotificationsViewModel
 import com.example.tasktracker.services.firebase.TasksViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.showError
@@ -47,6 +49,8 @@ import com.ravenzip.workshop.components.SnackBar
 import com.ravenzip.workshop.components.Spinner
 import com.ravenzip.workshop.components.TopAppBar
 import com.ravenzip.workshop.data.TextConfig
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,6 +61,7 @@ fun TasksScreenScaffold(
     userViewModel: UserViewModel,
     companyViewModel: CompanyViewModel,
     tasksViewModel: TasksViewModel,
+    notificationsViewModel: NotificationsViewModel = hiltViewModel(),
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     val isLoading = remember { mutableStateOf(false) }
@@ -73,6 +78,7 @@ fun TasksScreenScaffold(
 
     val userData = userViewModel.dataUser.collectAsState().value
     val companyData = companyViewModel.dataCompany.collectAsState().value
+    val idNewTask = tasksViewModel.idNewTask.collectAsState(0).value
 
     val listUsers = remember { mutableListOf<User>() }
     val isLoadingList = remember { mutableStateOf(true) }
@@ -169,6 +175,13 @@ fun TasksScreenScaffold(
                                         taskUser.value!!.id,
                                         userData.companyId
                                     )
+
+                                    /** Запрос на создание уведомления */
+                                    notificationsViewModel.add(
+                                        date = getCurrentDateTime(),
+                                        event = "Была создана новая задача №${idNewTask} ",
+                                        userId = taskUser.value!!.id
+                                    )
                                     /** Обновление списка задач */
                                     tasksViewModel.updateListTask()
                                     /** Обнуление вводимых данных */
@@ -201,4 +214,10 @@ fun TasksScreenScaffold(
         )
     }
     SnackBar(snackBarHostState)
+}
+
+fun getCurrentDateTime(): String {
+    val currentDateTime = LocalDateTime.now() // Получаем текущую дату и время
+    val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm") // Задаем формат
+    return currentDateTime.format(formatter) // Применяем форматирование
 }

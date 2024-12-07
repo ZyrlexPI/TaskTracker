@@ -3,12 +3,14 @@ package com.example.tasktracker
 import com.example.tasktracker.repositories.AuthRepository
 import com.example.tasktracker.repositories.CommentsRepository
 import com.example.tasktracker.repositories.CompanyRepository
+import com.example.tasktracker.repositories.NotificationsRepository
 import com.example.tasktracker.repositories.SharedRepository
 import com.example.tasktracker.repositories.TasksRepository
 import com.example.tasktracker.repositories.UserRepository
 import com.example.tasktracker.sources.AuthSources
 import com.example.tasktracker.sources.CommentsSources
 import com.example.tasktracker.sources.CompanySources
+import com.example.tasktracker.sources.NotificationsSource
 import com.example.tasktracker.sources.TasksSources
 import com.example.tasktracker.sources.UserSources
 import dagger.Module
@@ -52,6 +54,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideNotificationsSource(): NotificationsSource {
+        return NotificationsSource()
+    }
+
+    @Provides
+    @Singleton
     fun provideAuthRepository(): AuthRepository {
         return AuthRepository(provideAuthSources())
     }
@@ -78,6 +86,12 @@ object AppModule {
     @Singleton
     fun provideCommentsRepository(): CommentsRepository {
         return CommentsRepository(provideCommentsSources())
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotificationsRepository(): NotificationsRepository {
+        return NotificationsRepository(provideNotificationsSource())
     }
 
     @Provides

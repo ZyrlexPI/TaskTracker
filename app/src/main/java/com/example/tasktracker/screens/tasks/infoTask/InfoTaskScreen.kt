@@ -35,13 +35,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tasktracker.data.Comment
 import com.example.tasktracker.data.Task
 import com.example.tasktracker.enums.TaskStatus
+import com.example.tasktracker.services.firebase.CommentFiltered
 import com.example.tasktracker.services.firebase.InfoTasksViewModel
+import com.example.tasktracker.services.firebase.NotificationsViewModel
 import com.example.tasktracker.services.firebase.TasksViewModel
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.ravenzip.workshop.components.DropDownTextField
 import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessOutlinedTextField
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -54,10 +58,11 @@ fun InfoTaskScreen(
     tasksViewModel: TasksViewModel,
     editState: MutableState<Boolean>,
     snackBarHostState: SnackbarHostState,
+    notificationsViewModel: NotificationsViewModel,
 ) {
     val scope = rememberCoroutineScope()
     val taskView = infoTasksViewModel.task.collectAsStateWithLifecycle().value
-    val listComments = tasksViewModel.listComments.collectAsStateWithLifecycle().value
+    val listComments = tasksViewModel.namesComments.collectAsStateWithLifecycle(listOf()).value
     Log.d("InfoTaskScreen_LIST", "$listComments")
     val refreshState = rememberPullToRefreshState()
     val isRefreshing = remember { mutableStateOf(false) }
@@ -83,6 +88,7 @@ fun InfoTaskScreen(
             EditTaskScreen(
                 taskView,
                 infoTasksViewModel,
+                notificationsViewModel,
                 tasksViewModel,
                 editState,
                 snackBarHostState
@@ -118,6 +124,7 @@ fun InfoTaskScreen(
 fun EditTaskScreen(
     task: Task,
     infoTasksViewModel: InfoTasksViewModel,
+    notificationsViewModel: NotificationsViewModel,
     tasksViewModel: TasksViewModel,
     editState: MutableState<Boolean>,
     snackBarHostState: SnackbarHostState
@@ -155,6 +162,16 @@ fun EditTaskScreen(
                     infoTasksViewModel.updateTask(newTask)
                     tasksViewModel.setCurrentTask(newTask)
                     tasksViewModel.updateListTask()
+                    notificationsViewModel.add(
+                        getCurrentDateTime(),
+                        "Были изменены данные в задачи №${task.id}",
+                        task.author_id
+                    )
+                    notificationsViewModel.add(
+                        getCurrentDateTime(),
+                        "Были изменены данные в задачи №${task.id}",
+                        task.executor_id
+                    )
                     snackBarHostState.showSuccess(message = "Задача успешно изменена")
                     editState.value = false
                 } else {
@@ -225,7 +242,7 @@ fun addComment(comments: MutableList<Comment>, userName: String, text: String) {
 
 // Элемент комментария
 @Composable
-fun CommentItem(comment: Comment) {
+fun CommentItem(comment: CommentFiltered) {
     Card(
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(4.dp),
@@ -266,4 +283,10 @@ fun AddCommentButton(onAddComment: (userName: String, commentText: String) -> Un
             }
         }
     }
+}
+
+fun getCurrentDateTime(): String {
+    val currentDateTime = LocalDateTime.now() // Получаем текущую дату и время
+    val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm") // Задаем формат
+    return currentDateTime.format(formatter) // Применяем форматирование
 }

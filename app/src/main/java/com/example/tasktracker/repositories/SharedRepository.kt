@@ -25,4 +25,14 @@ class SharedRepository @Inject constructor(private val tasksRepository: TasksRep
     fun setUserData(user: User) {
         _userData.update { user }
     }
+
+    private val _updateNotifications = MutableStateFlow("")
+    val updateNotifications = _updateNotifications.asStateFlow()
+
+    fun setUpdateNotifications(update: String) {
+        _updateNotifications.update {
+            Log.d("SharedRepository", "ШАРЕД ОБНОВЛЕН $update")
+            update
+        }
+    }
 }
