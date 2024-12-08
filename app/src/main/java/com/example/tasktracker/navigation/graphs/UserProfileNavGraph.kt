@@ -86,6 +86,7 @@ fun UserProfileNavigationGraph(
                         { navController.navigate(UserProfileGraph.COMPANY_JOIN) },
                         { navController.navigate(UserProfileGraph.COMPANY_ADD) },
                         { navController.navigate(UserProfileGraph.USER_PROFILE_ROOT) },
+                        { navController.navigate(UserProfileGraph.USER_DATA) },
                     ),
                 companyViewModel = companyViewModel,
                 userViewModel = userViewModel,

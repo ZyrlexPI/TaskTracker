@@ -31,7 +31,7 @@ constructor(private val companySources: CompanySources, private val userSources:
             )
         companySources.companySource
             .child(pushKey)
-            .setValue(Company(pushKey, nameCompany, listOf(dataUser), listOf()))
+            .setValue(Company(pushKey, nameCompany, userData.id, listOf(dataUser), listOf()))
             .await()
     }
 

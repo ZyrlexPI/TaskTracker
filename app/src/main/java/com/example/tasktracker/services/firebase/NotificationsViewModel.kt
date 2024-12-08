@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.tasktracker.data.Notification
 import com.example.tasktracker.repositories.NotificationsRepository
 import com.example.tasktracker.repositories.SharedRepository
-import com.example.tasktracker.repositories.TasksRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +20,6 @@ class NotificationsViewModel
 @Inject
 constructor(
     private val notificationsRepository: NotificationsRepository,
-    private val tasksRepository: TasksRepository,
     private val sharedRepository: SharedRepository,
 ) : ViewModel() {
     private val _notificationsList = MutableStateFlow(listOf<Notification>())
@@ -48,7 +46,7 @@ constructor(
         updateNotificationCount()
     }
 
-    suspend fun updateNotificationCount() {
+    private suspend fun updateNotificationCount() {
         sharedRepository.setCountNotifications(notificationsList.map { it.count() }.first())
     }
 

@@ -1,6 +1,7 @@
 package com.example.tasktracker.repositories
 
 import android.util.Log
+import com.example.tasktracker.data.Company
 import com.example.tasktracker.data.Task
 import com.example.tasktracker.data.User
 import javax.inject.Inject
@@ -26,6 +27,13 @@ constructor(private val notificationsRepository: NotificationsRepository) {
 
     fun setUserData(user: User) {
         _userData.update { user }
+    }
+
+    private val _companyData = MutableStateFlow(Company())
+    val companyData = _companyData.asStateFlow()
+
+    fun setCompanyData(company: Company) {
+        _companyData.update { company }
     }
 
     private val _updateNotifications = MutableStateFlow("")

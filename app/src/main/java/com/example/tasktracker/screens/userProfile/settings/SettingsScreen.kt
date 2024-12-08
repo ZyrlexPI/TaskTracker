@@ -45,7 +45,7 @@ fun SettingsScreen(
             isChecked = darkThemeSwitch,
             title = "Темная тема",
             titleConfig = TextConfig.Normal,
-            text = "Включение/выключение темной темы",
+            text = "Включение/выключение\nтемной темы",
             textConfig = TextConfig.Small,
             onCheckedChanged = {
                 scope.launch {

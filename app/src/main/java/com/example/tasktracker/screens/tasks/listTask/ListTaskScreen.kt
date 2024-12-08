@@ -53,7 +53,7 @@ fun ListTaskScreen(
     tasksViewModel: TasksViewModel,
 ) {
     val scope = rememberCoroutineScope()
-    val listTask = tasksViewModel.listActualTasks.collectAsStateWithLifecycle(listOf()).value
+    val listTask = tasksViewModel.listTasks.collectAsStateWithLifecycle(listOf()).value
     val userData = userViewModel.dataUser.collectAsState().value
 
     val listTaskFiltered =

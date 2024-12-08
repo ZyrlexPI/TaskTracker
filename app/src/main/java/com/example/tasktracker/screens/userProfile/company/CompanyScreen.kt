@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.Output
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -50,49 +53,69 @@ fun CompanyScreen(
         modifier = Modifier.fillMaxSize().padding(padding),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(modifier = Modifier.height(30.dp))
-        Text(
-            text =
-                if (companyData.name != "") {
-                    "Вы состоите в организации \"" + companyData.name + "\""
-                } else {
-                    "Вы не состоите в организации"
-                },
-            fontSize = 20.sp,
-            modifier = Modifier.fillMaxWidth(0.85f)
-        )
-        Spacer(modifier = Modifier.height(30.dp))
-        // TODO Добавить условие того есть ли организация, тогда отобразить кнопку выйти из
-        // организации, иначе отображать создание и присоединение
-        if (companyData.id == "") {
-            RowIconButton(
-                text = "Присоединиться",
-                textConfig = TextConfig(size = 19.sp),
-                icon = Icon.ImageVectorIcon(Icons.Outlined.Add),
-            ) {
-                onClick[0]()
-            }
-            Spacer(modifier = Modifier.height(20.dp))
-            RowIconButton(
-                text = "Создать",
-                textConfig = TextConfig(size = 19.sp),
-                icon = Icon.ImageVectorIcon(Icons.Outlined.Create),
-            ) {
-                onClick[1]()
+        if (userData.name != "" && userData.surname != "") {
+            Spacer(modifier = Modifier.height(30.dp))
+            Text(
+                text =
+                    if (companyData.name != "") {
+                        "Вы состоите в организации \"" + companyData.name + "\""
+                    } else {
+                        "Вы не состоите в организации"
+                    },
+                fontSize = 20.sp,
+                modifier = Modifier.fillMaxWidth(0.85f)
+            )
+            Spacer(modifier = Modifier.height(30.dp))
+
+            if (companyData.id == "") {
+                RowIconButton(
+                    text = "Присоединиться",
+                    textConfig = TextConfig(size = 19.sp),
+                    icon = Icon.ImageVectorIcon(Icons.Outlined.Add),
+                ) {
+                    onClick[0]()
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                RowIconButton(
+                    text = "Создать",
+                    textConfig = TextConfig(size = 19.sp),
+                    icon = Icon.ImageVectorIcon(Icons.Outlined.Create),
+                ) {
+                    onClick[1]()
+                }
+            } else {
+                RowIconButton(
+                    text = "Выйти из организации",
+                    textConfig = TextConfig(size = 19.sp),
+                    icon = Icon.ImageVectorIcon(Icons.Outlined.Output),
+                ) {
+                    scope.launch(Dispatchers.Main) {
+                        companyViewModel.deleteCurrentUser(userData)
+                        userViewModel.setUserData(getUser())
+                        Log.d("ExitInCompany", userData.toString())
+                        snackBarHostState.showSuccess(message = "Вы успешно вышли из организации")
+                        onClick[2]()
+                    }
+                }
             }
         } else {
+
+            Spacer(modifier = Modifier.height(30.dp))
+            Text(
+                text =
+                    "Ваши личные данные не настроены.\nНастройте их в профиле или перейдите по кнопке ниже",
+                fontSize = 20.sp,
+                textAlign = TextAlign.Justify,
+                modifier = Modifier.fillMaxWidth(0.85f)
+            )
+            Spacer(modifier = Modifier.height(30.dp))
+
             RowIconButton(
-                text = "Выйти из организации",
+                text = "Личные данные",
                 textConfig = TextConfig(size = 19.sp),
-                icon = Icon.ImageVectorIcon(Icons.Outlined.Output),
+                icon = Icon.ImageVectorIcon(Icons.Outlined.Person),
             ) {
-                scope.launch(Dispatchers.Main) {
-                    companyViewModel.deleteCurrentUser(userData)
-                    userViewModel.setUserData(getUser())
-                    Log.d("ExitInCompany", userData.toString())
-                    snackBarHostState.showSuccess(message = "Вы успешно вышли из организации")
-                    onClick[2]()
-                }
+                onClick[3]()
             }
         }
     }

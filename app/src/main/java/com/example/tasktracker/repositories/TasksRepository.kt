@@ -145,8 +145,21 @@ constructor(
     }
 
     /** Получить список заданий существующих в БД */
-    suspend fun getListTasks(): List<Task> {
+    suspend fun getListAllTasks(): List<Task> {
         val response = tasksSources.taskSource.get().await().children
+        val listTasks = mutableListOf<Task>()
+        response.forEach { data -> data.getValue<Task>()?.let { listTasks.add(it) } }
+        return listTasks
+    }
+
+    suspend fun getListTasks(companyId: String): List<Task> {
+        val response =
+            tasksSources.taskSource
+                .orderByChild("companyId")
+                .equalTo(companyId)
+                .get()
+                .await()
+                .children
         val listTasks = mutableListOf<Task>()
         response.forEach { data -> data.getValue<Task>()?.let { listTasks.add(it) } }
         return listTasks

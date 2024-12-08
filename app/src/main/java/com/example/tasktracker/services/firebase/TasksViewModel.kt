@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
@@ -71,6 +72,7 @@ constructor(
 
     val countTask = listTasks.map { task -> task.count() }
 
+    /** Подсчёт айди нового задания для уведомления */
     val idNewTask = listTasks.map { task -> task.last().id.toInt() + 1 }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -134,10 +136,12 @@ constructor(
         }
 
         viewModelScope.launch {
-            updateListTask.collect { _listTasks.update { tasksRepository.getListTasks() } }
+            sharedRepository.companyData.collect {
+                _listTasks.update {
+                    tasksRepository.getListTasks(sharedRepository.companyData.value.id)
+                }
+            }
         }
-
-        viewModelScope.launch { updateListTask.emit(Unit) }
     }
 
     /** Добавление задачи */
@@ -152,7 +156,7 @@ constructor(
     ) {
 
         /** Создание индефикатора задачи */
-        val pushKey = (tasksRepository.getListTasks().last().id.toInt() + 1).toString()
+        val pushKey = (tasksRepository.getListAllTasks().last().id.toInt() + 1).toString()
 
         /** Формирование объекта задачи */
         val dataTask =
@@ -178,12 +182,12 @@ constructor(
     /** Удаление задачи */
     suspend fun delete(taskData: Task) = tasksRepository.delete(taskData)
 
-    suspend fun getListTasks() = tasksRepository.getListTasks()
+    suspend fun getListTasks() = tasksRepository.getListTasks(sharedRepository.companyData.value.id)
 
     fun setCurrentTask(task: Task) = sharedRepository.setCurrentTask(task)
 
-    fun updateListTask() {
-        viewModelScope.launch { updateListTask.emit(Unit) }
+    suspend fun updateListTask() {
+        _listTasks.update { tasksRepository.getListTasks(sharedRepository.companyData.value.id) }
     }
 
     suspend fun getCurrentTask(taskId: String) {
