@@ -70,6 +70,7 @@ object AppModule {
         return UserRepository(
             provideUserSources(),
             provideCompanySources(),
+            provideCommentsSources(),
             provideTasksSources(),
         )
     }

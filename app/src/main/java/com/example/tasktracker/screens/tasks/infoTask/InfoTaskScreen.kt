@@ -35,7 +35,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tasktracker.data.Comment
 import com.example.tasktracker.data.Task
 import com.example.tasktracker.enums.TaskStatus
-import com.example.tasktracker.services.firebase.CommentFiltered
 import com.example.tasktracker.services.firebase.InfoTasksViewModel
 import com.example.tasktracker.services.firebase.TasksViewModel
 import com.example.tasktracker.services.showError
@@ -60,13 +59,10 @@ fun InfoTaskScreen(
 ) {
     val scope = rememberCoroutineScope()
     val taskView = infoTasksViewModel.task.collectAsStateWithLifecycle().value
-    val listComments = tasksViewModel.namesComments.collectAsStateWithLifecycle(listOf()).value
+    val listComments = tasksViewModel.listComments.collectAsStateWithLifecycle(listOf()).value
     Log.d("InfoTaskScreen_LIST", "$listComments")
     val refreshState = rememberPullToRefreshState()
     val isRefreshing = remember { mutableStateOf(false) }
-
-    val authorName = infoTasksViewModel.userNameAuthor.collectAsStateWithLifecycle().value
-    val executorName = infoTasksViewModel.userNameExecutor.collectAsStateWithLifecycle().value
 
     // Весь экран
     PullToRefreshBox(
@@ -97,7 +93,7 @@ fun InfoTaskScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                item { TaskCard(authorName, executorName, taskView) }
+                item { TaskCard(taskView) }
                 item {
                     Text(
                         text = "Комментарии",
@@ -184,7 +180,7 @@ fun EditTaskScreen(
 
 // Карточка для отображения задачи
 @Composable
-fun TaskCard(authorName: String, executorName: String, task: Task) {
+fun TaskCard(task: Task) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
@@ -208,8 +204,8 @@ fun TaskCard(authorName: String, executorName: String, task: Task) {
             // Данные о задаче
             TaskDetailItem(label = "Наименование:", value = task.name)
             TaskDetailItem(label = "Статус:", value = task.status.value)
-            TaskDetailItem(label = "Автор:", value = authorName)
-            TaskDetailItem(label = "Исполнитель:", value = executorName)
+            TaskDetailItem(label = "Автор:", value = task.author)
+            TaskDetailItem(label = "Исполнитель:", value = task.executor)
         }
     }
 }
@@ -233,14 +229,9 @@ fun TaskDetailItem(label: String, value: String) {
     }
 }
 
-// Добавление комментария
-fun addComment(comments: MutableList<Comment>, userName: String, text: String) {
-    comments.add(Comment("", userName, text, "", ""))
-}
-
 // Элемент комментария
 @Composable
-fun CommentItem(comment: CommentFiltered) {
+fun CommentItem(comment: Comment) {
     Card(
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(4.dp),
@@ -259,30 +250,7 @@ fun CommentItem(comment: CommentFiltered) {
     }
 }
 
-// Кнопка добавления нового комментария
-@Composable
-fun AddCommentButton(onAddComment: (userName: String, commentText: String) -> Unit) {
-    val userName = remember { mutableStateOf("") }
-    val commentText = remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        SinglenessOutlinedTextField(text = userName, label = "Имя пользователя")
-        Spacer(modifier = Modifier.height(8.dp))
-        SinglenessOutlinedTextField(text = commentText, label = "Текст комментария")
-        Spacer(modifier = Modifier.height(10.dp))
-        SimpleButton(text = "Добавить комментарий") {
-            if (userName.value.isNotBlank() && commentText.value.isNotBlank()) {
-                onAddComment(userName.value, commentText.value)
-                userName.value = ""
-                commentText.value = ""
-            }
-        }
-    }
-}
-
+// Функция для получения текущей даты и времени
 fun getCurrentDateTime(): String {
     val currentDateTime = LocalDateTime.now() // Получаем текущую дату и время
     val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm") // Задаем формат

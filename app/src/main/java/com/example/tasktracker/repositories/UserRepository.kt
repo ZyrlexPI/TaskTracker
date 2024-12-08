@@ -2,6 +2,7 @@ package com.example.tasktracker.repositories
 
 import android.util.Log
 import com.example.tasktracker.data.User
+import com.example.tasktracker.sources.CommentsSources
 import com.example.tasktracker.sources.CompanySources
 import com.example.tasktracker.sources.TasksSources
 import com.example.tasktracker.sources.UserSources
@@ -17,6 +18,7 @@ class UserRepository
 constructor(
     private val userSources: UserSources,
     private val companySources: CompanySources,
+    private val commentsSources: CommentsSources,
     private val tasksSources: TasksSources
 ) {
 
@@ -68,6 +70,23 @@ constructor(
 
     /** Обновление данных о пользователе. Личной информации. */
     suspend fun update(userData: User, name: String, surname: String): Boolean {
+        val dataUserComment = mapOf("userName" to "$name $surname")
+        /** Обновление данных у комментариев об авторе */
+        try {
+            val responseComments =
+                commentsSources.commentsSource
+                    .orderByChild("userId")
+                    .equalTo(userData.id)
+                    .get()
+                    .await()
+            if (responseComments.exists()) {
+                responseComments.children.forEach {
+                    commentsSources.commentsSource.child(it.key!!).updateChildren(dataUserComment)
+                }
+            }
+        } catch (e: Exception) {
+            Log.d("CommentsRepository", "Ошибка обновления данных об пользователе: ${e.message}")
+        }
 
         val dataAuthor = mapOf("author" to "$name $surname")
         /** Обновление данных у задач об авторе */
