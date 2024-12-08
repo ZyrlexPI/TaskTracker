@@ -3,6 +3,8 @@ package com.example.tasktracker.navigation.graphs
 import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -19,6 +21,7 @@ import com.example.tasktracker.services.firebase.UserViewModel
 fun MainNavGraph(
     navController: NavHostController,
     padding: PaddingValues,
+    prefs: DataStore<Preferences>,
     returnInAuth: () -> Unit,
 ) {
     val userViewModel = hiltViewModel<UserViewModel>()
@@ -59,6 +62,7 @@ fun MainNavGraph(
                 padding = padding,
                 userViewModel = userViewModel,
                 companyViewModel = companyViewModel,
+                prefs = prefs,
                 returnInAuth = returnInAuth,
             )
         }

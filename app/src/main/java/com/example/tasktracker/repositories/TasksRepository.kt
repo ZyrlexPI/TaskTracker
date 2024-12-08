@@ -2,6 +2,7 @@ package com.example.tasktracker.repositories
 
 import android.util.Log
 import com.example.tasktracker.data.Task
+import com.example.tasktracker.sources.CommentsSources
 import com.example.tasktracker.sources.CompanySources
 import com.example.tasktracker.sources.TasksSources
 import com.example.tasktracker.sources.UserSources
@@ -16,7 +17,8 @@ class TasksRepository
 constructor(
     private val tasksSources: TasksSources,
     private val companySources: CompanySources,
-    private val userSources: UserSources
+    private val userSources: UserSources,
+    private val commentsSources: CommentsSources,
 ) {
 
     /** Создание новой задачи */
@@ -72,6 +74,22 @@ constructor(
 
     /** Удаление задачи */
     suspend fun delete(taskData: Task) {
+        /** Удаление комментарие задачи */
+        try {
+            val responseComments =
+                commentsSources.commentsSource
+                    .orderByChild("taskId")
+                    .equalTo(taskData.id)
+                    .get()
+                    .await()
+            if (responseComments.exists()) {
+                responseComments.children.forEach {
+                    commentsSources.commentsSource.child(it.key!!).removeValue().await()
+                }
+            }
+        } catch (e: Exception) {
+            Log.d("CommentsRepository", "delete: ${e.message}")
+        }
         /** Удаление задачи из компании */
         val responseCompany =
             companySources.companySource.child(taskData.companyId).child("tasks").get().await()

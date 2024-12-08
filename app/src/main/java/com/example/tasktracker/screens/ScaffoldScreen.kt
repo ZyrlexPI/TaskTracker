@@ -7,6 +7,8 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Task
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tasktracker.navigation.graphs.MainNavGraph
@@ -19,6 +21,7 @@ import com.ravenzip.workshop.data.icon.IconConfig
 @Composable
 fun ScaffoldScreen(
     navController: NavHostController = rememberNavController(),
+    prefs: DataStore<Preferences>,
     returnInAuth: () -> Unit
 ) {
 
@@ -34,6 +37,7 @@ fun ScaffoldScreen(
         MainNavGraph(
             navController = navController,
             padding = it,
+            prefs = prefs,
             returnInAuth = returnInAuth,
         )
     }

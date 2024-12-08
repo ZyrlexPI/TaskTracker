@@ -12,6 +12,9 @@ class CommentsSources @Inject constructor() {
     val commentsSource
         get() = commentsReference
 
+    val commentSource2
+        get() = FirebaseDatabase.getInstance().reference.child("Comments")
+
     fun currentComment(commentId: String): DatabaseReference {
         return commentsReference.child(commentId)
     }

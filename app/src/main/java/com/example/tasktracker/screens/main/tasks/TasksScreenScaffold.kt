@@ -32,12 +32,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tasktracker.data.User
 import com.example.tasktracker.enums.TaskStatus
 import com.example.tasktracker.screens.main.noAccess.NoAccessScreen
 import com.example.tasktracker.services.firebase.CompanyViewModel
-import com.example.tasktracker.services.firebase.NotificationsViewModel
 import com.example.tasktracker.services.firebase.TasksViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.showError
@@ -61,7 +59,6 @@ fun TasksScreenScaffold(
     userViewModel: UserViewModel,
     companyViewModel: CompanyViewModel,
     tasksViewModel: TasksViewModel,
-    notificationsViewModel: NotificationsViewModel = hiltViewModel(),
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     val isLoading = remember { mutableStateOf(false) }
@@ -177,7 +174,7 @@ fun TasksScreenScaffold(
                                     )
 
                                     /** Запрос на создание уведомления */
-                                    notificationsViewModel.add(
+                                    tasksViewModel.addNotification(
                                         date = getCurrentDateTime(),
                                         event = "Была создана новая задача №${idNewTask} ",
                                         userId = taskUser.value!!.id

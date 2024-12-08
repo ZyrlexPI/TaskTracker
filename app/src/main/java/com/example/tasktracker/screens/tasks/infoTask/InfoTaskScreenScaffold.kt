@@ -37,7 +37,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tasktracker.data.Task
 import com.example.tasktracker.data.User
 import com.example.tasktracker.services.firebase.InfoTasksViewModel
-import com.example.tasktracker.services.firebase.NotificationsViewModel
 import com.example.tasktracker.services.firebase.TasksViewModel
 import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.firebase.getUser
@@ -63,7 +62,6 @@ fun InfoTaskScreenScaffold(
     tasksViewModel: TasksViewModel,
     returnToTaskList: () -> Unit,
     infoTasksViewModel: InfoTasksViewModel = hiltViewModel(),
-    notificationsViewModel: NotificationsViewModel = hiltViewModel(),
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     val isLoading = remember { mutableStateOf(false) }
@@ -113,7 +111,6 @@ fun InfoTaskScreenScaffold(
             tasksViewModel = tasksViewModel,
             editState = editState,
             snackBarHostState = snackBarHostState,
-            notificationsViewModel = notificationsViewModel,
         )
 
         if (showBottomSheet) {

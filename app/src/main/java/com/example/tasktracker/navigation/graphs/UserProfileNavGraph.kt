@@ -2,6 +2,8 @@ package com.example.tasktracker.navigation.graphs
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,6 +27,7 @@ fun UserProfileNavigationGraph(
     navController: NavHostController = rememberNavController(),
     userViewModel: UserViewModel,
     companyViewModel: CompanyViewModel,
+    prefs: DataStore<Preferences>,
     returnInAuth: () -> Unit,
 ) {
     NavHost(
@@ -58,10 +61,15 @@ fun UserProfileNavigationGraph(
                 onClick =
                     arrayOf(
                         { navController.navigate(UserProfileGraph.CHANGE_PASSWORD) },
-                    )
+                    ),
             )
         }
-        composable(route = UserProfileGraph.SETTINGS) { SettingsScreenScaffold(padding = padding) }
+        composable(route = UserProfileGraph.SETTINGS) {
+            SettingsScreenScaffold(
+                prefs = prefs,
+                padding = padding,
+            )
+        }
 
         composable(route = UserProfileGraph.CHANGE_PASSWORD) {
             ChangePasswordScreenScaffold(

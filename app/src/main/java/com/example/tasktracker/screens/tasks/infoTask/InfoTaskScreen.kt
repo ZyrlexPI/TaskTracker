@@ -37,7 +37,6 @@ import com.example.tasktracker.data.Task
 import com.example.tasktracker.enums.TaskStatus
 import com.example.tasktracker.services.firebase.CommentFiltered
 import com.example.tasktracker.services.firebase.InfoTasksViewModel
-import com.example.tasktracker.services.firebase.NotificationsViewModel
 import com.example.tasktracker.services.firebase.TasksViewModel
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
@@ -58,7 +57,6 @@ fun InfoTaskScreen(
     tasksViewModel: TasksViewModel,
     editState: MutableState<Boolean>,
     snackBarHostState: SnackbarHostState,
-    notificationsViewModel: NotificationsViewModel,
 ) {
     val scope = rememberCoroutineScope()
     val taskView = infoTasksViewModel.task.collectAsStateWithLifecycle().value
@@ -88,7 +86,6 @@ fun InfoTaskScreen(
             EditTaskScreen(
                 taskView,
                 infoTasksViewModel,
-                notificationsViewModel,
                 tasksViewModel,
                 editState,
                 snackBarHostState
@@ -124,7 +121,6 @@ fun InfoTaskScreen(
 fun EditTaskScreen(
     task: Task,
     infoTasksViewModel: InfoTasksViewModel,
-    notificationsViewModel: NotificationsViewModel,
     tasksViewModel: TasksViewModel,
     editState: MutableState<Boolean>,
     snackBarHostState: SnackbarHostState
@@ -162,12 +158,12 @@ fun EditTaskScreen(
                     infoTasksViewModel.updateTask(newTask)
                     tasksViewModel.setCurrentTask(newTask)
                     tasksViewModel.updateListTask()
-                    notificationsViewModel.add(
+                    tasksViewModel.addNotification(
                         getCurrentDateTime(),
                         "Были изменены данные в задачи №${task.id}",
                         task.author_id
                     )
-                    notificationsViewModel.add(
+                    tasksViewModel.addNotification(
                         getCurrentDateTime(),
                         "Были изменены данные в задачи №${task.id}",
                         task.executor_id

@@ -6,6 +6,7 @@ import com.example.tasktracker.data.Comment
 import com.example.tasktracker.data.Task
 import com.example.tasktracker.enums.TaskStatus
 import com.example.tasktracker.repositories.CommentsRepository
+import com.example.tasktracker.repositories.NotificationsRepository
 import com.example.tasktracker.repositories.SharedRepository
 import com.example.tasktracker.repositories.TasksRepository
 import com.example.tasktracker.repositories.UserRepository
@@ -32,6 +33,7 @@ class TasksViewModel
 @Inject
 constructor(
     private val tasksRepository: TasksRepository,
+    private val notificationsRepository: NotificationsRepository,
     private val userRepository: UserRepository,
     private val commentsRepository: CommentsRepository,
     private val sharedRepository: SharedRepository,
@@ -239,6 +241,13 @@ constructor(
                 )
             return dataTask
         }
+    }
+
+    /** Добавление уведомления */
+    suspend fun addNotification(date: String, event: String, userId: String) {
+        notificationsRepository.add(date, event, userId)
+        val randomNumber = (0..1000).random()
+        sharedRepository.setUpdateNotifications("$date $randomNumber")
     }
 }
 

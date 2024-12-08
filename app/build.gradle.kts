@@ -82,6 +82,10 @@ dependencies {
     // SplashScreen Заставка при запуске
     implementation(libs.androidx.core.splashscreen)
 
+    // DataStore
+    implementation(libs.androidx.datastore)
+    implementation(libs.androidx.datastore.preferences)
+
     // Разное
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
