@@ -16,7 +16,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.count
@@ -25,7 +24,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -43,18 +41,18 @@ constructor(
     private val _dataCurrentTask = MutableStateFlow(Task())
     val dataCurrentTask = _dataCurrentTask.asStateFlow()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val userNameAuthor =
-        dataCurrentTask
-            .map { task -> task.author_id }
-            .flatMapLatest { flowOf(getUserNameById(it)) }
-            .stateIn(scope = viewModelScope, SharingStarted.Lazily, initialValue = "")
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val userNameExecutor =
-        dataCurrentTask
-            .map { task -> task.executor_id }
-            .flatMapLatest { flowOf(getUserNameById(it)) }
-            .stateIn(scope = viewModelScope, SharingStarted.Lazily, initialValue = "")
+    //    @OptIn(ExperimentalCoroutinesApi::class)
+    //    val userNameAuthor =
+    //        dataCurrentTask
+    //            .map { task -> task.author_id }
+    //            .flatMapLatest { flowOf(getUserNameById(it)) }
+    //            .stateIn(scope = viewModelScope, SharingStarted.Lazily, initialValue = "")
+    //    @OptIn(ExperimentalCoroutinesApi::class)
+    //    val userNameExecutor =
+    //        dataCurrentTask
+    //            .map { task -> task.executor_id }
+    //            .flatMapLatest { flowOf(getUserNameById(it)) }
+    //            .stateIn(scope = viewModelScope, SharingStarted.Lazily, initialValue = "")
 
     private val _listTasks = MutableStateFlow(listOf<Task>())
     val listTasks = _listTasks.asStateFlow()

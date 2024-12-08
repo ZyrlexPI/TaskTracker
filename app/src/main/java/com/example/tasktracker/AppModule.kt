@@ -67,7 +67,11 @@ object AppModule {
     @Provides
     @Singleton
     fun provideUserRepository(): UserRepository {
-        return UserRepository(provideUserSources(), provideCompanySources())
+        return UserRepository(
+            provideUserSources(),
+            provideCompanySources(),
+            provideTasksSources(),
+        )
     }
 
     @Provides

@@ -93,8 +93,6 @@ fun HomeScreen(
 // Карточка последней открытой задачи
 @Composable
 fun TaskCard(task: Task, tasksViewModel: TasksViewModel, navigationToLastViewTask: () -> Unit) {
-    val authorName = tasksViewModel.userNameAuthor.collectAsStateWithLifecycle().value
-    val executorName = tasksViewModel.userNameExecutor.collectAsStateWithLifecycle().value
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -118,8 +116,11 @@ fun TaskCard(task: Task, tasksViewModel: TasksViewModel, navigationToLastViewTas
             )
             Text(text = "Имя задачи: ${task.name}", style = MaterialTheme.typography.bodyMedium)
             Text(text = "Статус: ${task.status.value}", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Автор: $authorName", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Исполнитель: $executorName", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Автор: ${task.author}", style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = "Исполнитель: ${task.executor}",
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }

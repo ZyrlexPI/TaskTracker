@@ -3,6 +3,7 @@ package com.example.tasktracker.repositories
 import android.util.Log
 import com.example.tasktracker.data.User
 import com.example.tasktracker.sources.CompanySources
+import com.example.tasktracker.sources.TasksSources
 import com.example.tasktracker.sources.UserSources
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.getValue
@@ -13,7 +14,11 @@ import kotlinx.coroutines.tasks.await
 @Singleton
 class UserRepository
 @Inject
-constructor(private val userSources: UserSources, private val companySources: CompanySources) {
+constructor(
+    private val userSources: UserSources,
+    private val companySources: CompanySources,
+    private val tasksSources: TasksSources
+) {
 
     /** Добавить нового пользователя в БД */
     suspend fun add(currentUser: FirebaseUser?) {
@@ -63,6 +68,38 @@ constructor(private val userSources: UserSources, private val companySources: Co
 
     /** Обновление данных о пользователе. Личной информации. */
     suspend fun update(userData: User, name: String, surname: String): Boolean {
+
+        val dataAuthor = mapOf("author" to "$name $surname")
+        /** Обновление данных у задач об авторе */
+        try {
+            val responseAuthors =
+                tasksSources.taskSource.orderByChild("author_id").equalTo(userData.id).get().await()
+            if (responseAuthors.exists()) {
+                responseAuthors.children.forEach {
+                    tasksSources.taskSource.child(it.key!!).updateChildren(dataAuthor)
+                }
+            }
+        } catch (e: Exception) {
+            Log.d("UsersRepository", "Ошибка обновления данных об авторах: ${e.message}")
+        }
+
+        val dataExecutor = mapOf("executor" to "$name $surname")
+        /** Обновление данных у задач об исполнителе */
+        try {
+            val responseAuthors =
+                tasksSources.taskSource
+                    .orderByChild("executor_id")
+                    .equalTo(userData.id)
+                    .get()
+                    .await()
+            if (responseAuthors.exists()) {
+                responseAuthors.children.forEach {
+                    tasksSources.taskSource.child(it.key!!).updateChildren(dataExecutor)
+                }
+            }
+        } catch (e: Exception) {
+            Log.d("UsersRepository", "Ошибка обновления данных об исполнителях: ${e.message}")
+        }
 
         val dataUser = mapOf("name" to name, "surname" to surname)
         userSources.userSource.child(userData.id).updateChildren(dataUser)
