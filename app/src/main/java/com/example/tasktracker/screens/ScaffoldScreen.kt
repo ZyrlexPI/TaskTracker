@@ -9,10 +9,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tasktracker.navigation.graphs.MainNavGraph
 import com.example.tasktracker.navigation.models.BottomBarGraph
+import com.example.tasktracker.services.firebase.MainScaffoldViewModel
 import com.ravenzip.workshop.components.BottomNavigationBar
 import com.ravenzip.workshop.data.appbar.BottomNavigationItem
 import com.ravenzip.workshop.data.icon.Icon
@@ -21,15 +24,19 @@ import com.ravenzip.workshop.data.icon.IconConfig
 @Composable
 fun ScaffoldScreen(
     navController: NavHostController = rememberNavController(),
+    mainScaffoldViewModel: MainScaffoldViewModel = hiltViewModel(),
     prefs: DataStore<Preferences>,
     returnInAuth: () -> Unit
 ) {
+
+    val countNotifications =
+        mainScaffoldViewModel.countNotifications.collectAsStateWithLifecycle().value
 
     Scaffold(
         bottomBar = {
             BottomNavigationBar(
                 navController = navController,
-                buttonsList = generateMenuItems(),
+                buttonsList = generateMenuItems(countNotifications),
                 showLabelOnlyOnSelected = false
             )
         },
@@ -44,7 +51,7 @@ fun ScaffoldScreen(
 }
 
 @Composable
-private fun generateMenuItems(): List<BottomNavigationItem> {
+private fun generateMenuItems(countNotifications: Int): List<BottomNavigationItem> {
     val homeButton =
         BottomNavigationItem(
             label = "Главная",
@@ -70,7 +77,7 @@ private fun generateMenuItems(): List<BottomNavigationItem> {
             icon = Icon.ImageVectorIcon(Icons.Outlined.Notifications),
             iconConfig = IconConfig.Primary,
             hasNews = false,
-            badgeCount = 10
+            badgeCount = if (countNotifications > 0) countNotifications else null
         )
 
     val userProfileButton =

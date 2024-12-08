@@ -102,6 +102,6 @@ object AppModule {
     @Provides
     @Singleton
     fun provideSharedRepository(): SharedRepository {
-        return SharedRepository(provideTasksRepository())
+        return SharedRepository(provideNotificationsRepository())
     }
 }

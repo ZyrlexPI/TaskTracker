@@ -163,11 +163,13 @@ fun EditTaskScreen(
                         "Были изменены данные в задачи №${task.id}",
                         task.author_id
                     )
-                    tasksViewModel.addNotification(
-                        getCurrentDateTime(),
-                        "Были изменены данные в задачи №${task.id}",
-                        task.executor_id
-                    )
+                    if (task.executor_id != task.author_id) {
+                        tasksViewModel.addNotification(
+                            getCurrentDateTime(),
+                            "Были изменены данные в задачи №${task.id}",
+                            task.executor_id
+                        )
+                    }
                     snackBarHostState.showSuccess(message = "Задача успешно изменена")
                     editState.value = false
                 } else {

@@ -8,7 +8,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class SharedRepository @Inject constructor(private val tasksRepository: TasksRepository) {
+class SharedRepository
+@Inject
+constructor(private val notificationsRepository: NotificationsRepository) {
 
     /** Задача, которая отображается на экране */
     private val _currentTask = MutableStateFlow<Task?>(null)
@@ -34,5 +36,16 @@ class SharedRepository @Inject constructor(private val tasksRepository: TasksRep
             Log.d("SharedRepository", "ШАРЕД ОБНОВЛЕН $update")
             update
         }
+    }
+
+    private val _countNotifications = MutableStateFlow(0)
+    val countNotifications = _countNotifications.asStateFlow()
+
+    fun setCountNotifications(count: Int) {
+        _countNotifications.update { count }
+    }
+
+    suspend fun updateCountNotifications(user: User) {
+        _countNotifications.update { notificationsRepository.getListNotifications(user.id).count() }
     }
 }
