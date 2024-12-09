@@ -18,10 +18,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.tasktracker.services.firebase.AuthViewModel
-import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
+import com.example.tasktracker.viewModels.AuthViewModel
+import com.example.tasktracker.viewModels.UserViewModel
 import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessOutlinedTextField
 import com.ravenzip.workshop.data.TextConfig

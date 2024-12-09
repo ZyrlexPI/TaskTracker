@@ -17,11 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.tasktracker.services.firebase.CompanyViewModel
-import com.example.tasktracker.services.firebase.UserViewModel
-import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
+import com.example.tasktracker.services.viewModels.getUser
+import com.example.tasktracker.viewModels.CompanyViewModel
+import com.example.tasktracker.viewModels.UserViewModel
 import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessOutlinedTextField
 import com.ravenzip.workshop.data.TextConfig

@@ -6,6 +6,8 @@ data class User(
     val surname: String,
     val companyId: String,
     val lastTaskViewId: String,
+    val onEdit: Boolean,
+    val onDelete: Boolean,
     val tasks: List<String>,
 ) {
     constructor() :
@@ -15,6 +17,8 @@ data class User(
             surname = "",
             companyId = "",
             lastTaskViewId = "",
+            onEdit = true,
+            onDelete = true,
             tasks = listOf()
         )
 }

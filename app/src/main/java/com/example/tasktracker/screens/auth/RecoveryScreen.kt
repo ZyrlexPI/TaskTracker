@@ -20,10 +20,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.services.ValidationService
-import com.example.tasktracker.services.firebase.reloadUser
-import com.example.tasktracker.services.firebase.sendPasswordResetEmail
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
+import com.example.tasktracker.services.viewModels.reloadUser
+import com.example.tasktracker.services.viewModels.sendPasswordResetEmail
 import com.ravenzip.workshop.components.InfoCard
 import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessOutlinedTextField

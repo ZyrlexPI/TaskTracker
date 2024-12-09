@@ -21,13 +21,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.tasktracker.services.firebase.AuthViewModel
+import com.example.tasktracker.viewModels.AuthViewModel
+import com.example.tasktracker.viewModels.UserProfileViewModel
 import com.ravenzip.workshop.components.RowIconButton
 import com.ravenzip.workshop.data.TextConfig
 import com.ravenzip.workshop.data.icon.Icon
@@ -38,9 +40,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun UserProfileScreen(
     padding: PaddingValues,
+    userProfileViewModel: UserProfileViewModel = hiltViewModel<UserProfileViewModel>(),
     authViewModel: AuthViewModel = hiltViewModel<AuthViewModel>(),
     vararg onClick: () -> Unit,
 ) {
+    val dataUser = userProfileViewModel.userData.collectAsState().value
+
     val emailUser = authViewModel.getUser()?.email.toString()
     val scope = rememberCoroutineScope()
 
@@ -63,11 +68,13 @@ fun UserProfileScreen(
                 text =
                     if (emailUser == "null") {
                         "Выполняется выход..."
+                    } else if (dataUser.name != "") {
+                        dataUser.name + " " + dataUser.surname
                     } else {
                         emailUser
                     },
                 // modifier = Modifier.padding(start = 17.dp),
-                fontSize = 20.sp,
+                fontSize = 18.sp,
             )
             IconButton(
                 onClick = { onClick[3]() },

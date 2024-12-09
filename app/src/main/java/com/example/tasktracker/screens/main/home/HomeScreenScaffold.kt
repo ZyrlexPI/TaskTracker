@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tasktracker.screens.main.noAccess.NoAccessScreen
-import com.example.tasktracker.services.firebase.TasksViewModel
-import com.example.tasktracker.services.firebase.UserViewModel
+import com.example.tasktracker.viewModels.TasksViewModel
+import com.example.tasktracker.viewModels.UserViewModel
 import com.ravenzip.workshop.components.TopAppBar
 
 @Composable

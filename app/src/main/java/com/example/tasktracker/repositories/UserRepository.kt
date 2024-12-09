@@ -27,7 +27,7 @@ constructor(
         if (currentUser !== null) {
             userSources.userSource
                 .child(currentUser.uid)
-                .setValue(User(currentUser.uid, "", "", "", "", listOf("")))
+                .setValue(User(currentUser.uid, "", "", "", "", false, false, listOf("")))
                 .await()
         } else {
             Log.d("Exception", "currentUser is null")
@@ -136,6 +136,8 @@ constructor(
                     surname,
                     userData.companyId,
                     userData.lastTaskViewId,
+                    userData.onEdit,
+                    userData.onDelete,
                     userData.tasks
                 )
             val dataMembers = mutableListOf<User>()

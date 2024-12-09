@@ -35,11 +35,11 @@ import androidx.compose.ui.unit.sp
 import com.example.tasktracker.data.User
 import com.example.tasktracker.enums.TaskStatus
 import com.example.tasktracker.screens.main.noAccess.NoAccessScreen
-import com.example.tasktracker.services.firebase.CompanyViewModel
-import com.example.tasktracker.services.firebase.TasksViewModel
-import com.example.tasktracker.services.firebase.UserViewModel
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
+import com.example.tasktracker.viewModels.CompanyViewModel
+import com.example.tasktracker.viewModels.TasksViewModel
+import com.example.tasktracker.viewModels.UserViewModel
 import com.ravenzip.workshop.components.DropDownTextField
 import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessOutlinedTextField

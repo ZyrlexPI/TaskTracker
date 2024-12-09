@@ -6,7 +6,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.tasktracker.services.firebase.NotificationsViewModel
+import com.example.tasktracker.viewModels.NotificationsViewModel
 import com.ravenzip.workshop.components.TopAppBar
 
 @Composable

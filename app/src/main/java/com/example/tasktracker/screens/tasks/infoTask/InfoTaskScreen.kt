@@ -35,10 +35,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tasktracker.data.Comment
 import com.example.tasktracker.data.Task
 import com.example.tasktracker.enums.TaskStatus
-import com.example.tasktracker.services.firebase.InfoTasksViewModel
-import com.example.tasktracker.services.firebase.TasksViewModel
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
+import com.example.tasktracker.viewModels.InfoTasksViewModel
+import com.example.tasktracker.viewModels.TasksViewModel
 import com.ravenzip.workshop.components.DropDownTextField
 import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessOutlinedTextField

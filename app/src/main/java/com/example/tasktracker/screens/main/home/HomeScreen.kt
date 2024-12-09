@@ -23,9 +23,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tasktracker.data.Task
-import com.example.tasktracker.services.firebase.TaskByType
-import com.example.tasktracker.services.firebase.TasksViewModel
-import com.example.tasktracker.services.firebase.UserViewModel
+import com.example.tasktracker.viewModels.TaskByType
+import com.example.tasktracker.viewModels.TasksViewModel
+import com.example.tasktracker.viewModels.UserViewModel
 import java.math.BigDecimal
 import java.math.RoundingMode
 

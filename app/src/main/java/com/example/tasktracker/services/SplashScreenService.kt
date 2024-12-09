@@ -3,8 +3,8 @@ package com.example.tasktracker.services
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasktracker.navigation.models.RootGraph
-import com.example.tasktracker.services.firebase.getUser
-import com.example.tasktracker.services.firebase.reloadUser
+import com.example.tasktracker.services.viewModels.getUser
+import com.example.tasktracker.services.viewModels.reloadUser
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

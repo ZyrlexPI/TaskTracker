@@ -14,12 +14,13 @@ import com.example.tasktracker.screens.main.userProfile.UserProfileScreenScaffol
 import com.example.tasktracker.screens.userProfile.changePassword.ChangePasswordScreenScaffold
 import com.example.tasktracker.screens.userProfile.company.CompanyScreenScaffold
 import com.example.tasktracker.screens.userProfile.createCompany.CreateCompanyScreenScaffold
+import com.example.tasktracker.screens.userProfile.infoUser.InfoUserScreenScaffold
 import com.example.tasktracker.screens.userProfile.joinCompany.JoinCompanyScreenScaffold
 import com.example.tasktracker.screens.userProfile.security.SecurityScreenScaffold
 import com.example.tasktracker.screens.userProfile.settings.SettingsScreenScaffold
 import com.example.tasktracker.screens.userProfile.userData.UserDataScreenScaffold
-import com.example.tasktracker.services.firebase.CompanyViewModel
-import com.example.tasktracker.services.firebase.UserViewModel
+import com.example.tasktracker.viewModels.CompanyViewModel
+import com.example.tasktracker.viewModels.UserViewModel
 
 @Composable
 fun UserProfileNavigationGraph(
@@ -87,6 +88,7 @@ fun UserProfileNavigationGraph(
                         { navController.navigate(UserProfileGraph.COMPANY_ADD) },
                         { navController.navigate(UserProfileGraph.USER_PROFILE_ROOT) },
                         { navController.navigate(UserProfileGraph.USER_DATA) },
+                        { navController.navigate(UserProfileGraph.USER_INFO) },
                     ),
                 companyViewModel = companyViewModel,
                 userViewModel = userViewModel,
@@ -107,6 +109,11 @@ fun UserProfileNavigationGraph(
                 onClick = arrayOf({ navController.popBackStack() }),
                 userViewModel = userViewModel,
                 companyViewModel = companyViewModel,
+            )
+        }
+        composable(route = UserProfileGraph.USER_INFO) {
+            InfoUserScreenScaffold(
+                padding = padding,
             )
         }
     }

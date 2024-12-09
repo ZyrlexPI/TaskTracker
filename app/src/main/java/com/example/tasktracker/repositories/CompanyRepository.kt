@@ -27,6 +27,8 @@ constructor(private val companySources: CompanySources, private val userSources:
                 userData.surname,
                 pushKey,
                 userData.lastTaskViewId,
+                userData.onEdit,
+                userData.onDelete,
                 userData.tasks
             )
         companySources.companySource
@@ -68,6 +70,8 @@ constructor(private val companySources: CompanySources, private val userSources:
                 userData.surname,
                 targetCompany,
                 userData.lastTaskViewId,
+                userData.onEdit,
+                userData.onDelete,
                 userData.tasks
             )
 
@@ -100,5 +104,19 @@ constructor(private val companySources: CompanySources, private val userSources:
                 .child("members")
                 .setValue(dataMembers)
         }
+    }
+
+    /** Получение списка пользователей в компании */
+    suspend fun getMembersCompany(targetCompany: String): MutableList<User> {
+        val response =
+            companySources.companySource.child(targetCompany).child("members").get().await()
+        val dataMembers = mutableListOf<User>()
+        val valueMembers = response.getValue<List<User>>()
+        if (response.exists()) {
+            if (valueMembers != null) {
+                dataMembers.addAll(valueMembers)
+            }
+        }
+        return dataMembers
     }
 }

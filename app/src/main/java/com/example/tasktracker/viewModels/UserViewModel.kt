@@ -1,15 +1,14 @@
-package com.example.tasktracker.services.firebase
+package com.example.tasktracker.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasktracker.data.User
 import com.example.tasktracker.repositories.SharedRepository
 import com.example.tasktracker.repositories.UserRepository
+import com.example.tasktracker.services.viewModels.getUser
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.getValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel

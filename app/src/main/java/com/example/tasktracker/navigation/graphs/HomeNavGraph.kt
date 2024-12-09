@@ -11,9 +11,9 @@ import com.example.tasktracker.navigation.models.HomeGraph
 import com.example.tasktracker.navigation.models.TasksGraph
 import com.example.tasktracker.screens.main.home.HomeScreenScaffold
 import com.example.tasktracker.screens.tasks.infoTask.InfoTaskScreenScaffold
-import com.example.tasktracker.services.firebase.CompanyViewModel
-import com.example.tasktracker.services.firebase.TasksViewModel
-import com.example.tasktracker.services.firebase.UserViewModel
+import com.example.tasktracker.viewModels.CompanyViewModel
+import com.example.tasktracker.viewModels.TasksViewModel
+import com.example.tasktracker.viewModels.UserViewModel
 
 @Composable
 fun HomeNavigationGraph(

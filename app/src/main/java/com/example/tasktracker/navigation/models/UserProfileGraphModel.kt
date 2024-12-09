@@ -9,4 +9,5 @@ object UserProfileGraph {
     const val COMPANY = "COMPANY"
     const val COMPANY_ADD = "COMPANY_ADD"
     const val COMPANY_JOIN = "COMPANY_JOIN"
+    const val USER_INFO = "USER_INFO"
 }

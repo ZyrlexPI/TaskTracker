@@ -8,8 +8,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.example.tasktracker.enums.TaskStatus
 import com.example.tasktracker.enums.TaskViewOption
-import com.example.tasktracker.services.firebase.TasksViewModel
-import com.example.tasktracker.services.firebase.UserViewModel
+import com.example.tasktracker.viewModels.TasksViewModel
+import com.example.tasktracker.viewModels.UserViewModel
 import com.ravenzip.workshop.components.TopAppBar
 
 @Composable

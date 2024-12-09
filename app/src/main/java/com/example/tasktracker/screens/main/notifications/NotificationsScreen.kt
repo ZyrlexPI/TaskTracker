@@ -36,7 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tasktracker.data.Notification
-import com.example.tasktracker.services.firebase.NotificationsViewModel
+import com.example.tasktracker.viewModels.NotificationsViewModel
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

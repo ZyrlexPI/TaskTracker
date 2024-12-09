@@ -1,4 +1,4 @@
-package com.example.tasktracker.services.firebase
+package com.example.tasktracker.viewModels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

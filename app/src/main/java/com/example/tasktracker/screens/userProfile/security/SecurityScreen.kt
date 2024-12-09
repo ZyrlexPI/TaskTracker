@@ -34,12 +34,5 @@ fun SecurityScreen(padding: PaddingValues, vararg onClick: () -> Unit) {
             onClick[0]()
         }
         Spacer(modifier = Modifier.height(20.dp))
-        //        InfoCard(
-        //            icon = IconParameters(value = Icons.Outlined.Warning),
-        //            title = TextParameters(value = "ВАЖНО", size = 20),
-        //            text = TextParameters(value = "Данный экран находится в разработке.", size =
-        // 20),
-        //            isTitleUnderIcon = false
-        //        )
     }
 }

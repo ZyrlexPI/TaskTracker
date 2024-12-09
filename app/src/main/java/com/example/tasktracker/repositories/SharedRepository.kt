@@ -22,6 +22,15 @@ constructor(private val notificationsRepository: NotificationsRepository) {
         Log.d("SharedRepository", currentTask.value.toString())
     }
 
+    /** Пользователь, который отображается на экране */
+    private val _currentUser = MutableStateFlow(User())
+    val currentUser = _currentUser.asStateFlow()
+
+    fun setCurrentUser(user: User) {
+        _currentUser.update { user }
+    }
+
+    /** Текущий пользователь */
     private val _userData = MutableStateFlow<User>(User())
     val userData = _userData.asStateFlow()
 
@@ -29,6 +38,7 @@ constructor(private val notificationsRepository: NotificationsRepository) {
         _userData.update { user }
     }
 
+    /** Текущая Организация */
     private val _companyData = MutableStateFlow(Company())
     val companyData = _companyData.asStateFlow()
 
@@ -36,6 +46,7 @@ constructor(private val notificationsRepository: NotificationsRepository) {
         _companyData.update { company }
     }
 
+    /** Статус обновления Уведомлений */
     private val _updateNotifications = MutableStateFlow("")
     val updateNotifications = _updateNotifications.asStateFlow()
 
@@ -46,6 +57,7 @@ constructor(private val notificationsRepository: NotificationsRepository) {
         }
     }
 
+    /** Количество уведомлений */
     private val _countNotifications = MutableStateFlow(0)
     val countNotifications = _countNotifications.asStateFlow()
 

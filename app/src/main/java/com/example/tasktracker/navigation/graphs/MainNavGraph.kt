@@ -13,9 +13,9 @@ import androidx.navigation.compose.composable
 import com.example.tasktracker.navigation.models.BottomBarGraph
 import com.example.tasktracker.navigation.models.RootGraph
 import com.example.tasktracker.screens.main.notifications.NotificationsScreenScaffold
-import com.example.tasktracker.services.firebase.CompanyViewModel
-import com.example.tasktracker.services.firebase.TasksViewModel
-import com.example.tasktracker.services.firebase.UserViewModel
+import com.example.tasktracker.viewModels.CompanyViewModel
+import com.example.tasktracker.viewModels.TasksViewModel
+import com.example.tasktracker.viewModels.UserViewModel
 
 @Composable
 fun MainNavGraph(

@@ -36,12 +36,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tasktracker.data.Task
 import com.example.tasktracker.data.User
-import com.example.tasktracker.services.firebase.InfoTasksViewModel
-import com.example.tasktracker.services.firebase.TasksViewModel
-import com.example.tasktracker.services.firebase.UserViewModel
-import com.example.tasktracker.services.firebase.getUser
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
+import com.example.tasktracker.services.viewModels.getUser
+import com.example.tasktracker.viewModels.InfoTasksViewModel
+import com.example.tasktracker.viewModels.TasksViewModel
+import com.example.tasktracker.viewModels.UserViewModel
 import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessOutlinedTextField
 import com.ravenzip.workshop.components.SnackBar

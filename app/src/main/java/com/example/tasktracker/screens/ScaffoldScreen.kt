@@ -15,7 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tasktracker.navigation.graphs.MainNavGraph
 import com.example.tasktracker.navigation.models.BottomBarGraph
-import com.example.tasktracker.services.firebase.MainScaffoldViewModel
+import com.example.tasktracker.viewModels.MainScaffoldViewModel
 import com.ravenzip.workshop.components.BottomNavigationBar
 import com.ravenzip.workshop.data.appbar.BottomNavigationItem
 import com.ravenzip.workshop.data.icon.Icon

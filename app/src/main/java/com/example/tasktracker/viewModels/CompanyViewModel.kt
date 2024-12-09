@@ -1,4 +1,4 @@
-package com.example.tasktracker.services.firebase
+package com.example.tasktracker.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,10 +7,12 @@ import com.example.tasktracker.data.User
 import com.example.tasktracker.repositories.CompanyRepository
 import com.example.tasktracker.repositories.SharedRepository
 import com.example.tasktracker.repositories.UserRepository
-import com.google.firebase.database.getValue
+import com.example.tasktracker.services.viewModels.getUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -24,12 +26,24 @@ constructor(
 
     val dataCompany = sharedRepository.companyData
 
+    private val _listMembersCompany = MutableStateFlow(listOf<User>())
+
+    val listMembersCompany = _listMembersCompany.asStateFlow()
+
     init {
         viewModelScope.launch {
             sharedRepository.userData.collect {
                 sharedRepository.setCompanyData(
                     companyRepository.getCurrentCompany(userRepository.get(getUser()))
                 )
+            }
+        }
+
+        viewModelScope.launch {
+            sharedRepository.companyData.collect {
+                _listMembersCompany.update {
+                    companyRepository.getMembersCompany(sharedRepository.companyData.value!!.id)
+                }
             }
         }
     }
@@ -57,5 +71,13 @@ constructor(
     /** Удаление текущего пользователя из организации в которой состоит */
     suspend fun deleteCurrentUser(userData: User) {
         companyRepository.deleteCurrentUser(userData)
+    }
+
+    suspend fun getMembersCompany(companyId: String) {
+        _listMembersCompany.update { companyRepository.getMembersCompany(companyId) }
+    }
+
+    suspend fun setCurrentUser(user: User) {
+        sharedRepository.setCurrentUser(user)
     }
 }
