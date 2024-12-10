@@ -94,7 +94,7 @@ fun InfoTaskScreenScaffold(
                         userViewModel,
                         tasksViewModel,
                         returnToTaskList,
-                        editState
+                        editState,
                     ),
             )
         },
@@ -220,5 +220,13 @@ fun generateTopAppBarItems(
             },
         )
 
-    return listOf(editButton, deleteButton)
+    return if (userData.onEdit && userData.onDelete) {
+        listOf(editButton, deleteButton)
+    } else if (userData.onEdit) {
+        listOf(editButton)
+    } else if (userData.onDelete) {
+        listOf(deleteButton)
+    } else {
+        emptyList()
+    }
 }

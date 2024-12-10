@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -26,12 +27,15 @@ import com.example.tasktracker.data.User
 import com.example.tasktracker.viewModels.InfoUserViewModel
 import com.ravenzip.workshop.components.Switch
 import com.ravenzip.workshop.data.TextConfig
+import kotlinx.coroutines.launch
 
 @Composable
 fun InfoUserScreen(
     padding: PaddingValues,
     infoUserViewModel: InfoUserViewModel,
 ) {
+    val scope = rememberCoroutineScope()
+
     val user = infoUserViewModel.dataCurrentUser.collectAsState().value
 
     val dataUser = infoUserViewModel.dataUser.collectAsState().value
@@ -47,7 +51,7 @@ fun InfoUserScreen(
     ) {
         UserCard(user, dataCompany)
 
-        if (dataUser.id == dataCompany.creatorId) {
+        if (dataUser.id == dataCompany.creatorId && dataCompany.creatorId != user.id) {
             Text(
                 text = "Настройка прав",
                 fontSize = 24.sp,
@@ -62,6 +66,24 @@ fun InfoUserScreen(
                 titleConfig = TextConfig.Normal,
                 text = "Разрешить редактирование задач",
                 textConfig = TextConfig.Small,
+                onCheckedChanged = {
+                    scope.launch {
+                        val newUser =
+                            User(
+                                id = user.id,
+                                name = user.name,
+                                surname = user.surname,
+                                companyId = user.companyId,
+                                lastTaskViewId = user.lastTaskViewId,
+                                onEdit = !onEditSwitch.value,
+                                onDelete = user.onDelete,
+                                tasks = user.tasks
+                            )
+                        infoUserViewModel.updateOnEdit(newUser, !onEditSwitch.value)
+                        infoUserViewModel.updateCurrentUser(newUser)
+                        onEditSwitch.value = !onEditSwitch.value
+                    }
+                }
             )
 
             Switch(
@@ -70,6 +92,24 @@ fun InfoUserScreen(
                 titleConfig = TextConfig.Normal,
                 text = "Разрешить удаление задач",
                 textConfig = TextConfig.Small,
+                onCheckedChanged = {
+                    scope.launch {
+                        val newUser =
+                            User(
+                                id = user.id,
+                                name = user.name,
+                                surname = user.surname,
+                                companyId = user.companyId,
+                                lastTaskViewId = user.lastTaskViewId,
+                                onEdit = user.onEdit,
+                                onDelete = !onDeleteSwitch.value,
+                                tasks = user.tasks
+                            )
+                        infoUserViewModel.updateOnDelete(newUser, !onDeleteSwitch.value)
+                        infoUserViewModel.updateCurrentUser(newUser)
+                        onDeleteSwitch.value = !onDeleteSwitch.value
+                    }
+                }
             )
         }
     }
@@ -103,7 +143,7 @@ fun UserCard(user: User, currentCompany: Company) {
             UserDetailItem(label = "Компания:", value = currentCompany.name)
             UserDetailItem(
                 label = "Должность:",
-                value = if (user.id != currentCompany.creatorId) "Сотрудник" else "Администратор"
+                value = if (user.id != currentCompany.creatorId) "Сотрудник" else "Директор"
             )
             UserDetailItem(
                 label = "Право на редактирование задач:",

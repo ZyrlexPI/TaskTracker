@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasktracker.data.User
 import com.example.tasktracker.repositories.SharedRepository
+import com.example.tasktracker.repositories.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 class InfoUserViewModel
 @Inject
 constructor(
+    private val userRepository: UserRepository,
     private val sharedRepository: SharedRepository,
 ) : ViewModel() {
 
@@ -29,6 +31,18 @@ constructor(
 
     suspend fun updateCurrentUser(user: User) {
         _dataCurrentUser.update { user }
+        val randomNumber = (0..1000).random()
+        sharedRepository.setUpdateUsers("$randomNumber")
+    }
+
+    /** Обновление правила на редактирование задач */
+    suspend fun updateOnEdit(user: User, onEdit: Boolean) {
+        userRepository.updateOnEdit(user, onEdit)
+    }
+
+    /** Обновление правила на удаление задач */
+    suspend fun updateOnDelete(user: User, onDelete: Boolean) {
+        userRepository.updateOnDelete(user, onDelete)
     }
 
     init {

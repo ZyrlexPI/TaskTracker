@@ -156,6 +156,64 @@ constructor(
         return true
     }
 
+    /** Обновление правила на редактирование задач */
+    suspend fun updateOnEdit(user: User, onEdit: Boolean) {
+        val dataUser = mapOf("onEdit" to onEdit)
+        userSources.userSource.child(user.id).updateChildren(dataUser)
+
+        val response =
+            companySources.companySource.child(user.companyId).child("members").get().await()
+        val dataUser1 =
+            User(
+                user.id,
+                user.name,
+                user.surname,
+                user.companyId,
+                user.lastTaskViewId,
+                onEdit,
+                user.onDelete,
+                user.tasks
+            )
+        val dataMembers = mutableListOf<User>()
+        val valueMembers = response.getValue<List<User>>()
+        valueMembers?.forEach { member ->
+            if (member.id != user.id) {
+                dataMembers.add(member)
+            }
+        }
+        dataMembers.add(dataUser1)
+        companySources.companySource.child(user.companyId).child("members").setValue(dataMembers)
+    }
+
+    /** Обновление правила на удаление задач */
+    suspend fun updateOnDelete(user: User, onDelete: Boolean) {
+        val dataUser = mapOf("onDelete" to onDelete)
+        userSources.userSource.child(user.id).updateChildren(dataUser)
+
+        val response =
+            companySources.companySource.child(user.companyId).child("members").get().await()
+        val dataUser1 =
+            User(
+                user.id,
+                user.name,
+                user.surname,
+                user.companyId,
+                user.lastTaskViewId,
+                user.onEdit,
+                onDelete,
+                user.tasks
+            )
+        val dataMembers = mutableListOf<User>()
+        val valueMembers = response.getValue<List<User>>()
+        valueMembers?.forEach { member ->
+            if (member.id != user.id) {
+                dataMembers.add(member)
+            }
+        }
+        dataMembers.add(dataUser1)
+        companySources.companySource.child(user.companyId).child("members").setValue(dataMembers)
+    }
+
     suspend fun updateLastTaskViewId(userData: User, lastTaskViewId: String) {
         val dataUser = mapOf("lastTaskViewId" to lastTaskViewId)
         userSources.currentUser(userData.id).updateChildren(dataUser)

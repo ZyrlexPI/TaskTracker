@@ -46,6 +46,14 @@ constructor(
                 }
             }
         }
+
+        viewModelScope.launch {
+            sharedRepository.updateUsers.collect {
+                _listMembersCompany.update {
+                    companyRepository.getMembersCompany(sharedRepository.companyData.value!!.id)
+                }
+            }
+        }
     }
 
     /** Создание новой организации */

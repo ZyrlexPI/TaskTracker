@@ -88,7 +88,9 @@ constructor(private val companySources: CompanySources, private val userSources:
 
     /** Удаление текущего пользователя из организации в которой состоит */
     suspend fun deleteCurrentUser(userData: User) {
-        userSources.userSource.child(userData.id).child("companyId").setValue("")
+        val dataUser =
+            mapOf("companyId" to "", "lastTaskViewId" to "", "onEdit" to false, "onDelete" to false)
+        userSources.userSource.child(userData.id).updateChildren(dataUser)
         val response =
             companySources.companySource.child(userData.companyId).child("members").get().await()
         val dataMembers = mutableListOf<User>()

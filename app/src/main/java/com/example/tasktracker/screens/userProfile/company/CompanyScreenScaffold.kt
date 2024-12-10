@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -27,6 +28,9 @@ fun CompanyScreenScaffold(
     companyViewModel: CompanyViewModel,
     userViewModel: UserViewModel
 ) {
+    val userData = userViewModel.dataUser.collectAsState().value
+    val companyData = companyViewModel.dataCompany.collectAsState().value
+
     val snackBarHostState = remember { SnackbarHostState() }
 
     val editState = remember { mutableStateOf(false) }
@@ -37,7 +41,12 @@ fun CompanyScreenScaffold(
             TopAppBar(
                 title = "Организация",
                 backArrow = null,
-                items = generateTopAppBarItems(editState)
+                items =
+                    if (userData.id == companyData.creatorId) {
+                        generateTopAppBarItems(editState)
+                    } else {
+                        emptyList()
+                    },
             )
         },
     ) { innerPadding ->
@@ -85,5 +94,5 @@ fun generateTopAppBarItems(
             },
         )
 
-    return listOf(editButton)
+    return listOf(editButton, deleteButton)
 }

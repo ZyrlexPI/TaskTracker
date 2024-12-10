@@ -68,4 +68,12 @@ constructor(private val notificationsRepository: NotificationsRepository) {
     suspend fun updateCountNotifications(user: User) {
         _countNotifications.update { notificationsRepository.getListNotifications(user.id).count() }
     }
+
+    /** Статус обновления пользователей после изменений */
+    private val _updateUsers = MutableStateFlow("")
+    val updateUsers = _updateUsers.asStateFlow()
+
+    fun setUpdateUsers(update: String) {
+        _updateUsers.update { update }
+    }
 }
