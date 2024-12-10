@@ -55,7 +55,8 @@ fun CompanyScreenScaffold(
             snackBarHostState = snackBarHostState,
             onClick = onClick,
             companyViewModel = companyViewModel,
-            userViewModel = userViewModel
+            userViewModel = userViewModel,
+            editState = editState
         )
     }
 
@@ -70,13 +71,7 @@ fun generateTopAppBarItems(
         AppBarItem(
             icon = Icon.ImageVectorIcon(Icons.Filled.Edit),
             iconConfig = IconConfig.Small,
-            onClick = {
-                if (editState.value) {
-                    editState.value = false
-                } else {
-                    editState.value = true
-                }
-            },
+            onClick = { editState.value = !editState.value },
         )
 
     val deleteButton =

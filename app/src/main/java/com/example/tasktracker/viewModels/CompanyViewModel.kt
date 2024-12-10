@@ -66,6 +66,10 @@ constructor(
         sharedRepository.setCompanyData(companyRepository.getCurrentCompany(userData))
     }
 
+    suspend fun setCurrentCompany(companyData: Company) {
+        sharedRepository.setCompanyData(companyData)
+    }
+
     /** Получить список компаний существующих в БД */
     suspend fun getListCompany(): MutableList<Company> {
         return companyRepository.getListCompany()
@@ -81,11 +85,17 @@ constructor(
         companyRepository.deleteCurrentUser(userData)
     }
 
+    /** Получить список пользователей в компании */
     suspend fun getMembersCompany(companyId: String) {
         _listMembersCompany.update { companyRepository.getMembersCompany(companyId) }
     }
 
     suspend fun setCurrentUser(user: User) {
         sharedRepository.setCurrentUser(user)
+    }
+
+    /** Обновление имени компании */
+    suspend fun updateNameCompany(targetCompany: String, nameCompany: String) {
+        companyRepository.updateNameCompany(targetCompany, nameCompany)
     }
 }

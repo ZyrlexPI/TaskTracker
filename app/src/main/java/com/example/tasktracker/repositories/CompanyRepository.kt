@@ -121,4 +121,10 @@ constructor(private val companySources: CompanySources, private val userSources:
         }
         return dataMembers
     }
+
+    /** Обновление имени компании */
+    suspend fun updateNameCompany(targetCompany: String, nameCompany: String) {
+        val data = mapOf("name" to nameCompany)
+        companySources.companySource.child(targetCompany).updateChildren(data)
+    }
 }

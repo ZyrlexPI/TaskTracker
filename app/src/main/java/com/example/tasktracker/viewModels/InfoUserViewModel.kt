@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasktracker.data.User
+import com.example.tasktracker.repositories.CompanyRepository
 import com.example.tasktracker.repositories.SharedRepository
 import com.example.tasktracker.repositories.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +21,7 @@ class InfoUserViewModel
 @Inject
 constructor(
     private val userRepository: UserRepository,
+    private val companyRepository: CompanyRepository,
     private val sharedRepository: SharedRepository,
 ) : ViewModel() {
 
@@ -43,6 +45,11 @@ constructor(
     /** Обновление правила на удаление задач */
     suspend fun updateOnDelete(user: User, onDelete: Boolean) {
         userRepository.updateOnDelete(user, onDelete)
+    }
+
+    /** Удаление пользователя из компании */
+    suspend fun deleteCurrentUserInCompany(user: User) {
+        companyRepository.deleteCurrentUser(user)
     }
 
     init {

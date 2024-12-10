@@ -3,6 +3,7 @@ package com.example.tasktracker.screens.userProfile.company
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -27,7 +28,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,12 +40,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.tasktracker.data.Company
 import com.example.tasktracker.data.User
+import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.example.tasktracker.services.viewModels.getUser
 import com.example.tasktracker.viewModels.CompanyViewModel
 import com.example.tasktracker.viewModels.UserViewModel
 import com.ravenzip.workshop.components.RowIconButton
+import com.ravenzip.workshop.components.SimpleButton
+import com.ravenzip.workshop.components.SinglenessOutlinedTextField
 import com.ravenzip.workshop.data.TextConfig
 import com.ravenzip.workshop.data.icon.Icon
 import kotlinx.coroutines.Dispatchers
@@ -53,7 +61,8 @@ fun CompanyScreen(
     snackBarHostState: SnackbarHostState,
     vararg onClick: () -> Unit,
     companyViewModel: CompanyViewModel,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    editState: MutableState<Boolean>,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -96,59 +105,69 @@ fun CompanyScreen(
                 }
             }
         } else {
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(padding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                item {
-                    Text(
-                        text = "Вы состоите в организации \"" + companyData.name + "\"",
-                        fontSize = 20.sp,
-                        modifier = Modifier.fillMaxWidth(0.85f)
+            if (editState.value) {
+                Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+                    EditCompanyScreen(
+                        companyData,
+                        companyViewModel,
+                        editState,
+                        snackBarHostState,
                     )
                 }
-
-                item {
-                    RowIconButton(
-                        text = "Выйти из организации",
-                        textConfig = TextConfig(size = 19.sp),
-                        icon = Icon.ImageVectorIcon(Icons.Outlined.Output),
-                    ) {
-                        scope.launch(Dispatchers.Main) {
-                            companyViewModel.deleteCurrentUser(userData)
-                            userViewModel.setUserData(getUser())
-                            Log.d("ExitInCompany", userData.toString())
-                            snackBarHostState.showSuccess(
-                                message = "Вы успешно вышли из организации"
-                            )
-                            onClick[2]()
-                        }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize().padding(padding),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    item {
+                        Text(
+                            text = "Вы состоите в организации \"" + companyData.name + "\"",
+                            fontSize = 20.sp,
+                            modifier = Modifier.fillMaxWidth(0.85f)
+                        )
                     }
-                }
 
-                item {
-                    Text(
-                        text = "Список сотрудников",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
-
-                items(listMembersCompany) { member ->
-                    UserCard(
-                        user = member,
-                        member.id == companyData.creatorId,
-                        onClick = {
-                            scope.launch {
-                                companyViewModel.setCurrentUser(member)
-                                onClick[4]()
+                    item {
+                        RowIconButton(
+                            text = "Выйти из организации",
+                            textConfig = TextConfig(size = 19.sp),
+                            icon = Icon.ImageVectorIcon(Icons.Outlined.Output),
+                        ) {
+                            scope.launch(Dispatchers.Main) {
+                                companyViewModel.deleteCurrentUser(userData)
+                                userViewModel.setUserData(getUser())
+                                Log.d("ExitInCompany", userData.toString())
+                                snackBarHostState.showSuccess(
+                                    message = "Вы успешно вышли из организации"
+                                )
+                                onClick[2]()
                             }
                         }
-                    )
+                    }
+
+                    item {
+                        Text(
+                            text = "Список сотрудников",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    items(listMembersCompany) { member ->
+                        UserCard(
+                            user = member,
+                            member.id == companyData.creatorId,
+                            onClick = {
+                                scope.launch {
+                                    companyViewModel.setCurrentUser(member)
+                                    onClick[4]()
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -173,6 +192,44 @@ fun CompanyScreen(
                 icon = Icon.ImageVectorIcon(Icons.Outlined.Person),
             ) {
                 onClick[3]()
+            }
+        }
+    }
+}
+
+@Composable
+fun EditCompanyScreen(
+    companyData: Company,
+    companyViewModel: CompanyViewModel,
+    editState: MutableState<Boolean>,
+    snackBarHostState: SnackbarHostState
+) {
+    val scope = rememberCoroutineScope()
+    val newNameCompany = remember(companyData) { mutableStateOf(companyData.name) }
+
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        SinglenessOutlinedTextField(text = newNameCompany, label = "Название организации")
+        //        Spacer(modifier = Modifier.height(8.dp))
+        //        DropDownTextField(
+        //            state = newStatusTask,
+        //            menuItems = TaskStatus.values().toList(),
+        //            view = { it.value },
+        //            label = "Статус задачи"
+        //        )
+        Spacer(modifier = Modifier.height(10.dp))
+        SimpleButton(text = "Сохранить") {
+            scope.launch {
+                if (newNameCompany.value.isNotBlank()) {
+                    val newCompany = companyData.copy(name = newNameCompany.value)
+                    companyViewModel.updateNameCompany(companyData.id, newNameCompany.value)
+                    companyViewModel.setCurrentCompany(newCompany)
+                    snackBarHostState.showSuccess(message = "Имя организации успешно изменено")
+                    editState.value = false
+                } else {
+                    snackBarHostState.showError(
+                        message = "Ошибка выполнения запроса. Проверьте введенные данные"
+                    )
+                }
             }
         }
     }
