@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
-import com.example.tasktracker.services.viewModels.getUser
 import com.example.tasktracker.viewModels.CompanyViewModel
 import com.example.tasktracker.viewModels.UserViewModel
 import com.ravenzip.workshop.components.SimpleButton
@@ -60,7 +59,7 @@ fun CreateCompanyScreen(
                 }
                 if (nameCompany.value != "") {
                     companyViewModel.add(nameCompany = nameCompany.value, userData = userData)
-                    userViewModel.setUserData(getUser())
+                    userViewModel.setUserData()
                     snackBarHostState.showSuccess(message = "Организация успешно создана")
 
                     onClick[0]()

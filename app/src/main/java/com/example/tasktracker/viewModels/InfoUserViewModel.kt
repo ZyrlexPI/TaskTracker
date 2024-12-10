@@ -50,6 +50,8 @@ constructor(
     /** Удаление пользователя из компании */
     suspend fun deleteCurrentUserInCompany(user: User) {
         companyRepository.deleteCurrentUser(user)
+        val randomNumber = (0..1000).random()
+        sharedRepository.setUpdateUsers("$randomNumber")
     }
 
     init {

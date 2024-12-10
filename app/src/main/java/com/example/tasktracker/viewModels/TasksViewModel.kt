@@ -1,5 +1,6 @@
 package com.example.tasktracker.viewModels
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasktracker.data.Comment
@@ -54,6 +55,9 @@ constructor(
     private val _listTasks = MutableStateFlow(listOf<Task>())
     val listTasks = _listTasks.asStateFlow()
 
+    private val _listAllTask = MutableStateFlow(listOf<Task>())
+    private val listAllTask = _listAllTask.asStateFlow()
+
     private val _listComments = MutableStateFlow(listOf<Comment>())
     val listComments = _listComments.asStateFlow()
 
@@ -68,7 +72,7 @@ constructor(
     val countTask = listTasks.map { task -> task.count() }
 
     /** Подсчёт айди нового задания для уведомления */
-    val idNewTask = listTasks.map { task -> task.last().id.toInt() + 1 }
+    val idNewTask = listAllTask.map { task -> task.last().id.toInt() + 1 }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val listActualTasks =
@@ -135,6 +139,7 @@ constructor(
                 _listTasks.update {
                     tasksRepository.getListTasks(sharedRepository.companyData.value.id)
                 }
+                _listAllTask.update { tasksRepository.getListAllTasks() }
             }
         }
     }
@@ -151,12 +156,16 @@ constructor(
     ) {
 
         /** Создание индефикатора задачи */
-        val pushKey = (tasksRepository.getListAllTasks().last().id.toInt() + 1).toString()
+        val pushKey = mutableStateOf("1")
+        val listTask = tasksRepository.getListAllTasks()
+        if (listTask.isNotEmpty()) {
+            pushKey.value = (tasksRepository.getListAllTasks().last().id.toInt() + 1).toString()
+        }
 
         /** Формирование объекта задачи */
         val dataTask =
             Task(
-                id = pushKey,
+                id = pushKey.value,
                 name = nameTask,
                 status = statusTask,
                 author = author,

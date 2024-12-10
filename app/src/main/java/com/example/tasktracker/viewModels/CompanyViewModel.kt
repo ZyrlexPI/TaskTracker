@@ -1,5 +1,6 @@
 package com.example.tasktracker.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasktracker.data.Company
@@ -36,6 +37,7 @@ constructor(
                 sharedRepository.setCompanyData(
                     companyRepository.getCurrentCompany(userRepository.get(getUser()))
                 )
+                Log.d("CompanyViewModel", dataCompany.value.toString())
             }
         }
 

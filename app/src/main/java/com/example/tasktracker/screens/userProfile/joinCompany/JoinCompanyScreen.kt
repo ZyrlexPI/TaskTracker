@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.sp
 import com.example.tasktracker.data.Company
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
-import com.example.tasktracker.services.viewModels.getUser
 import com.example.tasktracker.viewModels.CompanyViewModel
 import com.example.tasktracker.viewModels.UserViewModel
 import com.ravenzip.workshop.components.InfoCard
@@ -87,7 +86,7 @@ fun JoinCompanyScreen(
                         scope.launch(Dispatchers.Main) {
                             if (userData.companyId == "") {
                                 companyViewModel.joinCompany(company.id, userData = userData)
-                                userViewModel.setUserData(getUser())
+                                userViewModel.setUserData()
                                 snackBarHostState.showSuccess(
                                     message = "Вы успешно присоединились к организации"
                                 )

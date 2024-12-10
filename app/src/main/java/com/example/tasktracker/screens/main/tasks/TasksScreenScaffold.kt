@@ -1,6 +1,7 @@
 package com.example.tasktracker.screens.main.tasks
 
 import android.text.TextUtils.isEmpty
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -90,6 +91,9 @@ fun TasksScreenScaffold(
     val listUsersFiltered =
         listUsers.filter { user -> !isEmpty(user.name) && user.companyId == companyData.id }
 
+    Log.d("TasksScreenScaffold", "LIST USERS - $listUsers")
+    Log.d("TasksScreenScaffold", "LIST USERS FILTERED - $listUsersFiltered")
+
     Scaffold(
         modifier = Modifier.padding(padding),
         topBar = { TopAppBar(title = "Задачи", backArrow = null, items = listOf()) },
@@ -131,7 +135,7 @@ fun TasksScreenScaffold(
 
                         DropDownTextField(
                             state = taskStatus,
-                            menuItems = TaskStatus.values().toList(),
+                            menuItems = TaskStatus.entries,
                             view = { it.value },
                             label = "Статус задачи"
                         )

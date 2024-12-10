@@ -114,6 +114,7 @@ fun UserProfileNavigationGraph(
         composable(route = UserProfileGraph.USER_INFO) {
             InfoUserScreenScaffold(
                 padding = padding,
+                navigateToCompany = { navController.popBackStack() },
             )
         }
     }

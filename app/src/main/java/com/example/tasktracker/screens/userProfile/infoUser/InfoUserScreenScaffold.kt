@@ -14,6 +14,7 @@ import com.ravenzip.workshop.components.TopAppBar
 fun InfoUserScreenScaffold(
     padding: PaddingValues,
     infoUserViewModel: InfoUserViewModel = hiltViewModel<InfoUserViewModel>(),
+    navigateToCompany: () -> Unit,
 ) {
 
     val dataUser = infoUserViewModel.dataCurrentUser.collectAsState().value
@@ -22,6 +23,10 @@ fun InfoUserScreenScaffold(
         modifier = Modifier.padding(padding),
         topBar = { TopAppBar(title = "Информация", backArrow = null, items = listOf()) },
     ) { innerPadding ->
-        InfoUserScreen(padding = innerPadding, infoUserViewModel = infoUserViewModel)
+        InfoUserScreen(
+            padding = innerPadding,
+            infoUserViewModel = infoUserViewModel,
+            navigateToCompany = navigateToCompany
+        )
     }
 }

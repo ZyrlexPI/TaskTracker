@@ -36,7 +36,7 @@ constructor(
     }
 
     /** Получить данные о текущем пользователе из БД */
-    suspend fun setUserData(currentUser: FirebaseUser?) {
+    suspend fun setUserData() {
         sharedRepository.setUserData(userRepository.get(getUser()))
     }
 

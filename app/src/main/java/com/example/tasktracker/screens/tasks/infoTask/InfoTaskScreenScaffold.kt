@@ -38,7 +38,6 @@ import com.example.tasktracker.data.Task
 import com.example.tasktracker.data.User
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
-import com.example.tasktracker.services.viewModels.getUser
 import com.example.tasktracker.viewModels.InfoTasksViewModel
 import com.example.tasktracker.viewModels.TasksViewModel
 import com.example.tasktracker.viewModels.UserViewModel
@@ -214,7 +213,7 @@ fun generateTopAppBarItems(
                     tasksViewModel.delete(taskInfo)
                     tasksViewModel.updateListTask()
                     userViewModel.updateLastTaskViewId(userData, "")
-                    userViewModel.setUserData(getUser())
+                    userViewModel.setUserData()
                     returnToTaskList()
                 }
             },

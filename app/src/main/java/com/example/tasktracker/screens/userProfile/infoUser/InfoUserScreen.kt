@@ -3,10 +3,15 @@ package com.example.tasktracker.screens.userProfile.infoUser
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.PersonRemove
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -25,14 +30,17 @@ import androidx.compose.ui.unit.sp
 import com.example.tasktracker.data.Company
 import com.example.tasktracker.data.User
 import com.example.tasktracker.viewModels.InfoUserViewModel
+import com.ravenzip.workshop.components.RowIconButton
 import com.ravenzip.workshop.components.Switch
 import com.ravenzip.workshop.data.TextConfig
+import com.ravenzip.workshop.data.icon.Icon
 import kotlinx.coroutines.launch
 
 @Composable
 fun InfoUserScreen(
     padding: PaddingValues,
     infoUserViewModel: InfoUserViewModel,
+    navigateToCompany: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -44,73 +52,102 @@ fun InfoUserScreen(
     val onEditSwitch = remember(user) { mutableStateOf(user.onEdit) }
     val onDeleteSwitch = remember(user) { mutableStateOf(user.onDelete) }
 
-    Column(
+    LazyColumn(
         modifier = Modifier.fillMaxSize().padding(padding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        UserCard(user, dataCompany)
+        item { UserCard(user, dataCompany) }
 
         if (dataUser.id == dataCompany.creatorId && dataCompany.creatorId != user.id) {
-            Text(
-                text = "Настройка прав",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
-            )
+            item {
+                Text(
+                    text = "Настройка прав",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+            item {
+                Switch(
+                    isChecked = onEditSwitch,
+                    title = "Право редактирования",
+                    titleConfig = TextConfig.Normal,
+                    text = "Разрешить редактирование задач",
+                    textConfig = TextConfig.Small,
+                    onCheckedChanged = {
+                        scope.launch {
+                            val newUser =
+                                User(
+                                    id = user.id,
+                                    name = user.name,
+                                    surname = user.surname,
+                                    companyId = user.companyId,
+                                    lastTaskViewId = user.lastTaskViewId,
+                                    onEdit = !onEditSwitch.value,
+                                    onDelete = user.onDelete,
+                                    tasks = user.tasks
+                                )
+                            infoUserViewModel.updateOnEdit(newUser, !onEditSwitch.value)
+                            infoUserViewModel.updateCurrentUser(newUser)
+                            onEditSwitch.value = !onEditSwitch.value
+                        }
+                    }
+                )
+            }
 
-            Switch(
-                isChecked = onEditSwitch,
-                title = "Право редактирования",
-                titleConfig = TextConfig.Normal,
-                text = "Разрешить редактирование задач",
-                textConfig = TextConfig.Small,
-                onCheckedChanged = {
+            item {
+                Switch(
+                    isChecked = onDeleteSwitch,
+                    title = "Право удаления",
+                    titleConfig = TextConfig.Normal,
+                    text = "Разрешить удаление задач",
+                    textConfig = TextConfig.Small,
+                    onCheckedChanged = {
+                        scope.launch {
+                            val newUser =
+                                User(
+                                    id = user.id,
+                                    name = user.name,
+                                    surname = user.surname,
+                                    companyId = user.companyId,
+                                    lastTaskViewId = user.lastTaskViewId,
+                                    onEdit = user.onEdit,
+                                    onDelete = !onDeleteSwitch.value,
+                                    tasks = user.tasks
+                                )
+                            infoUserViewModel.updateOnDelete(newUser, !onDeleteSwitch.value)
+                            infoUserViewModel.updateCurrentUser(newUser)
+                            onDeleteSwitch.value = !onDeleteSwitch.value
+                        }
+                    }
+                )
+            }
+
+            item {
+                Text(
+                    text = "Управление пользователем",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            item {
+                RowIconButton(
+                    text = "Исключить из организации",
+                    textConfig = TextConfig(size = 19.sp),
+                    icon = Icon.ImageVectorIcon(Icons.Outlined.PersonRemove),
+                ) {
                     scope.launch {
-                        val newUser =
-                            User(
-                                id = user.id,
-                                name = user.name,
-                                surname = user.surname,
-                                companyId = user.companyId,
-                                lastTaskViewId = user.lastTaskViewId,
-                                onEdit = !onEditSwitch.value,
-                                onDelete = user.onDelete,
-                                tasks = user.tasks
-                            )
-                        infoUserViewModel.updateOnEdit(newUser, !onEditSwitch.value)
-                        infoUserViewModel.updateCurrentUser(newUser)
-                        onEditSwitch.value = !onEditSwitch.value
+                        infoUserViewModel.deleteCurrentUserInCompany(user)
+                        navigateToCompany()
                     }
                 }
-            )
-
-            Switch(
-                isChecked = onDeleteSwitch,
-                title = "Право удаления",
-                titleConfig = TextConfig.Normal,
-                text = "Разрешить удаление задач",
-                textConfig = TextConfig.Small,
-                onCheckedChanged = {
-                    scope.launch {
-                        val newUser =
-                            User(
-                                id = user.id,
-                                name = user.name,
-                                surname = user.surname,
-                                companyId = user.companyId,
-                                lastTaskViewId = user.lastTaskViewId,
-                                onEdit = user.onEdit,
-                                onDelete = !onDeleteSwitch.value,
-                                tasks = user.tasks
-                            )
-                        infoUserViewModel.updateOnDelete(newUser, !onDeleteSwitch.value)
-                        infoUserViewModel.updateCurrentUser(newUser)
-                        onDeleteSwitch.value = !onDeleteSwitch.value
-                    }
-                }
-            )
+                Spacer(modifier = Modifier.height(30.dp))
+            }
         }
     }
 }

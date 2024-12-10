@@ -17,10 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
-import com.example.tasktracker.viewModels.AuthViewModel
 import com.example.tasktracker.viewModels.UserViewModel
 import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessOutlinedTextField
@@ -33,7 +31,6 @@ fun UserDataScreen(
     padding: PaddingValues,
     snackBarHostState: SnackbarHostState,
     userViewModel: UserViewModel,
-    authViewModel: AuthViewModel = hiltViewModel<AuthViewModel>(),
 ) {
     val userData = userViewModel.dataUser.collectAsState().value
     val name = remember { mutableStateOf(userData.name) }
@@ -66,7 +63,7 @@ fun UserDataScreen(
                         surname = surname.value
                     )
                 ) {
-                    userViewModel.setUserData(authViewModel.getUser())
+                    userViewModel.setUserData()
                     snackBarHostState.showSuccess(message = "Данные пользователя успешно обновлены")
                 } else {
                     snackBarHostState.showError(message = "Ошибка при обновлении данных")

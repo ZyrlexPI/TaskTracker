@@ -27,7 +27,18 @@ constructor(
         if (currentUser !== null) {
             userSources.userSource
                 .child(currentUser.uid)
-                .setValue(User(currentUser.uid, "", "", "", "", false, false, listOf("")))
+                .setValue(
+                    User(
+                        currentUser.uid,
+                        "",
+                        "",
+                        "",
+                        "",
+                        onEdit = true,
+                        onDelete = true,
+                        tasks = listOf("")
+                    )
+                )
                 .await()
         } else {
             Log.d("Exception", "currentUser is null")

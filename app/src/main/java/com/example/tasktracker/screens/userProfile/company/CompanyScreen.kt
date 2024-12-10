@@ -3,7 +3,6 @@ package com.example.tasktracker.screens.userProfile.company
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -23,10 +22,13 @@ import androidx.compose.material.icons.outlined.Output
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -44,7 +46,6 @@ import com.example.tasktracker.data.Company
 import com.example.tasktracker.data.User
 import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
-import com.example.tasktracker.services.viewModels.getUser
 import com.example.tasktracker.viewModels.CompanyViewModel
 import com.example.tasktracker.viewModels.UserViewModel
 import com.ravenzip.workshop.components.RowIconButton
@@ -52,9 +53,12 @@ import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessOutlinedTextField
 import com.ravenzip.workshop.data.TextConfig
 import com.ravenzip.workshop.data.icon.Icon
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompanyScreen(
     padding: PaddingValues,
@@ -73,125 +77,141 @@ fun CompanyScreen(
 
     Log.d("CompanyScreen_CD", companyData.toString())
     Log.d("CompanyScreen_UD", userData.toString())
+    val refreshState = rememberPullToRefreshState()
+    val isRefreshing = remember { mutableStateOf(false) }
 
-    if (userData.name != "" && userData.surname != "") {
-
-        if (companyData.id == "") {
-
-            Column(
-                modifier = Modifier.fillMaxSize().padding(padding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = "Вы не состоите в организации",
-                    fontSize = 20.sp,
-                    modifier = Modifier.fillMaxWidth(0.85f)
-                )
-                Spacer(modifier = Modifier.height(30.dp))
-                RowIconButton(
-                    text = "Присоединиться",
-                    textConfig = TextConfig(size = 19.sp),
-                    icon = Icon.ImageVectorIcon(Icons.Outlined.Add),
-                ) {
-                    onClick[0]()
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-                RowIconButton(
-                    text = "Создать",
-                    textConfig = TextConfig(size = 19.sp),
-                    icon = Icon.ImageVectorIcon(Icons.Outlined.Create),
-                ) {
-                    onClick[1]()
-                }
+    PullToRefreshBox(
+        isRefreshing = isRefreshing.value,
+        onRefresh = {
+            scope.launch {
+                isRefreshing.value = true
+                companyViewModel.getMembersCompany(companyData.id)
+                userViewModel.setUserData()
+                delay(1.seconds)
+                isRefreshing.value = false
             }
-        } else {
-            if (editState.value) {
-                Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+        },
+        modifier = Modifier.padding(padding),
+        state = refreshState,
+    ) {
+        if (userData.name != "" && userData.surname != "") {
+
+            if (companyData.id == "") {
+
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "Вы не состоите в организации",
+                        fontSize = 20.sp,
+                        modifier = Modifier.fillMaxWidth(0.85f)
+                    )
+                    Spacer(modifier = Modifier.height(30.dp))
+                    RowIconButton(
+                        text = "Присоединиться",
+                        textConfig = TextConfig(size = 19.sp),
+                        icon = Icon.ImageVectorIcon(Icons.Outlined.Add),
+                    ) {
+                        onClick[0]()
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    RowIconButton(
+                        text = "Создать",
+                        textConfig = TextConfig(size = 19.sp),
+                        icon = Icon.ImageVectorIcon(Icons.Outlined.Create),
+                    ) {
+                        onClick[1]()
+                    }
+                }
+            } else {
+                if (editState.value) {
+
                     EditCompanyScreen(
                         companyData,
                         companyViewModel,
                         editState,
                         snackBarHostState,
                     )
-                }
-            } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(padding),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-                    item {
-                        Text(
-                            text = "Вы состоите в организации \"" + companyData.name + "\"",
-                            fontSize = 20.sp,
-                            modifier = Modifier.fillMaxWidth(0.85f)
-                        )
-                    }
-
-                    item {
-                        RowIconButton(
-                            text = "Выйти из организации",
-                            textConfig = TextConfig(size = 19.sp),
-                            icon = Icon.ImageVectorIcon(Icons.Outlined.Output),
-                        ) {
-                            scope.launch(Dispatchers.Main) {
-                                companyViewModel.deleteCurrentUser(userData)
-                                userViewModel.setUserData(getUser())
-                                Log.d("ExitInCompany", userData.toString())
-                                snackBarHostState.showSuccess(
-                                    message = "Вы успешно вышли из организации"
-                                )
-                                onClick[2]()
-                            }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(20.dp)
+                    ) {
+                        item {
+                            Text(
+                                text = "Вы состоите в организации \"" + companyData.name + "\"",
+                                fontSize = 20.sp,
+                                modifier = Modifier.fillMaxWidth(0.85f)
+                            )
                         }
-                    }
 
-                    item {
-                        Text(
-                            text = "Список сотрудников",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-
-                    items(listMembersCompany) { member ->
-                        UserCard(
-                            user = member,
-                            member.id == companyData.creatorId,
-                            onClick = {
-                                scope.launch {
-                                    companyViewModel.setCurrentUser(member)
-                                    onClick[4]()
+                        item {
+                            RowIconButton(
+                                text = "Выйти из организации",
+                                textConfig = TextConfig(size = 19.sp),
+                                icon = Icon.ImageVectorIcon(Icons.Outlined.Output),
+                            ) {
+                                scope.launch(Dispatchers.Main) {
+                                    companyViewModel.deleteCurrentUser(userData)
+                                    userViewModel.setUserData()
+                                    Log.d("ExitInCompany", userData.toString())
+                                    snackBarHostState.showSuccess(
+                                        message = "Вы успешно вышли из организации"
+                                    )
+                                    onClick[2]()
                                 }
                             }
-                        )
+                        }
+
+                        item {
+                            Text(
+                                text = "Список сотрудников",
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+
+                        items(listMembersCompany) { member ->
+                            UserCard(
+                                user = member,
+                                member.id == companyData.creatorId,
+                                onClick = {
+                                    scope.launch {
+                                        companyViewModel.setCurrentUser(member)
+                                        onClick[4]()
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
             }
-        }
-    } else {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(padding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Spacer(modifier = Modifier.height(30.dp))
-            Text(
-                text =
-                    "Ваши личные данные не настроены.\nНастройте их в профиле или перейдите по кнопке ниже",
-                fontSize = 20.sp,
-                textAlign = TextAlign.Justify,
-                modifier = Modifier.fillMaxWidth(0.85f)
-            )
-            Spacer(modifier = Modifier.height(30.dp))
-
-            RowIconButton(
-                text = "Личные данные",
-                textConfig = TextConfig(size = 19.sp),
-                icon = Icon.ImageVectorIcon(Icons.Outlined.Person),
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                onClick[3]()
+                Spacer(modifier = Modifier.height(30.dp))
+                Text(
+                    text =
+                        "Ваши личные данные не настроены.\nНастройте их в профиле или перейдите по кнопке ниже",
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Justify,
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                )
+                Spacer(modifier = Modifier.height(30.dp))
+
+                RowIconButton(
+                    text = "Личные данные",
+                    textConfig = TextConfig(size = 19.sp),
+                    icon = Icon.ImageVectorIcon(Icons.Outlined.Person),
+                ) {
+                    onClick[3]()
+                }
             }
         }
     }
