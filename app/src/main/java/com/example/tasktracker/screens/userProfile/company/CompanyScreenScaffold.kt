@@ -12,28 +12,40 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.example.tasktracker.viewModels.CompanyViewModel
 import com.example.tasktracker.viewModels.UserViewModel
+import com.ravenzip.workshop.components.AlertDialog
 import com.ravenzip.workshop.components.SnackBar
+import com.ravenzip.workshop.components.Spinner
 import com.ravenzip.workshop.components.TopAppBar
 import com.ravenzip.workshop.data.appbar.AppBarItem
 import com.ravenzip.workshop.data.icon.Icon
 import com.ravenzip.workshop.data.icon.IconConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun CompanyScreenScaffold(
     padding: PaddingValues,
     vararg onClick: () -> Unit,
     companyViewModel: CompanyViewModel,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
 ) {
+    val scope = rememberCoroutineScope()
+
     val userData = userViewModel.dataUser.collectAsState().value
     val companyData = companyViewModel.dataCompany.collectAsState().value
 
     val snackBarHostState = remember { SnackbarHostState() }
 
     val editState = remember { mutableStateOf(false) }
+
+    val isLoading = remember { mutableStateOf(false) }
+    val spinnerText = remember { mutableStateOf("Удаление организации...") }
+
+    val alertState = remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.padding(padding),
@@ -43,7 +55,7 @@ fun CompanyScreenScaffold(
                 backArrow = null,
                 items =
                     if (userData.id == companyData.creatorId) {
-                        generateTopAppBarItems(editState)
+                        generateTopAppBarItems(scope, alertState, editState, isLoading)
                     } else {
                         emptyList()
                     },
@@ -60,11 +72,42 @@ fun CompanyScreenScaffold(
         )
     }
 
+    if (alertState.value) {
+
+        AlertDialog(
+            title = "Удалить организацию?",
+            text =
+                "Вы уверены, что хотите удалить организацию?\nПри удалении организации будут удалены все задачи и данные связанные с ними. Также все пользователи покинут организацию.",
+            onDismissText = "Отмена",
+            onConfirmationText = "Удалить",
+            onDismiss = { alertState.value = false },
+            onConfirmation = {
+                scope.launch {
+                    isLoading.value = true
+                    spinnerText.value = "Удаление организации..."
+                    alertState.value = false
+                    companyViewModel.deleteCompany(companyData.id)
+                    userViewModel.setUserData()
+                    isLoading.value = false
+                }
+            }
+        )
+    }
+
+    if (isLoading.value) {
+        Spinner(
+            text = spinnerText.value,
+        )
+    }
+
     SnackBar(snackBarHostState)
 }
 
 fun generateTopAppBarItems(
+    scope: CoroutineScope,
+    alertState: MutableState<Boolean>,
     editState: MutableState<Boolean>,
+    isLoading: MutableState<Boolean>,
 ): List<AppBarItem> {
 
     val editButton =
@@ -78,15 +121,7 @@ fun generateTopAppBarItems(
         AppBarItem(
             icon = Icon.ImageVectorIcon(Icons.Filled.Delete),
             iconConfig = IconConfig.Small,
-            onClick = {
-                //                scope.launch {
-                //                    tasksViewModel.delete(taskInfo)
-                //                    tasksViewModel.updateListTask()
-                //                    userViewModel.updateLastTaskViewId(userData, "")
-                //                    userViewModel.setUserData(getUser())
-                //                    returnToTaskList()
-                //                }
-            },
+            onClick = { alertState.value = true },
         )
 
     return listOf(editButton, deleteButton)

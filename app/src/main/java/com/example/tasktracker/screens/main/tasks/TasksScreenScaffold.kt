@@ -183,8 +183,10 @@ fun TasksScreenScaffold(
                                         event = "Была создана новая задача №${idNewTask} ",
                                         userId = taskUser.value!!.id
                                     )
-                                    /** Обновление списка задач */
-                                    tasksViewModel.updateListTask()
+                                    /** Обновление данных текущего пользователя */
+                                    userViewModel.setUserData()
+                                    /** Обновление индефикатора задач для уведомления */
+                                    tasksViewModel.updateIdNewTask()
                                     /** Обнуление вводимых данных */
                                     taskName.value = ""
                                     taskStatus.value = null

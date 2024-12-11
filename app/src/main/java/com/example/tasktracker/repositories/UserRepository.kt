@@ -36,7 +36,7 @@ constructor(
                         "",
                         onEdit = true,
                         onDelete = true,
-                        tasks = listOf("")
+                        tasks = listOf()
                     )
                 )
                 .await()

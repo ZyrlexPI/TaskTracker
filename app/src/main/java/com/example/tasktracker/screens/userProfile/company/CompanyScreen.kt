@@ -58,6 +58,7 @@ import com.ravenzip.workshop.components.Icon
 import com.ravenzip.workshop.components.RowIconButton
 import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessOutlinedTextField
+import com.ravenzip.workshop.components.Spinner
 import com.ravenzip.workshop.data.TextConfig
 import com.ravenzip.workshop.data.icon.Icon
 import com.ravenzip.workshop.data.icon.IconConfig
@@ -83,12 +84,19 @@ fun CompanyScreen(
 
     val listMembersCompany = companyViewModel.listMembersCompany.collectAsStateWithLifecycle().value
 
+    val listForNewCreator =
+        listMembersCompany.filter { member -> member.id != companyData.creatorId }
+    Log.d("CompanyScreen", listForNewCreator.toString())
+
     Log.d("CompanyScreen_CD", companyData.toString())
     Log.d("CompanyScreen_UD", userData.toString())
     val refreshState = rememberPullToRefreshState()
     val isRefreshing = remember { mutableStateOf(false) }
 
     val alertState = remember { mutableStateOf(false) }
+
+    val isLoading = remember { mutableStateOf(false) }
+    val spinnerText = remember { mutableStateOf("Смена владельца...") }
 
     PullToRefreshBox(
         isRefreshing = isRefreshing.value,
@@ -235,6 +243,12 @@ fun CompanyScreen(
             onConfirmationText = "Сменить",
             onDismiss = { alertState.value = false },
             onConfirmation = { alertState.value = false }
+        )
+    }
+
+    if (isLoading.value) {
+        Spinner(
+            text = spinnerText.value,
         )
     }
 }

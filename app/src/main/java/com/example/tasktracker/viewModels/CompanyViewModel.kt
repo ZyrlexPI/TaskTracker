@@ -100,4 +100,13 @@ constructor(
     suspend fun updateNameCompany(targetCompany: String, nameCompany: String) {
         companyRepository.updateNameCompany(targetCompany, nameCompany)
     }
+
+    /** Изменение создателя компании */
+    suspend fun changeCreatorCompany(targetCompany: String, userId: String) {
+        companyRepository.changeCreatorCompany(targetCompany, userId)
+    }
+
+    suspend fun deleteCompany(targetCompany: String) {
+        companyRepository.deleteCompany(targetCompany)
+    }
 }

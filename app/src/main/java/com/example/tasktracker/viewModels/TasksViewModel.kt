@@ -55,9 +55,6 @@ constructor(
     private val _listTasks = MutableStateFlow(listOf<Task>())
     val listTasks = _listTasks.asStateFlow()
 
-    private val _listAllTask = MutableStateFlow(listOf<Task>())
-    private val listAllTask = _listAllTask.asStateFlow()
-
     private val _listComments = MutableStateFlow(listOf<Comment>())
     val listComments = _listComments.asStateFlow()
 
@@ -72,7 +69,8 @@ constructor(
     val countTask = listTasks.map { task -> task.count() }
 
     /** Подсчёт айди нового задания для уведомления */
-    val idNewTask = listAllTask.map { task -> task.last().id.toInt() + 1 }
+    private val _idNewTask = MutableStateFlow(0)
+    val idNewTask = _idNewTask.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val listActualTasks =
@@ -139,8 +137,11 @@ constructor(
                 _listTasks.update {
                     tasksRepository.getListTasks(sharedRepository.companyData.value.id)
                 }
-                _listAllTask.update { tasksRepository.getListAllTasks() }
             }
+        }
+
+        viewModelScope.launch {
+            _idNewTask.update { tasksRepository.getListAllTasks().last().id.toInt() + 1 }
         }
     }
 
@@ -192,6 +193,10 @@ constructor(
 
     suspend fun updateListTask() {
         _listTasks.update { tasksRepository.getListTasks(sharedRepository.companyData.value.id) }
+    }
+
+    suspend fun updateIdNewTask() {
+        _idNewTask.update { tasksRepository.getListAllTasks().last().id.toInt() + 1 }
     }
 
     suspend fun getCurrentTask(taskId: String) {
