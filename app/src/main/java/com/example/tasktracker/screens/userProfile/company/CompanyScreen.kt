@@ -54,6 +54,7 @@ import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.example.tasktracker.viewModels.CompanyViewModel
 import com.example.tasktracker.viewModels.UserViewModel
+import com.ravenzip.workshop.components.DropDownTextField
 import com.ravenzip.workshop.components.Icon
 import com.ravenzip.workshop.components.RowIconButton
 import com.ravenzip.workshop.components.SimpleButton
@@ -84,6 +85,7 @@ fun CompanyScreen(
 
     val listMembersCompany = companyViewModel.listMembersCompany.collectAsStateWithLifecycle().value
 
+    val selectUser = remember { mutableStateOf<User?>(null) }
     val listForNewCreator =
         listMembersCompany.filter { member -> member.id != companyData.creatorId }
     Log.d("CompanyScreen", listForNewCreator.toString())
@@ -94,6 +96,8 @@ fun CompanyScreen(
     val isRefreshing = remember { mutableStateOf(false) }
 
     val alertState = remember { mutableStateOf(false) }
+    val alertText = remember { mutableStateOf("") }
+    val alertConfirmationText = remember { mutableStateOf("Сохранить") }
 
     val isLoading = remember { mutableStateOf(false) }
     val spinnerText = remember { mutableStateOf("Смена владельца...") }
@@ -150,6 +154,8 @@ fun CompanyScreen(
                         companyViewModel,
                         editState,
                         alertState,
+                        alertText,
+                        alertConfirmationText,
                         snackBarHostState,
                     )
                 } else {
@@ -173,14 +179,30 @@ fun CompanyScreen(
                                 textConfig = TextConfig(size = 19.sp),
                                 icon = Icon.ImageVectorIcon(Icons.Outlined.Output),
                             ) {
-                                scope.launch(Dispatchers.Main) {
-                                    companyViewModel.deleteCurrentUser(userData)
-                                    userViewModel.setUserData()
-                                    Log.d("ExitInCompany", userData.toString())
-                                    snackBarHostState.showSuccess(
-                                        message = "Вы успешно вышли из организации"
-                                    )
-                                    onClick[2]()
+                                if (companyData.creatorId == userData.id) {
+                                    if (companyData.members.count() > 1) {
+                                        alertConfirmationText.value = "Выйти"
+                                        alertText.value =
+                                            "Чтобы выйти из организации, выберите нового владельца из списка ниже."
+                                        alertState.value = true
+                                    } else {
+                                        scope.launch {
+                                            snackBarHostState.showError(
+                                                message =
+                                                    "Нельзя выйти из организации, так как вы владелец. Удалите организацию."
+                                            )
+                                        }
+                                    }
+                                } else {
+                                    scope.launch(Dispatchers.Main) {
+                                        companyViewModel.deleteCurrentUser(userData)
+                                        userViewModel.setUserData()
+                                        Log.d("ExitInCompany", userData.toString())
+                                        snackBarHostState.showSuccess(
+                                            message = "Вы успешно вышли из организации"
+                                        )
+                                        onClick[2]()
+                                    }
                                 }
                             }
                         }
@@ -238,11 +260,27 @@ fun CompanyScreen(
     if (alertState.value) {
         AlertDialogEditCreator(
             title = "Смена владельца",
-            text = "Вы уверены, что хотите сменить владельца организации?",
+            text = alertText.value,
             onDismissText = "Отмена",
-            onConfirmationText = "Сменить",
+            onConfirmationText = alertConfirmationText.value,
             onDismiss = { alertState.value = false },
-            onConfirmation = { alertState.value = false }
+            onConfirmation = {
+                scope.launch {
+                    alertState.value = false
+                    if (selectUser.value == null) {
+                        snackBarHostState.showError(
+                            message = "Ошибка выбора пользователя. Повторите попытку"
+                        )
+                    } else {
+                        companyViewModel.changeCreatorCompany(companyData.id, selectUser.value!!.id)
+                        companyViewModel.updateCurrentCompany()
+                        editState.value = false
+                        snackBarHostState.showSuccess(message = "Владелец успешно изменен")
+                    }
+                }
+            },
+            selectUser = selectUser,
+            listForNewCreator = listForNewCreator,
         )
     }
 
@@ -268,6 +306,8 @@ fun AlertDialogEditCreator(
     containerColors: CardColors = CardDefaults.cardColors(),
     onDismiss: () -> Unit,
     onConfirmation: () -> Unit,
+    selectUser: MutableState<User?>,
+    listForNewCreator: List<User>,
 ) {
     val titleColor = remember { titleConfig.color ?: Color.Unspecified }
     val textColor = remember { textConfig.color ?: Color.Unspecified }
@@ -307,6 +347,14 @@ fun AlertDialogEditCreator(
                 )
 
                 Spacer(modifier = Modifier.padding(top = 20.dp))
+                DropDownTextField(
+                    state = selectUser,
+                    menuItems = listForNewCreator,
+                    view = { it.name + " " + it.surname },
+                    label = "Новый владелец",
+                )
+
+                Spacer(modifier = Modifier.padding(top = 20.dp))
                 Row {
                     SimpleButton(
                         width = 0.5f,
@@ -343,6 +391,8 @@ fun EditCompanyScreen(
     companyViewModel: CompanyViewModel,
     editState: MutableState<Boolean>,
     alertState: MutableState<Boolean>,
+    alertText: MutableState<String>,
+    alertConfirmText: MutableState<String>,
     snackBarHostState: SnackbarHostState
 ) {
     val scope = rememberCoroutineScope()
@@ -380,7 +430,18 @@ fun EditCompanyScreen(
             textConfig = TextConfig(size = 19.sp),
             icon = Icon.ImageVectorIcon(Icons.Outlined.PersonAdd),
         ) {
-            alertState.value = true
+            if (companyData.members.count() > 1) {
+                alertText.value = "Для смены владельца организации, выберить нового из списка ниже."
+                alertConfirmText.value = "Сменить"
+                alertState.value = true
+            } else {
+                scope.launch {
+                    snackBarHostState.showError(
+                        message =
+                            "Нельзя менять владельца организации. В организации должно быть хотя бы 2 человека"
+                    )
+                }
+            }
         }
     }
 }

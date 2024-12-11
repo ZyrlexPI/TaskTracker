@@ -2,6 +2,7 @@ package com.example.tasktracker.repositories
 
 import android.util.Log
 import com.example.tasktracker.data.Task
+import com.example.tasktracker.data.User
 import com.example.tasktracker.sources.CommentsSources
 import com.example.tasktracker.sources.CompanySources
 import com.example.tasktracker.sources.TasksSources
@@ -178,5 +179,31 @@ constructor(
             Log.d("Exception", "taskId is null")
         }
         return Task()
+    }
+
+    /** Добавить пользователя в список наблюдателя */
+    suspend fun addObserver(taskId: String, user: User) {
+
+        val response = tasksSources.taskSource.child(taskId).child("observers").get().await()
+        val dataObservers = mutableListOf<User>()
+        val valueObservers = response.getValue<List<User>>()
+        if (valueObservers != null) {
+            dataObservers.addAll(valueObservers)
+        }
+        dataObservers.add(user)
+        tasksSources.taskSource.child(taskId).child("observers").setValue(dataObservers)
+    }
+
+    /** Удалить пользователя из списка наблюдателя */
+    suspend fun deleteObserver(taskId: String, user: User) {
+
+        val response = tasksSources.taskSource.child(taskId).child("observers").get().await()
+        val dataObservers = mutableListOf<User>()
+        val valueObservers = response.getValue<List<User>>()
+        if (valueObservers != null) {
+            dataObservers.addAll(valueObservers)
+        }
+        dataObservers.remove(user)
+        tasksSources.taskSource.child(taskId).child("observers").setValue(dataObservers)
     }
 }

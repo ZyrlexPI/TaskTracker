@@ -4,7 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasktracker.data.Task
+import com.example.tasktracker.data.User
+import com.example.tasktracker.repositories.CompanyRepository
 import com.example.tasktracker.repositories.SharedRepository
+import com.example.tasktracker.repositories.TasksRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,8 +21,22 @@ import kotlinx.coroutines.launch
 class InfoTasksViewModel
 @Inject
 constructor(
+    private val tasksRepository: TasksRepository,
+    private val companyRepository: CompanyRepository,
     private val sharedRepository: SharedRepository,
 ) : ViewModel() {
+
+    val dataCompany = sharedRepository.companyData
+
+    private val _listMembers = MutableStateFlow(listOf<User>())
+    val listMembers = _listMembers.asStateFlow()
+
+    /** Получить список участников компании */
+    suspend fun getMembersCompany() {
+        _listMembers.update {
+            companyRepository.getMembersCompany(sharedRepository.companyData.value!!.id)
+        }
+    }
 
     private val _task = MutableStateFlow(Task())
     val task = _task.asStateFlow()
@@ -46,6 +63,16 @@ constructor(
         _task.update { task }
     }
 
+    /** Добавить пользователя в список наблюдателя */
+    suspend fun addObserver(taskId: String, user: User) {
+        tasksRepository.addObserver(taskId, user)
+    }
+
+    /** Удалить пользователя из списка наблюдателя */
+    suspend fun deleteObserver(taskId: String, user: User) {
+        tasksRepository.deleteObserver(taskId, user)
+    }
+
     init {
         viewModelScope.launch {
             sharedRepository.currentTask
@@ -60,5 +87,7 @@ constructor(
         viewModelScope.launch {
             sharedRepository.currentTask.collect { Log.d("emptyCOLLECT", it.toString()) }
         }
+
+        viewModelScope.launch { task.collect { getMembersCompany() } }
     }
 }

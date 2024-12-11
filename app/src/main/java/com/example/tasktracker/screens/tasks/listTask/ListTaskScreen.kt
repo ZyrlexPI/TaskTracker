@@ -62,7 +62,10 @@ fun ListTaskScreen(
             TaskViewOption.AUTHOR ->
                 listTask
                     .sortedBy { task -> task.status }
-                    .filter { task -> task.author_id == userData.id }
+                    .filter { task ->
+                        task.author_id == userData.id ||
+                            task.observers.any { user -> user.id == userData.id }
+                    }
         }
 
     val refreshState = rememberPullToRefreshState()

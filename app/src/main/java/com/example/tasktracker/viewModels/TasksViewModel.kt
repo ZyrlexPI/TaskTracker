@@ -173,7 +173,8 @@ constructor(
                 author_id = authorId,
                 executor = executor,
                 executor_id = executorId,
-                companyId = companyId
+                companyId = companyId,
+                observers = listOf(),
             )
 
         tasksRepository.add(dataTask)
@@ -211,11 +212,6 @@ constructor(
         _listComments.update { commentsRepository.getListComments(taskId) }
     }
 
-    suspend fun getUserNameById(userId: String): String {
-        val userData = userRepository.getUserById(userId)
-        return userData.name + " " + userData.surname
-    }
-
     suspend fun getFilteredComment(text: String, userId: String): CommentFiltered {
         val userData = userRepository.getUserById(userId)
         val dataFiltered =
@@ -237,7 +233,8 @@ constructor(
                     author_id = taskData.author_id,
                     executor = executorData.name + " " + executorData.surname,
                     executor_id = taskData.executor_id,
-                    companyId = taskData.companyId
+                    companyId = taskData.companyId,
+                    observers = taskData.observers,
                 )
             return dataTask
         } else {
@@ -250,7 +247,8 @@ constructor(
                     author_id = taskData.author_id,
                     executor = authorData.name + " " + authorData.surname,
                     executor_id = taskData.executor_id,
-                    companyId = taskData.companyId
+                    companyId = taskData.companyId,
+                    observers = taskData.observers,
                 )
             return dataTask
         }

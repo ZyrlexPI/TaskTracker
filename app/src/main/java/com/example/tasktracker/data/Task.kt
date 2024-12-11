@@ -10,7 +10,8 @@ data class Task(
     val author_id: String,
     val executor: String,
     val executor_id: String,
-    val companyId: String
+    val companyId: String,
+    val observers: List<User>,
 ) {
     constructor() :
         this(
@@ -21,6 +22,7 @@ data class Task(
             author_id = "",
             executor = "",
             executor_id = "",
-            companyId = ""
+            companyId = "",
+            observers = listOf()
         )
 }

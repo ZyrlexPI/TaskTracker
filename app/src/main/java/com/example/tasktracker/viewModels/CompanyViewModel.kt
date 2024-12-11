@@ -68,6 +68,12 @@ constructor(
         sharedRepository.setCompanyData(companyRepository.getCurrentCompany(userData))
     }
 
+    suspend fun updateCurrentCompany() {
+        sharedRepository.setCompanyData(
+            companyRepository.getCurrentCompany(userRepository.get(getUser()))
+        )
+    }
+
     suspend fun setCurrentCompany(companyData: Company) {
         sharedRepository.setCompanyData(companyData)
     }
