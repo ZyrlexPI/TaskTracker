@@ -13,7 +13,11 @@ import kotlinx.coroutines.tasks.await
 @Singleton
 class CompanyRepository
 @Inject
-constructor(private val companySources: CompanySources, private val userSources: UserSources) {
+constructor(
+    private val companySources: CompanySources,
+    private val userSources: UserSources,
+    private val tasksRepository: TasksRepository
+) {
 
     /** Создание новой организации */
     suspend fun add(nameCompany: String, userData: User) {
@@ -126,5 +130,47 @@ constructor(private val companySources: CompanySources, private val userSources:
     suspend fun updateNameCompany(targetCompany: String, nameCompany: String) {
         val data = mapOf("name" to nameCompany)
         companySources.companySource.child(targetCompany).updateChildren(data)
+    }
+
+    /** Изменение создателя компании */
+    suspend fun changeCreatorCompany(targetCompany: String, userId: String) {
+        /** Устанавливаем все права новому создателю */
+        val dataUser = mapOf("onEdit" to true, "onDelete" to true)
+        userSources.userSource.child(userId).updateChildren(dataUser)
+        /** Устанавливаем нового создателя */
+        val dataCompany = mapOf("creatorId" to userId)
+        companySources.companySource.child(targetCompany).updateChildren(dataCompany)
+    }
+
+    /** Удаление компании */
+    suspend fun deleteCompany(targetCompany: String) {
+        /** Удаляем все задачи в компании */
+        val responseTasks =
+            companySources.companySource.child(targetCompany).child("tasks").get().await()
+        val valueTasks = responseTasks.getValue<List<String>>()
+        if (responseTasks.exists()) {
+            if (valueTasks != null) {
+                valueTasks.forEach { taskId ->
+                    tasksRepository.delete(tasksRepository.getCurrentTask(taskId))
+                }
+            }
+        }
+        /**
+         * Удаляем всем пользователям компании индентификатор организации и устанавливаем права
+         * поумолчанию
+         */
+        val responseUsers =
+            companySources.companySource.child(targetCompany).child("members").get().await()
+        val valueUsers = responseUsers.getValue<List<User>>()
+        val dataUser = mapOf("companyId" to "", "onEdit" to true, "onDelete" to true)
+        if (responseUsers.exists()) {
+            if (valueUsers != null) {
+                valueUsers.forEach { user ->
+                    userSources.userSource.child(user.id).updateChildren(dataUser)
+                }
+            }
+        }
+        /** Удаляем организацию */
+        companySources.companySource.child(targetCompany).removeValue()
     }
 }

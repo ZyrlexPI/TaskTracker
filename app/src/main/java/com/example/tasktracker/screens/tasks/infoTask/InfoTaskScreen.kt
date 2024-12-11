@@ -97,7 +97,7 @@ fun InfoTaskScreen(
                 item {
                     Text(
                         text = "Комментарии",
-                        fontSize = 24.sp,
+                        fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center

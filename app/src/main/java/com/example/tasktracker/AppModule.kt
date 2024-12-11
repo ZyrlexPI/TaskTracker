@@ -89,7 +89,11 @@ object AppModule {
     @Provides
     @Singleton
     fun provideCompanyRepository(): CompanyRepository {
-        return CompanyRepository(provideCompanySources(), provideUserSources())
+        return CompanyRepository(
+            provideCompanySources(),
+            provideUserSources(),
+            provideTasksRepository()
+        )
     }
 
     @Provides

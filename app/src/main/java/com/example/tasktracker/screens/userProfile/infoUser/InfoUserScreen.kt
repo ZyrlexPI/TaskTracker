@@ -63,7 +63,7 @@ fun InfoUserScreen(
             item {
                 Text(
                     text = "Настройка прав",
-                    fontSize = 24.sp,
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
@@ -128,7 +128,7 @@ fun InfoUserScreen(
             item {
                 Text(
                     text = "Управление пользователем",
-                    fontSize = 24.sp,
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center

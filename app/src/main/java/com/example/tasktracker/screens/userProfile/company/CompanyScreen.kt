@@ -14,13 +14,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.Output
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.PersonAdd
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,10 +41,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tasktracker.data.Company
 import com.example.tasktracker.data.User
@@ -48,11 +54,13 @@ import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.example.tasktracker.viewModels.CompanyViewModel
 import com.example.tasktracker.viewModels.UserViewModel
+import com.ravenzip.workshop.components.Icon
 import com.ravenzip.workshop.components.RowIconButton
 import com.ravenzip.workshop.components.SimpleButton
 import com.ravenzip.workshop.components.SinglenessOutlinedTextField
 import com.ravenzip.workshop.data.TextConfig
 import com.ravenzip.workshop.data.icon.Icon
+import com.ravenzip.workshop.data.icon.IconConfig
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -79,6 +87,8 @@ fun CompanyScreen(
     Log.d("CompanyScreen_UD", userData.toString())
     val refreshState = rememberPullToRefreshState()
     val isRefreshing = remember { mutableStateOf(false) }
+
+    val alertState = remember { mutableStateOf(false) }
 
     PullToRefreshBox(
         isRefreshing = isRefreshing.value,
@@ -131,9 +141,11 @@ fun CompanyScreen(
                         companyData,
                         companyViewModel,
                         editState,
+                        alertState,
                         snackBarHostState,
                     )
                 } else {
+
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -168,7 +180,7 @@ fun CompanyScreen(
                         item {
                             Text(
                                 text = "Список сотрудников",
-                                fontSize = 24.sp,
+                                fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center
@@ -215,6 +227,100 @@ fun CompanyScreen(
             }
         }
     }
+    if (alertState.value) {
+        AlertDialogEditCreator(
+            title = "Смена владельца",
+            text = "Вы уверены, что хотите сменить владельца организации?",
+            onDismissText = "Отмена",
+            onConfirmationText = "Сменить",
+            onDismiss = { alertState.value = false },
+            onConfirmation = { alertState.value = false }
+        )
+    }
+}
+
+@Composable
+fun AlertDialogEditCreator(
+    icon: Icon? = null,
+    iconConfig: IconConfig = IconConfig.Default,
+    title: String,
+    titleConfig: TextConfig = TextConfig.H1,
+    text: String,
+    textConfig: TextConfig = TextConfig.Small,
+    onDismissText: String,
+    onDismissTextConfig: TextConfig = TextConfig.SmallCenteredMedium,
+    onConfirmationText: String,
+    onConfirmationTextConfig: TextConfig = TextConfig.SmallCenteredMedium,
+    containerColors: CardColors = CardDefaults.cardColors(),
+    onDismiss: () -> Unit,
+    onConfirmation: () -> Unit,
+) {
+    val titleColor = remember { titleConfig.color ?: Color.Unspecified }
+    val textColor = remember { textConfig.color ?: Color.Unspecified }
+
+    Dialog(onDismissRequest = { onDismiss() }) {
+        Card(shape = RoundedCornerShape(10.dp), colors = containerColors) {
+            Column(
+                modifier =
+                    Modifier.padding(start = 20.dp, end = 20.dp, top = 25.dp, bottom = 25.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                if (icon !== null && iconConfig.size > 0) {
+                    Icon(
+                        icon = icon,
+                        iconConfig = iconConfig,
+                        defaultColor = containerColors.contentColor,
+                    )
+                    Spacer(modifier = Modifier.padding(top = 20.dp))
+                }
+
+                Text(
+                    text = title,
+                    color = titleColor,
+                    fontSize = titleConfig.size,
+                    fontWeight = titleConfig.weight,
+                    letterSpacing = titleConfig.letterSpacing,
+                )
+
+                Spacer(modifier = Modifier.padding(top = 20.dp))
+                Text(
+                    text = text,
+                    color = textColor,
+                    fontSize = textConfig.size,
+                    fontWeight = textConfig.weight,
+                    letterSpacing = textConfig.letterSpacing,
+                )
+
+                Spacer(modifier = Modifier.padding(top = 20.dp))
+                Row {
+                    SimpleButton(
+                        width = 0.5f,
+                        text = onDismissText,
+                        textConfig = onDismissTextConfig,
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = containerColors.containerColor,
+                                contentColor = MaterialTheme.colorScheme.primary,
+                            ),
+                        contentPadding = PaddingValues(0.dp),
+                    ) {
+                        onDismiss()
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    SimpleButton(
+                        text = onConfirmationText,
+                        textConfig = onConfirmationTextConfig,
+                        contentPadding = PaddingValues(0.dp),
+                    ) {
+                        onConfirmation()
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -222,6 +328,7 @@ fun EditCompanyScreen(
     companyData: Company,
     companyViewModel: CompanyViewModel,
     editState: MutableState<Boolean>,
+    alertState: MutableState<Boolean>,
     snackBarHostState: SnackbarHostState
 ) {
     val scope = rememberCoroutineScope()
@@ -229,15 +336,8 @@ fun EditCompanyScreen(
 
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         SinglenessOutlinedTextField(text = newNameCompany, label = "Название организации")
-        //        Spacer(modifier = Modifier.height(8.dp))
-        //        DropDownTextField(
-        //            state = newStatusTask,
-        //            menuItems = TaskStatus.values().toList(),
-        //            view = { it.value },
-        //            label = "Статус задачи"
-        //        )
         Spacer(modifier = Modifier.height(10.dp))
-        SimpleButton(text = "Сохранить") {
+        SimpleButton(text = "Изменить название") {
             scope.launch {
                 if (newNameCompany.value.isNotBlank()) {
                     val newCompany = companyData.copy(name = newNameCompany.value)
@@ -251,6 +351,22 @@ fun EditCompanyScreen(
                     )
                 }
             }
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = "Сменить владельца\nорганизации",
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        RowIconButton(
+            text = "Сменить владельца",
+            textConfig = TextConfig(size = 19.sp),
+            icon = Icon.ImageVectorIcon(Icons.Outlined.PersonAdd),
+        ) {
+            alertState.value = true
         }
     }
 }
