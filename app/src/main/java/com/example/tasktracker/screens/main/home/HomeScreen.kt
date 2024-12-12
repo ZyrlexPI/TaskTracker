@@ -55,7 +55,7 @@ fun HomeScreen(
     // Основной макет
     Column(
         modifier = Modifier.fillMaxSize().padding(padding),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (userData.lastTaskViewId != "") {

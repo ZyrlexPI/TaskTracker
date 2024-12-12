@@ -15,7 +15,6 @@ import androidx.compose.material.icons.automirrored.twotone.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Apartment
-import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -77,7 +76,7 @@ fun UserProfileScreen(
                 fontSize = 18.sp,
             )
             IconButton(
-                onClick = { onClick[3]() },
+                onClick = { onClick[2]() },
                 modifier = Modifier.size(50.dp),
             ) {
                 Icon(
@@ -98,21 +97,12 @@ fun UserProfileScreen(
         }
         Spacer(modifier = Modifier.height(20.dp))
         RowIconButton(
-            text = "Безопасность",
-            textConfig = TextConfig(size = 19.sp),
-            icon = Icon.ImageVectorIcon(Icons.Outlined.Lock),
-            iconConfig = IconConfig.Default,
-        ) {
-            onClick[1]()
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        RowIconButton(
             text = "Настройки",
             textConfig = TextConfig(size = 19.sp),
             icon = Icon.ImageVectorIcon(Icons.Outlined.Settings),
             iconConfig = IconConfig.Default,
         ) {
-            onClick[2]()
+            onClick[1]()
         }
         Spacer(modifier = Modifier.height(20.dp))
         RowIconButton(
@@ -123,7 +113,7 @@ fun UserProfileScreen(
         ) {
             scope.launch(Dispatchers.Main) {
                 authViewModel.logout()
-                onClick[4]()
+                onClick[3]()
             }
         }
     }

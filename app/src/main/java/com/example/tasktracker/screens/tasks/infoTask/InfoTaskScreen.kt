@@ -86,6 +86,7 @@ fun InfoTaskScreen(
     val listFilterMembers =
         listMembers.filter { member ->
             member.id != taskView.author_id && // Исключаем автора задачи
+                member.id != taskView.executor_id && // Исключаем исполнителя задачи
                 taskView.observers.none { observer ->
                     observer.id == member.id
                 } // Исключаем наблюдателей

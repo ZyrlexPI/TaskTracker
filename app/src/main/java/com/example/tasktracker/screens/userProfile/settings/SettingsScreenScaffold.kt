@@ -13,12 +13,17 @@ import com.ravenzip.workshop.components.TopAppBar
 fun SettingsScreenScaffold(
     padding: PaddingValues,
     prefs: DataStore<Preferences>,
+    navigateToChangePassword: () -> Unit,
 ) {
 
     Scaffold(
         modifier = Modifier.padding(padding),
         topBar = { TopAppBar(title = "Настройки", backArrow = null, items = listOf()) },
     ) { innerPadding ->
-        SettingsScreen(padding = innerPadding, prefs = prefs)
+        SettingsScreen(
+            padding = innerPadding,
+            prefs = prefs,
+            navigateToChangePassword = navigateToChangePassword
+        )
     }
 }

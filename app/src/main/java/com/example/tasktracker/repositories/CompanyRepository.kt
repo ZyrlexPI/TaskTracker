@@ -137,6 +137,22 @@ constructor(
         /** Устанавливаем все права новому создателю */
         val dataUser = mapOf("onEdit" to true, "onDelete" to true)
         userSources.userSource.child(userId).updateChildren(dataUser)
+        /** Обновление данных об новом создателе */
+        val response =
+            companySources.companySource.child(targetCompany).child("members").get().await()
+        var dataUser1 = User()
+        val dataMembers = mutableListOf<User>()
+        val valueMembers = response.getValue<List<User>>()
+        valueMembers?.forEach { member ->
+            if (member.id != userId) {
+                dataMembers.add(member)
+            } else {
+                dataUser1 = member
+            }
+        }
+        val dataUser2 = dataUser1.copy(onEdit = true, onDelete = true)
+        dataMembers.add(dataUser2)
+        companySources.companySource.child(targetCompany).child("members").setValue(dataMembers)
         /** Устанавливаем нового создателя */
         val dataCompany = mapOf("creatorId" to userId)
         companySources.companySource.child(targetCompany).updateChildren(dataCompany)

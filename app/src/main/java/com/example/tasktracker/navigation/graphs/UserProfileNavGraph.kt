@@ -16,7 +16,6 @@ import com.example.tasktracker.screens.userProfile.company.CompanyScreenScaffold
 import com.example.tasktracker.screens.userProfile.createCompany.CreateCompanyScreenScaffold
 import com.example.tasktracker.screens.userProfile.infoUser.InfoUserScreenScaffold
 import com.example.tasktracker.screens.userProfile.joinCompany.JoinCompanyScreenScaffold
-import com.example.tasktracker.screens.userProfile.security.SecurityScreenScaffold
 import com.example.tasktracker.screens.userProfile.settings.SettingsScreenScaffold
 import com.example.tasktracker.screens.userProfile.userData.UserDataScreenScaffold
 import com.example.tasktracker.viewModels.CompanyViewModel
@@ -42,7 +41,6 @@ fun UserProfileNavigationGraph(
                 onClick =
                     arrayOf(
                         { navController.navigate(UserProfileGraph.USER_DATA) },
-                        { navController.navigate(UserProfileGraph.SECURITY) },
                         { navController.navigate(UserProfileGraph.SETTINGS) },
                         { navController.navigate(UserProfileGraph.COMPANY) },
                         returnInAuth,
@@ -56,19 +54,14 @@ fun UserProfileNavigationGraph(
                 userViewModel = userViewModel,
             )
         }
-        composable(route = UserProfileGraph.SECURITY) {
-            SecurityScreenScaffold(
-                padding = padding,
-                onClick =
-                    arrayOf(
-                        { navController.navigate(UserProfileGraph.CHANGE_PASSWORD) },
-                    ),
-            )
-        }
+
         composable(route = UserProfileGraph.SETTINGS) {
             SettingsScreenScaffold(
                 prefs = prefs,
                 padding = padding,
+                navigateToChangePassword = {
+                    navController.navigate(UserProfileGraph.CHANGE_PASSWORD)
+                },
             )
         }
 
