@@ -14,12 +14,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -158,10 +162,8 @@ fun InfoTaskScreen(
                             message = "Ошибка выбора пользователя. Повторите попытку"
                         )
                     } else {
-                        //
-                        // companyViewModel.changeCreatorCompany(companyData.id,
-                        // selectUser.value!!.id)
-                        //                        companyViewModel.updateCurrentCompany()
+                        infoTasksViewModel.addObserver(taskView.id, selectUser.value!!)
+                        infoTasksViewModel.getCurrentTask(taskView.id)
                         editState.value = false
                         snackBarHostState.showSuccess(
                             message = "Пользователь успешно добавлен в наблюдатели"
@@ -299,8 +301,53 @@ fun EditTaskScreen(
             item { Text(text = "Нет наблюдателей") }
         } else {
             items(task.observers) { observer ->
-                Text(text = "${observer.name} ${observer.surname}")
-                // TODO
+                ObserverCard(
+                    observer = observer,
+                    onRemove = {
+                        scope.launch { snackBarHostState.showError("Ничего не настроено") }
+                    }
+                )
+            }
+        }
+    }
+}
+
+// Карточка наблюдателя
+@Composable
+fun ObserverCard(observer: User, onRemove: () -> Unit) {
+    Card(
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(4.dp),
+        modifier = Modifier.fillMaxWidth(0.9f)
+    ) {
+        Row(
+            modifier =
+                Modifier.padding(start = 20.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
+                    .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Имя наблюдателя
+            Row(
+                modifier = Modifier.align(Alignment.CenterVertically),
+            ) {
+                Text(
+                    text = "Сотрудник: ",
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = observer.name + " " + observer.surname,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+
+            // Кнопка удаления
+            IconButton(onClick = onRemove) {
+                Icon(
+                    imageVector = Icons.Outlined.Close, // Иконка "крест"
+                    contentDescription = "Удалить наблюдателя",
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }

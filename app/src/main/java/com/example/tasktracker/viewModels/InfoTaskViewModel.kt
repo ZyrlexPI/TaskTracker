@@ -73,6 +73,10 @@ constructor(
         tasksRepository.deleteObserver(taskId, user)
     }
 
+    suspend fun getCurrentTask(taskId: String) {
+        _task.update { tasksRepository.getCurrentTask(taskId) }
+    }
+
     init {
         viewModelScope.launch {
             sharedRepository.currentTask
