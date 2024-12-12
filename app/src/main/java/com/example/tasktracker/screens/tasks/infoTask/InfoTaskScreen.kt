@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material3.ButtonDefaults
@@ -51,6 +50,7 @@ import com.example.tasktracker.services.showError
 import com.example.tasktracker.services.showSuccess
 import com.example.tasktracker.viewModels.InfoTasksViewModel
 import com.example.tasktracker.viewModels.TasksViewModel
+import com.ravenzip.workshop.components.AlertDialog
 import com.ravenzip.workshop.components.DropDownTextField
 import com.ravenzip.workshop.components.Icon
 import com.ravenzip.workshop.components.RowIconButton
@@ -93,9 +93,9 @@ fun InfoTaskScreen(
 
     val selectUser = remember { mutableStateOf<User?>(null) }
 
-    val alertState = remember { mutableStateOf(false) }
-    val alertText = remember { mutableStateOf("") }
-    val alertConfirmationText = remember { mutableStateOf("Сохранить") }
+    val alertAddState = remember { mutableStateOf(false) }
+    val alertDeleteState = remember { mutableStateOf(false) }
+    val currentUserDelete = remember { mutableStateOf<User?>(null) }
 
     // Весь экран
     PullToRefreshBox(
@@ -117,9 +117,11 @@ fun InfoTaskScreen(
                 infoTasksViewModel,
                 tasksViewModel,
                 editState,
-                alertState,
+                alertAddState,
+                alertDeleteState,
                 snackBarHostState,
                 listFilterMembers,
+                currentUserDelete,
             )
         } else {
 
@@ -147,16 +149,16 @@ fun InfoTaskScreen(
         }
     }
 
-    if (alertState.value) {
+    if (alertAddState.value) {
         AlertDialogAddObserver(
             title = "Добавление наблюдателя",
             text = "Выберите пользователя для добавления в наблюдатели",
             onDismissText = "Отмена",
-            onConfirmationText = alertConfirmationText.value,
-            onDismiss = { alertState.value = false },
+            onConfirmationText = "Добавить",
+            onDismiss = { alertAddState.value = false },
             onConfirmation = {
                 scope.launch {
-                    alertState.value = false
+                    alertAddState.value = false
                     if (selectUser.value == null) {
                         snackBarHostState.showError(
                             message = "Ошибка выбора пользователя. Повторите попытку"
@@ -164,6 +166,11 @@ fun InfoTaskScreen(
                     } else {
                         infoTasksViewModel.addObserver(taskView.id, selectUser.value!!)
                         infoTasksViewModel.getCurrentTask(taskView.id)
+                        tasksViewModel.addNotification(
+                            getCurrentDateTime(),
+                            "Вы были добавлены в наблюдатели в задаче №${taskView.id}",
+                            selectUser.value!!.id
+                        )
                         editState.value = false
                         snackBarHostState.showSuccess(
                             message = "Пользователь успешно добавлен в наблюдатели"
@@ -175,6 +182,38 @@ fun InfoTaskScreen(
             listForNewCreator = listFilterMembers,
         )
     }
+
+    if (alertDeleteState.value) {
+        AlertDialog(
+            title = "Удаление наблюдателя",
+            text = "Вы действительно хотите удалить пользователя из наблюдателей?",
+            onDismissText = "Отмена",
+            onConfirmationText = "Удалить",
+            onDismiss = { alertDeleteState.value = false },
+            onConfirmation = {
+                scope.launch {
+                    alertDeleteState.value = false
+                    if (currentUserDelete.value == null) {
+                        snackBarHostState.showError(
+                            message = "Ошибка удаления пользователя. Повторите попытку"
+                        )
+                    } else {
+                        infoTasksViewModel.deleteObserver(taskView.id, currentUserDelete.value!!)
+                        infoTasksViewModel.getCurrentTask(taskView.id)
+                        tasksViewModel.addNotification(
+                            getCurrentDateTime(),
+                            "Вы были удалены из наблюдателей в задаче №${taskView.id}",
+                            currentUserDelete.value!!.id
+                        )
+                        editState.value = false
+                        snackBarHostState.showSuccess(
+                            message = "Пользователь успешно удален из наблюдателей"
+                        )
+                    }
+                }
+            },
+        )
+    }
 }
 
 @Composable
@@ -183,9 +222,11 @@ fun EditTaskScreen(
     infoTasksViewModel: InfoTasksViewModel,
     tasksViewModel: TasksViewModel,
     editState: MutableState<Boolean>,
-    alertState: MutableState<Boolean>,
+    alertAddState: MutableState<Boolean>,
+    alertDeleteState: MutableState<Boolean>,
     snackBarHostState: SnackbarHostState,
     listFilterMembers: List<User>,
+    currentUserDelete: MutableState<User?>,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -273,7 +314,7 @@ fun EditTaskScreen(
                 icon = Icon.ImageVectorIcon(Icons.Outlined.PersonAdd),
             ) {
                 if (listFilterMembers.isNotEmpty()) {
-                    alertState.value = true
+                    alertAddState.value = true
                 } else {
                     scope.launch {
                         snackBarHostState.showError(
@@ -304,7 +345,8 @@ fun EditTaskScreen(
                 ObserverCard(
                     observer = observer,
                     onRemove = {
-                        scope.launch { snackBarHostState.showError("Ничего не настроено") }
+                        alertDeleteState.value = true
+                        currentUserDelete.value = observer
                     }
                 )
             }
@@ -358,7 +400,7 @@ fun AlertDialogAddObserver(
     icon: Icon? = null,
     iconConfig: IconConfig = IconConfig.Default,
     title: String,
-    titleConfig: TextConfig = TextConfig.H1,
+    titleConfig: TextConfig = TextConfig.H2,
     text: String,
     textConfig: TextConfig = TextConfig.Small,
     onDismissText: String,
@@ -413,7 +455,7 @@ fun AlertDialogAddObserver(
                     state = selectUser,
                     menuItems = listForNewCreator,
                     view = { it.name + " " + it.surname },
-                    label = "Новый владелец",
+                    label = "Новый наблюдатель",
                 )
 
                 Spacer(modifier = Modifier.padding(top = 20.dp))
